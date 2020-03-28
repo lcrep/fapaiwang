@@ -1,0 +1,1 @@
+<view class="container"><button type="primary" plain="true" data-event-opts="{{[['tap',[['toLogin',['$event']]]]]}}" bindtap="__e">登录</button></view>

@@ -1,0 +1,81 @@
+
+.citySel .cityName {
+	display: block;
+	max-width: 150rpx;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	font-size: 30rpx;
+	color: #222222;
+	margin-right: 5rpx;
+}
+.downIcon {
+	font-family: uniicons;
+	font-size: 20px;
+	font-weight: normal;
+	font-style: normal;
+	width: 20px;
+	color: #222222;
+}
+.swiper-box {
+	height: 260rpx;
+}
+.swiper-item {
+	
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: column;
+	        flex-direction: column;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	        justify-content: center;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+	background-color: #999;
+	color: #fff;
+}
+.bannerImg {
+	width: 750rpx;
+}
+.gridBtns {
+	height: 200rpx;
+	margin-top: 10rpx;
+}
+.gridBtns .gridItem {
+	width: 33.3%;
+	float: left;
+	height: 100%;
+	text-align: center;
+	-webkit-transition: all linear 0.2s;
+	transition: all linear 0.2s;
+}
+.gridItem:active {
+	background: #f7f7f7;
+}
+.gridItem .gridImg {
+	width: 88rpx;
+	height: 88rpx;
+	display: inline-block;
+	margin-top: 32rpx;
+}
+.gridItem .gridText {
+	display: block;
+	font-size: 26rpx;
+	color: #555555;
+	margin-top: 12rpx;
+}
+.goodsBox {
+	padding: 20rpx 30rpx;
+}
+.boxHead {
+	font-size: 44rpx;
+	color: #222222;
+	line-height: 60rpx;
+	padding-bottom: 20rpx;
+}
+

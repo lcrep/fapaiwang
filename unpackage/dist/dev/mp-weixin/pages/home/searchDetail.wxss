@@ -1,0 +1,17 @@
+
+.backIocn {
+	line-height: 68rpx;
+}
+.goodsBox {
+	padding: 0 30rpx;
+}
+.boxHead {
+	font-size: 44rpx;
+	color: #222222;
+	line-height: 60rpx;
+	padding-bottom: 20rpx;
+}
+.listTabs {
+	padding: 10rpx 30rpx 30rpx 30rpx;
+}
+

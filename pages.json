@@ -1,0 +1,136 @@
+{
+	"pages": [{
+		"path": "pages/home/index",
+		"style" : {
+			 "navigationStyle":"custom",
+			 "enablePullDownRefresh": true,
+			 "app-plus": {
+			 	"titleNView": false,
+			 	"bounce": "none",
+			 	"pullToRefresh": {
+			 		"style": "circle",
+			 		"color": "#FD575C",
+			 		"offset": "60px"
+			 	}
+			 }
+		}
+		// "style": {
+		// 	"navigationBarTitleText": "首页",	
+		// 	"app-plus": {
+		// 		"titleNView": {
+		// 			"titleColor": "#fff",
+		// 			"titleSize":"12",
+		// 			"fontSize":"12",
+		// 			"backgroundColor": "#ffffff",
+		// 			"buttons": [{
+		// 				"text": "北京市",
+		// 				"fontSize": "14",
+		// 				"select": true,
+		// 				"width": "auto",
+		// 				"color":"#222222"
+		// 			}],
+		// 			"searchInput": {
+		// 				"backgroundColor": "#f7f7f7",
+		// 				"borderRadius": "6px",
+		// 				"placeholder": "搜索标的物名称",
+		// 				"align":"left"
+		// 			}
+		// 		}
+		// 	}
+		// }
+	}, {
+		"path": "pages/consultant/index",
+		"style": {
+			"navigationBarTitleText": "咨询"
+		}
+	}, {
+		"path": "pages/my/index",
+		"style": {
+			"navigationBarTitleText": "我的"
+		}
+	}    ,{
+            "path" : "pages/my/login",
+            "style" : {
+				"navigationBarTitleText": ""
+			}
+        }
+        ,{
+            "path" : "pages/my/register",
+            "style" : {
+				"navigationBarTitleText": ""
+			}
+        }
+        ,{
+            "path" : "pages/my/setPassword",
+            "style" : {
+				"navigationBarTitleText": ""
+			}
+        }
+        ,{
+            "path" : "pages/home/searchDetail",
+            "style" : {
+				"navigationStyle":"custom",
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none",
+					"pullToRefresh": {
+						"style": "circle",
+						"color": "#FD575C",
+						"offset": "60px"
+					}
+				},
+				"enablePullDownRefresh": true
+			}
+        }
+        ,{
+            "path" : "pages/home/goodsDetail",
+            "style" : {
+				"navigationBarTitleText": "拍品详情页"
+			}
+        }
+        ,{
+            "path" : "pages/home/areaHousing",
+            "style" : {
+				"navigationBarTitleText": "区域选房"
+			}
+        }
+        ,{
+            "path" : "pages/home/leakHousing",
+            "style" : {
+				"navigationBarTitleText": "捡漏必看"
+			}
+        }
+    ],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "APP",
+		"navigationBarBackgroundColor": "#FFFFFF",
+		"backgroundColor": "#FFFFFF"
+	},
+	"tabBar": {
+		"color": "#555555",
+		"selectedColor": "#CD282F",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"height": "54px",
+		"fontSize": "12px",
+		"iconWidth": "24px",
+		"spacing": "3px",
+		"list": [{
+			"pagePath": "pages/home/index",
+			"iconPath": "static/images/homeIcon.png",
+			"selectedIconPath": "static/images/homeIcon_sel.png",
+			"text": "首页"
+		}, {
+			"pagePath": "pages/consultant/index",
+			"iconPath": "static/images/consIcon.png",
+			"selectedIconPath": "static/images/consIcon_sel.png",
+			"text": "咨询"
+		}, {
+			"pagePath": "pages/my/index",
+			"iconPath": "static/images/myIcon.png",
+			"selectedIconPath": "static/images/myIcon_sel.png",
+			"text": "我的"
+		}]
+	}
+}
