@@ -35,11 +35,50 @@
 		},
 		methods: {
 			clearIcon() {
-				let that = this;
+				const that = this;
 				that.mobile = "";
 			},
 			getCode() {
-				let that = this;
+				const that = this;
+				uni.showLoading({
+					title:"请稍等..."
+				})
+				that.$api.isphonecanuse({
+					"mobile":that.mobile
+				}).then(res=>{
+					if(res.success){
+						that.$api.sendvcode({
+							"mobile":that.mobile,
+							"sendType":1
+						}).then(res2=>{
+							uni.hideLoading();
+							if(res2.success){
+								that.timeCount();
+								uni.showToast({
+									title: "验证码发送成功",
+									icon: "none"
+								})
+							}
+							else{
+								uni.showToast({
+									title: res2.message,
+									icon: "none"
+								})
+							}
+						})
+					}
+					else{
+						uni.hideLoading();
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+				
+			},
+			timeCount(){
+				const that = this;
 				that.hasSendCode = true;
 				var interval = setInterval(() => {
 					--that.codeSecond
@@ -51,9 +90,9 @@
 				}, 60000)
 			},
 			next(){
-				let that = this;
+				const that = this;
 				uni.navigateTo({
-					url:'./setPassword'
+					url:'./setPassword?code='+that.code+'&mobile='+that.mobile
 				})
 			}
 		}

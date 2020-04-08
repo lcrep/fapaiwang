@@ -222,10 +222,6 @@
 </script>
 
 <style>
-	.backIocn {
-		line-height: 68rpx;
-	}
-
 	.goodsBox {
 		padding: 0 30rpx;
 	}

@@ -185,8 +185,8 @@
 				}
 			},
 			itemTap() {
-				uni.navigateTo({
-					url: "goodsDetail"
+				this.$Router.push({
+					path:"/pages/home/goodsDetail"
 				})
 			},
 			onReachBottom() {
@@ -194,38 +194,30 @@
 			},
 			search(res) {
 				let that = this;
-				uni.navigateTo({
-					url: './searchDetail?text=' + that.searchVal,
+				that.$Router.push({
+					path:"/pages/home/searchDetail",
+					query:{
+						text:that.searchVal
+					}
 				})
 				uni.hideKeyboard();
 			},
 			gotoAreaHousing(){
-				uni.navigateTo({
-					url: './areaHousing'
+				this.$Router.push({
+					path:"/pages/home/areaHousing",
+					query:{
+						aDs:"11122",
+						fds:12321,
+						vcds:"dsads"
+					}
 				})
 			},
 			gotoLeakHousing(){
-				uni.navigateTo({
-					url: './leakHousing'
+				this.$Router.push({
+					path:"/pages/home/leakHousing"
 				})
 			}
-			// login() {
-			// 	const that = this;
-			// 	this.$api.login({
-			// 		mobile: "13871174385",
-			// 		password: "123123"
-			// 	}).then(res => {
-			// 		uni.showToast({
-			// 			title: res.data.msg,
-			// 			icon: "success"
-			// 		})
-			// 	}).catch(error => {
-			// 		uni.showToast({
-			// 			title: res.data.msg,
-			// 			icon: "none"
-			// 		})
-			// 	})
-			// }
+			
 		}
 	}
 </script>

@@ -1,38 +1,46 @@
-const request = {}
-let token = "";
 
+import store from '../store'
+const request = {}
+let accessToken ="";
 uni.getStorage({
-	key: 'token',
+	key: 'userInfo',
 	success: function(res) {
-		token = res.data
+		accessToken = res.data.accessToken
 	}
 });
 
 request.globalRequest = (url, method, data) => {
+	console.log("accessToken："+accessToken);
 	return uni.request({
 		url:  url,
 		method,
-		data: JSON.stringify(Object.assign(data,baseParam)),
+		data:{
+			"param":data
+		},
 		dataType: 'json',
 		header: {
-				// 'Token': token,
+				'AccessToken': accessToken,
 				'Accept': 'application/json',
 				'Content-Type': 'application/json', //自定义请求头信息
 			}
 	}).then(res => {
-		if (res[1].data.status && res[1].data.code == 200) {
-			return res[1]
+		if (res[1].statusCode && res[1].statusCode == 200) {
+			return res[1].data
 		} else {
-			throw res[1].data
+			throw res[1]
 		}
 	}).catch(parmas => {
-		switch (parmas.code) {
+		switch (parmas.statusCode) {
 			case 401:
 				uni.clearStorageSync()
+				uni.showToast({
+					title: "服务器异常，请稍后再试",
+					icon: 'none'
+				})
 				break
 			default:
 				uni.showToast({
-					title: parmas.message,
+					title: "服务器异常，请稍后再试",
 					icon: 'none'
 				})
 				return Promise.reject()

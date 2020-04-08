@@ -12,6 +12,7 @@ const home = [
 	  name: 'searchDetail',
 	    meta: {
 	        title: '搜索',
+			needLogin:true
 	    },
 	},
 	{
@@ -19,18 +20,20 @@ const home = [
 	  name: 'goodsDetail',
 	    meta: {
 	        title: '拍品详情页',
+			needLogin:true
 	    },
 	},
 	{
 	  path: '/pages/home/areaHousing',
-	  name: 'goodsDetail',
+	  name: 'areaHousing',
 	    meta: {
 	        title: '区域选房',
+			needLogin:true
 	    },
 	},
 	{
 	  path: '/pages/home/leakHousing',
-	  name: 'goodsDetail',
+	  name: 'leakHousing',
 	    meta: {
 	        title: '捡漏必看',
 	    },

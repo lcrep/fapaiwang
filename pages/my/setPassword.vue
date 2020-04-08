@@ -14,7 +14,8 @@
 					<text class="uni-icon" :class="[!showPassword2 ? 'uni-eye-active' : '']" @click="changePassword2">&#xe568;</text>
 				</view>
 				<button type="warn" :disabled="password1.length>0&&password2.length>0?false:true" class="loginBtn" @click="register">注册</button>
-				<view class="loginTips">注册即表示您已同意<text class="loginTipsText" @click="gotoAgreement1">《服务协议》</text>和<text @click="gotoAgreement1"  class="loginTipsText">《隐私协议》</text></view>
+				<view class="loginTips">注册即表示您已同意<text class="loginTipsText" @click="gotoAgreement1">《服务协议》</text>和<text @click="gotoAgreement1"
+					 class="loginTipsText">《隐私协议》</text></view>
 			</view>
 
 		</view>
@@ -25,11 +26,18 @@
 	export default {
 		data() {
 			return {
-				showPassword1:true,
-				showPassword2:true,
+				showPassword1: true,
+				showPassword2: true,
 				password1: '',
-				password2: ''
+				password2: '',
+				code: "",
+				mobile: ""
 			}
+		},
+		onLoad(options) {
+			let that = this;
+			that.code = options.code;
+			that.mobile = options.mobile;
 		},
 		methods: {
 			changePassword1() {
@@ -40,26 +48,52 @@
 				let that = this;
 				that.showPassword2 = !that.showPassword2;
 			},
-			register(){
+			register() {
 				let that = this;
-				if(!that.$utils.common.passwordTest.test(that.password1)){
+				if (!that.$utils.common.passwordTest.test(that.password1)) {
 					uni.showToast({
-						title:'密码需是8-14位数字或字母',
-						icon:'none'
+						title: '密码需是8-14位数字或字母',
+						icon: 'none'
 					})
-				}
-				else if(that.password1!=that.password2){
+				} else if (that.password1 != that.password2) {
 					uni.showToast({
-						title:'两次密码不一致',
-						icon:'none'
+						title: '两次密码不一致',
+						icon: 'none'
 					})
-				}
-				else{
-					uni.showToast({
-						title:'注册成功',
-						icon:'success'
+				} else {
+					uni.showLoading({
+						title:"请稍等..."
 					})
+					var param = {
+						mobile: that.mobile,
+						password: that.password1,
+						repassword: that.password2,
+						vcode: that.code
+					}
+					that.$api.bymobile(param).then(res => {
+						uni.hideLoading();
+						if (res.success) {
+							uni.showToast({
+								title: '注册成功',
+								icon: 'success'
+							})
+							setTimeout(()=>{
+								uni.navigateBack({
+									delta: 2
+								})
+							},2000)
+						} else {
+							uni.showToast({
+								title: res.message,
+								icon: "none"
+							})
+						}	
+					})
+
 				}
+			},
+			gotoAgreement1(){
+				
 			}
 		}
 	}
@@ -111,9 +145,11 @@
 		color: #999999;
 		padding-right: 20rpx;
 	}
+
 	.uni-eye-active {
 		color: #FC6B5A;
 	}
+
 	.inputBox {
 		padding: 70rpx 0;
 	}
@@ -132,5 +168,4 @@
 	.loginTips .loginTipsText {
 		color: #f44a33;
 	}
-
 </style>

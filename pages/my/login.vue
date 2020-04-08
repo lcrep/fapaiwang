@@ -5,15 +5,15 @@
 			<view class="inputBox">
 				<view class="uni-input-wrapper inputItem">
 					<view class="inputLabel">+86</view>
-					<input class="uni-input" maxlength="11" placeholder="请输入手机号码/账号" type="number" v-model="login.mobile" />
-					<uni-icons color="#999999" class="uni-icon"  size="18" type="clear"  v-if="login.mobile.length>0" @click="clearIcon" />
+					<input class="uni-input" maxlength="11" placeholder="请输入手机号码/账号" type="number" v-model="loginInfo.mobile" />
+					<uni-icons color="#999999" class="uni-icon"  size="18" type="clear"  v-if="loginInfo.mobile.length>0" @click="clearIcon" />
 				</view>
 				<view class="uni-input-wrapper inputItem">
 					<view class="inputLabel">密码</view>
-					<input class="uni-input" placeholder="请输入密码" :password="showPassword" v-model="login.password" />
+					<input class="uni-input" placeholder="请输入密码" :password="showPassword" v-model="loginInfo.password" />
 					<text class="uni-icon" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
 				</view>
-				<button type="warn" :disabled="login.mobile.length>0&&login.password.length>0?false:true" class="loginBtn" @click="toLogin">登
+				<button type="warn" :disabled="loginInfo.mobile.length>0&&loginInfo.password.length>0?false:true" class="loginBtn" @click="toLogin">登
 					录</button>
 				<view class="forgetPwdBox">
 					<view class="forgetPwd" @click="forgetPassword">忘记密码？</view>
@@ -33,15 +33,23 @@
 </template>
 
 <script>
+	import {
+	    mapMutations
+	} from 'vuex';
 	export default {
 		data() {
 			return {
 				showPassword: true,
-				login: {
+				loginInfo: {
 					mobile: "",
 					password: ""
-				}
+				},
+				path:"",
 			}
+		},
+		onLoad(options) {
+			let that = this;
+			that.path = that.$Route.query.path;
 		},
 		methods: {
 			changePassword() {
@@ -50,12 +58,12 @@
 			},
 			clearIcon() {
 				let that = this;
-				that.login.mobile = "";
+				that.loginInfo.mobile = "";
 			},
 			toLogin() {
 				let that = this;
-				let mobile = that.login.mobile;
-				let password = that.login.password;
+				let mobile = that.loginInfo.mobile;
+				let password = that.loginInfo.password;
 				if (!that.$utils.common.phoneTest.test(mobile)) {
 					uni.showToast({
 						title: "请输入正确的手机号",
@@ -67,11 +75,55 @@
 						icon: "none"
 					})
 				} else {
-					uni.showToast({
-						title: "登录成功",
-						icon: "success"
-					})
+						uni.showLoading({
+							title:"登录中..."
+						})
+						
+						that.$api.login(that.loginInfo).then(res => {
+							uni.hideLoading();
+							if(res.success){
+								
+								uni.showToast({
+									title: "登录成功",
+									icon: "success"
+								})
+								var storageData={
+									accessToken:res.datas.accessToken,
+									mobile:that.loginInfo.mobile
+								}
+								that.login(storageData);
+								that.goback();
+							}
+							else{
+								uni.showToast({
+									title: res.message,
+									icon: "none"
+								})
+							}
+							
+						})
+					
 				}
+			},
+			goback(){
+				const that = this;
+					
+				if(that.path){
+						var path = decodeURIComponent(that.path);
+						this.$Router.replace({
+							path:decodeURIComponent(that.path).split("?")[0],
+							query:that.$utils.getParameter(path)
+						})
+				}
+				else{
+					this.$Router.back(1)
+				}
+			},
+			forgetPassword(){
+				let that = this;
+				uni.navigateTo({
+					url:'./forgetpwd'
+				})
 			},
 			register(){
 				let that = this;
@@ -84,6 +136,7 @@
 					delta:1
 				})
 			},
+			  ...mapMutations(['login'])
 		}
 	}
 </script>

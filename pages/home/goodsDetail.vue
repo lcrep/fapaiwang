@@ -360,10 +360,10 @@
 					that.descIsOpen4 = !that.descIsOpen4;
 				}
 				setTimeout(() => {
-					that.getBoxheight(`.tabBox1`, (rects) => {
+					that.$utils.getBoxheight(`.tabBox1`, (rects) => {
 						that.scrollTag3 = rects[0].height + that.scrollTag2;
 					});
-					that.getBoxheight(`.tabBox2`, (rects) => {
+					that.$utils.getBoxheight(`.tabBox2`, (rects) => {
 						that.scrollTag4 = rects[0].height + that.scrollTag3;
 					});
 				}, 500)
@@ -389,31 +389,28 @@
 				let that = this;
 				that.offerIsOpen = !that.offerIsOpen;
 				setTimeout(() => {
-					that.getBoxheight(`.tabBox2`, (rects) => {
+					that.$utils.getBoxheight(`.tabBox2`, (rects) => {
 						that.scrollTag4 = rects[0].height + that.scrollTag3;
 					});
 				}, 500)
 			},
-			getBoxheight: function(className, callback) {
-				var that = this;
-				uni.createSelectorQuery().selectAll(className).boundingClientRect(callback).exec()
-			}
+			
 		},
 		mounted() {
 			let that = this;
-			that.getBoxheight(`.goodsStatusBox`, (rects) => {
+			that.$utils.getBoxheight(`.goodsStatusBox`, (rects) => {
 				that.goodsStatusBoxHeight = rects[0].height;
 			});
-			that.getBoxheight(`.swiper`, (rects) => {
+			that.$utils.getBoxheight(`.swiper`, (rects) => {
 				that.scrollTag1 = rects[0].height;
 			});
-			that.getBoxheight(`.headerBox`, (rects) => {
+			that.$utils.getBoxheight(`.headerBox`, (rects) => {
 				that.scrollTag2 = rects[0].height - that.goodsStatusBoxHeight;
 			});
-			that.getBoxheight(`.tabBox1`, (rects) => {
+			that.$utils.getBoxheight(`.tabBox1`, (rects) => {
 				that.scrollTag3 = rects[0].height + that.scrollTag2;
 			});
-			that.getBoxheight(`.tabBox2`, (rects) => {
+			that.$utils.getBoxheight(`.tabBox2`, (rects) => {
 				that.scrollTag4 = rects[0].height + that.scrollTag3;
 
 			});
