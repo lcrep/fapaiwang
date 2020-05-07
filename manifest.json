@@ -1,5 +1,5 @@
 {
-    "name" : "fapaiwang",
+    "name" : "拍品服务",
     "appid" : "",
     "description" : "",
     "versionName" : "1.0.0",
@@ -38,13 +38,19 @@
             },
             "ios" : {},
             "sdkConfigs" : {}
+        },
+        "uniStatistics" : {
+            "enable" : false
         }
     },
     "quickapp" : {},
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wx0c235921d9b0848b",
         "setting" : {
             "urlCheck" : true
+        },
+        "uniStatistics" : {
+            "enable" : false
         }
     },
     "h5" : {
@@ -53,14 +59,40 @@
             "disableHostCheck" : true,
             "proxy" : {
                 "/proxy" : {
-                    "target" : "http://c18l443134.51mypc.cn",
+                    "target" : "https://mobile.fpw365.cn",
                     "changeOrigin" : true,
                     "secure" : false,
-					 "pathRewrite": {
-					          "^/proxy": ""
-					        }
+                    "pathRewrite" : {
+                        "^/proxy" : ""
+                    }
                 }
             }
+        },
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "uniStatistics" : {
+        "enable" : false
+    },
+    "mp-alipay" : {
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "mp-baidu" : {
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "mp-qq" : {
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "mp-toutiao" : {
+        "uniStatistics" : {
+            "enable" : false
         }
     }
 }

@@ -31,13 +31,15 @@
 				password1: '',
 				password2: '',
 				code: "",
-				mobile: ""
+				mobile: "",
+				invitationCode:""
 			}
 		},
 		onLoad(options) {
 			let that = this;
 			that.code = options.code;
 			that.mobile = options.mobile;
+			that.invitationCode = options.invitationCode;
 		},
 		methods: {
 			changePassword1() {
@@ -68,7 +70,8 @@
 						mobile: that.mobile,
 						password: that.password1,
 						repassword: that.password2,
-						vcode: that.code
+						vcode: that.code,
+						invitationCode:that.invitationCode
 					}
 					that.$api.bymobile(param).then(res => {
 						uni.hideLoading();
@@ -78,9 +81,7 @@
 								icon: 'success'
 							})
 							setTimeout(()=>{
-								uni.navigateBack({
-									delta: 2
-								})
+								that.$Router.back(2);
 							},2000)
 						} else {
 							uni.showToast({

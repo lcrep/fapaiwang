@@ -1,30 +1,30 @@
 <template>
 	<view>
-		<view class="recordDetailPage">
+		<view class="recordDetailPage"  v-if="result!=null">
 			<view class="recordPersonBox">
-				<view class="recordPersonInfo">
-					<image class="recordPersonPic" mode="aspectFill" src="../../../../static/images/defaultUserPic.png"></image>
+				<view class="recordPersonInfo" >
+					<image class="recordPersonPic" mode="aspectFill" :src="result.headImgUrl"></image>
 					<view class="recordPersonInfoCont">
-						<view class="recordPersonName">安吉Aj拉的客户</view>
+						<view class="recordPersonName">{{result.createEmployeeName}}的客户</view>
 						<view class="recordTime">
-							2020-12-12 10:12
+							{{result.createTime}}
 						</view>
 					</view>
 				</view>
-				<view class="nowStatus">当前进展</view>
+				<view class="nowStatus" @click="gotoProcess(result.visitId)">当前进展</view>
 			</view>
 			<view class="recordDetailCont">
 				<view class="recordDetailItem">
 					<view class="detailHead">
 						<view class="detailHeadTitle">
-							客户姓名:
+							客户姓名: 
 						</view>
 						<view class="detailHeadLink">
 							<text class="detailHeadLinkLabel">查看个人主页</text>
 							<uni-icons type="arrowright" size="18" color="#B8B8B8"></uni-icons>
 						</view>
 					</view>
-					<view class="recordDetailText">真实姓名(为空则不显示) 13532554422</view>
+					<view class="recordDetailText">{{result.customerName}}  {{result.customerMobile}}</view>
 				</view>
 				<view class="recordDetailItem">
 					<view class="detailHead">
@@ -36,7 +36,7 @@
 							<uni-icons type="arrowright" size="18" color="#B8B8B8"></uni-icons>
 						</view>
 					</view>
-					<view class="recordDetailText">武汉市江夏区经济开发区江夏大道东武汉市江夏区经济开发区江夏大道东武汉市江夏区经济开发区江夏大道东可完全显示</view>
+					<view class="recordDetailText">{{result.houseName}}</view>
 				</view>
 				<view class="recordDetailItem">
 					<view class="detailHead">
@@ -44,7 +44,7 @@
 							沟通自评分:
 						</view>
 					</view>
-					<uni-rate class="recordDetailRate" :margin="8" active-color="#d03b41" :is-fill="false" color="#dadada" :disabled="true" :size="18" :value="4" />
+					<uni-rate class="recordDetailRate" :margin="8" active-color="#d03b41" :is-fill="false" color="#dadada" :disabled="true" :size="18" v-bind:value="result.evaluateScore" />
 				</view>
 				<view class="recordDetailItem">
 					<view class="detailHead">
@@ -52,7 +52,7 @@
 							日志描述:
 						</view>	
 					</view>
-					<view class="recordDetailText">武汉市江夏区经济开发区江夏大道东武汉市江夏区经济开发区江夏大道东武汉市江夏区经济开发区江夏大道东可完全显示</view>
+					<view class="recordDetailText">{{result.content}}</view>
 				</view>
 			</view>
 		</view>
@@ -64,17 +64,46 @@
 </template>
 
 <script>
-	import uniRate from '@/components/uni-rate/uni-rate.vue'
 	export default {
-		components: {
-			uniRate
-		},
 		data() {
 			return {
-
+				id:"",
+				result:null
 			}
 		},
+		onLoad(options) {
+			let that = this;
+			that.id = options.id;			
+			that.detail(options.id);
+		},
 		methods: {
+			detail(id){
+				const that = this;
+				let param = {
+					id: id
+				}
+				that.$api.dailyDetail(param).then(res => {
+					if (res.success) {
+						let result = res.datas;
+						result.headImgUrl = result.headImgUrl?result.headImgUrl:"../../../../static/images/defaultUserPic.png";
+						that.result = result;
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			gotoProcess(id){
+				const that =this;
+				that.$Router.push({
+					path:"/pages/my/manageNavs/process/index",
+					query:{
+						id:id
+					}
+				})
+			},
 			gotoAdd(){
 				const that =this;
 				that.$Router.push({

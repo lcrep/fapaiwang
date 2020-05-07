@@ -4,10 +4,23 @@ body {
 	color: #222222;
 }
 
+.whiteBg {
+	background-color: #FFFFFF;
+}
+
 .nowrap {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+.endBox {
+	width: 750rpx;
+	height: 100rpx;
+	line-height: 100rpx;
+	text-align: center;
+	color: #DDDDDD;
+	font-size: 24rpx;
 }
 
 .title-contents {
@@ -96,13 +109,38 @@ body {
 	margin-left: 10rpx;
 	font-size: 28rpx;
 }
-.searchCancel{
-	padding:0 10rpx;
+
+.searchCancel {
+	padding: 0 10rpx;
 	line-height: 68rpx;
 	font-size: 28rpx;
 	color: #555555;
 	margin-left: 20rpx;
 }
+
+.noData {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	height: 80vh;
+	text-align: center;
+}
+
+.noData .noDataImg {
+	width: 200rpx;
+	height: 196rpx;
+}
+
+.noData .noDataText {
+	font-size: 24rpx;
+	color: #B8B8B8;
+	display: block;
+	line-height: 34rpx;
+	margin-top: 20rpx;
+}
+
 /* 房源item */
 
 .goodsItem {
@@ -216,6 +254,14 @@ body {
 	font-size: 24rpx;
 }
 
+.goodsStatus1 .statusName {
+	background: #00BBC3;
+}
+
+.goodsStatus3 .statusName {
+	background: #999999;
+}
+
 .goodsTime {
 	flex: 1;
 	padding-left: 20rpx;
@@ -301,6 +347,10 @@ body {
 	line-height: 80rpx;
 }
 
+.pickerValue.noBirData {
+	color: #CECECE;
+}
+
 .pickerArrowIcon {
 	position: absolute;
 	right: 0;
@@ -315,12 +365,14 @@ body {
 	padding: 30rpx 30rpx 70rpx 30rpx;
 	position: relative;
 }
-.paySignItem{
+
+.paySignItem {
 	border-bottom: 20rpx solid #F7F7F7;
 	background-color: #fff;
 	padding: 0 0 70rpx 0;
 	position: relative;
 }
+
 .recordLookAll {
 	position: absolute;
 	left: 0;
@@ -371,13 +423,15 @@ body {
 	text-align: center;
 	font-size: 24rpx;
 }
-.recordPersonBox .czBtns{
+
+.recordPersonBox .czBtns {
 	width: 152rpx;
 	height: 56rpx;
 	display: flex;
 	align-items: center;
 }
-.recordPersonBox .czBtns .czIcons{
+
+.recordPersonBox .czBtns .czIcons {
 	width: 56rpx;
 	height: 56rpx;
 	margin-left: 20rpx;
@@ -407,40 +461,49 @@ body {
 	line-height: 24rpx;
 	margin-top: 10rpx;
 }
-.pagTagHead{
+
+.pagTagHead {
 	height: 96rpx;
 	display: flex;
 	align-items: center;
 	padding: 21rpx;
 	box-sizing: border-box;
 }
-.pagTagHead.payStatus1{
+
+.pagTagHead.payStatus1 {
 	background-color: #444444;
 }
-.pagTagHead.payStatus2{
+
+.pagTagHead.payStatus2 {
 	background-color: #00BBC3;
 }
+
 .recordItem .recordInfoBox {
 	padding-top: 30rpx;
 }
-.paySignItem .recordInfoBox{
+
+.paySignItem .recordInfoBox {
 	padding: 30rpx 30rpx 0 30rpx;
 }
-.pagTagHeadLeft{
-	flex:1;
+
+.pagTagHeadLeft {
+	flex: 1;
 	display: flex;
 	align-items: center;
 }
-.pagTagHeadLeft .pagStatusImg{
+
+.pagTagHeadLeft .pagStatusImg {
 	width: 56rpx;
 	height: 56rpx;
 	margin-right: 16rpx;
 }
-.pagTagHeadLeft .pagStatusText{
+
+.pagTagHeadLeft .pagStatusText {
 	font-size: 28rpx;
 	color: #FFFFFF;
 }
-.pagTagHeadBtn{
+
+.pagTagHeadBtn {
 	background-color: #CD282F;
 	color: #FFFFFF;
 	width: 156rpx;
@@ -450,10 +513,12 @@ body {
 	font-size: 24rpx;
 	border-radius: 6rpx;
 }
-.pagTagHeadBtn.status2{
+
+.pagTagHeadBtn.status2 {
 	background-color: #FFFFFF !important;
 	color: #00BBC3 !important;
 }
+
 .recordInfoItem {
 	font-size: 26rpx;
 	color: #555555;
@@ -478,7 +543,7 @@ body {
 	right: 0;
 	background-color: #fff;
 	z-index: 888;
-	box-shadow: 0 9px 11px 0 rgba(229, 229, 229, 0.60);
+	box-shadow: 0 9px 11px 0 rgba(229, 229, 229, 0.3);
 }
 
 /* #ifdef H5 */
@@ -501,7 +566,8 @@ body {
 	position: relative;
 	margin-right: 40rpx;
 }
-.recordFixHeader .clearDatePicker{
+
+.recordFixHeader .clearDatePicker {
 	position: absolute;
 	height: 50rpx;
 	bottom: -50rpx;
@@ -513,11 +579,13 @@ body {
 	align-items: center;
 	box-sizing: border-box;
 }
-.recordFixHeader .clearDatePicker .clearText{
+
+.recordFixHeader .clearDatePicker .clearText {
 	flex: 1;
 	font-size: 26rpx;
 	color: #FFFFFF;
 }
+
 .screenItem {
 	display: flex;
 	align-items: center;
@@ -610,11 +678,11 @@ body {
 
 .recordDetailRate {
 	display: block;
-	margin-top: 40rpx;
+	margin-top: 20rpx;
 }
 
 .recordAddItem {
-	margin-bottom: 30rpx;
+	margin-bottom: 40rpx;
 }
 
 .recordAddItemHead {
@@ -648,6 +716,19 @@ body {
 	color: #CECECE;
 }
 
+.processLabelBox {
+	display: flex;
+	align-items: center;
+}
+
+.processLabelBox_R {
+	flex: 1;
+}
+
+.processLabelBox_R .recordDetailRate {
+	margin-top: 0;
+}
+
 .hasSeled {
 	color: #555555;
 }
@@ -674,4 +755,93 @@ body {
 	height: 92rpx;
 	line-height: 92rpx;
 	font-size: 32rpx;
+}
+
+.annexUploadBtn {
+	width: 140rpx;
+	height: 54rpx;
+	text-align: center;
+	line-height: 54rpx;
+	color: #CD282F;
+	border: 1rpx solid #CD282F;
+	margin-top: 30rpx;
+	margin-left: 30rpx;
+	font-size: 24rpx;
+}
+
+.annexItemBox {
+	position: relative;
+	width: 142rpx;
+	height: 56rpx;
+}
+
+.annexList {
+	margin-left: 30rpx;
+	margin-top: 30rpx;
+	padding-bottom: 10rpx;
+}
+
+.annexItem {
+	margin-bottom: 30rpx;
+}
+
+.annexItem:last-child {
+	margin-bottom: 0;
+}
+
+.lookAnnex {
+	display: inline-block;
+	line-height: 54rpx;
+	width: 140rpx;
+	height: 54rpx;
+	border: 1rpx solid #555555;
+	font-size: 24rpx;
+	color: #555555;
+	text-align: center;
+	margin-top: 10rpx;
+}
+
+.annexItem .lookAnnex {
+	margin-top: 0;
+}
+
+.clearAnnex {
+	position: absolute;
+	top: -14rpx;
+	right: -14rpx;
+}
+
+.annexTitle {
+	margin-top: 20rpx;
+}
+
+.annexTitleLabel {
+	font-size: 30rpx;
+	color: #555555;
+	line-height: 60rpx;
+}
+
+.annexTitle .uni-input {
+	font-size: 30rpx;
+}
+.visitResBox{
+	flex: 1;
+	padding-left: 28rpx;
+	overflow: hidden;
+}
+.visitResInfo1{
+	line-height: 42rpx;
+}
+.customerName{
+	margin-right: 20rpx;
+	line-height: 42rpx;
+}
+.heiAuto{
+	height: auto;
+}
+.tipPoint{
+	width: 16rpx;
+	height: 16rpx;
+	background-color: #CD282F;
+	border-radius: 50%;
 }

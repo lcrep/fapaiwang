@@ -14,92 +14,174 @@
 					公告标题:
 					<text class="needTag">*</text>
 				</view>
-				<textarea class="recordAddTextArea" auto-height @blur="bindTextAreaBlur" placeholder="请输入内容 (50字以内)" maxlength="50" placeholder-style="font-size:30rpx;color:#cecece" />
+				<textarea class="recordAddTextArea" auto-height @blur="bindTextAreaBlur1" placeholder="请输入内容 (50字以内)" maxlength="50" placeholder-style="font-size:30rpx;color:#cecece" />
+			</view>
+			<view class="recordAddItem">
+				<view class="recordAddItemHead">
+					开始时间:
+					<text class="needTag">*</text>
+				</view>
+				<view class="uni-input pickerView" @click="datePicker1">
+					<view class="pickerValue" v-if="startTime">{{startTime}}</view>
+					<view class="pickerValue noBirData" v-else>请选择公告开始时间</view>
+					<uni-icons class="pickerArrowIcon" color="#cccccc" type="arrowright"></uni-icons>
+				</view>
+			</view>
+			<view class="recordAddItem">
+				<view class="recordAddItemHead">
+					结束时间:
+					<text class="needTag">*</text>
+				</view>
+				<view class="uni-input pickerView" @click="datePicker2">
+					<view class="pickerValue" v-if="endTime">{{endTime}}</view>
+					<view class="pickerValue noBirData" v-else>请选择公告结束时间</view>
+					<uni-icons class="pickerArrowIcon" color="#cccccc" type="arrowright"></uni-icons>
+				</view>
 			</view>
 			<view class="recordAddItem">
 				<view class="recordAddItemHead">
 					公告内容:
 					<text class="needTag">*</text>
 				</view>
-				<textarea class="recordAddTextArea" @blur="bindTextAreaBlur" placeholder="请输入内容 (500字以内)" maxlength="500" placeholder-style="font-size:30rpx;color:#cecece" />
+				<textarea class="recordAddTextArea" @blur="bindTextAreaBlur2" placeholder="请输入内容 (500字以内)" maxlength="500" placeholder-style="font-size:30rpx;color:#cecece" />
 			</view>
+			
 		</view>
 		<view class="recordAddSubBtn">
 			<button type="warn" class="subBtn" @click="sub">发布公告</button>
 		</view>
+		<w-picker
+			mode="date" 
+			startDate="2017" 
+			endYear="2030"
+			:current="true"
+			fields="second"
+			@confirm="onConfirm1" 
+			ref="date1" 
+			themeColor="#f00"
+		></w-picker>
+		<w-picker
+			mode="date" 
+			startDate="2017" 
+			endYear="2030"
+			:current="true"
+			fields="second"
+			@confirm="onConfirm2" 
+			ref="date2" 
+			themeColor="#f00"
+		></w-picker>
 	</view>
 </template>
 
 <script>
+	import wPicker from "@/components/w-picker/w-picker.vue";
 	export default {
+		components:{
+		       wPicker
+		   },
 		data() {
 			return {
-				userId:0,
-				userName:"请选择客户",
-				goodsId:0,
-				goodsName:"请选择房源",
-				salesmanId:0,
-				salesman:"业务员姓名",
-				textArea:"",
+				title:"",
+				content:"",
+				startTime:"",
+				endTime:"",
 				hasclickback:false
 			}
-		},
-		onShow() {
-			console.log(this.userId)
 		},
 		methods: {
 			getRate(e){
 				const that = this;
 				that.rate=e.value
 			},
-			bindTextAreaBlur(e){
-				this.textArea=e.detail.value;
+			bindTextAreaBlur1(e){
+				this.title=e.detail.value;
+			},
+			bindTextAreaBlur2(e){
+				this.content=e.detail.value;
+			},
+			datePicker1: function(e) {
+				const that = this;
+				that.$refs.date1.show();
+			},
+			onConfirm1(val){
+				const that= this;
+				that.startTime=val.obj.year+'-'+val.obj.month+'-'+val.obj.day+' '+val.obj.hour+':'+val.obj.minute+':'+val.obj.second;
+			},
+			datePicker2: function(e) {
+				const that = this;
+				that.$refs.date2.show();
+			},
+			onConfirm2(val){
+				const that= this;
+				that.endTime=val.obj.year+'-'+val.obj.month+'-'+val.obj.day+' '+val.obj.hour+':'+val.obj.minute+':'+val.obj.second;
 			},
 			sub(){
 				const that = this;
 				setTimeout(()=>{
-					if(that.userId==0||that.goodsId==0||that.salesmanId==0||that.textArea==""){
+					if(that.title==""||that.content==""||that.startTime==""||that.endTime==""){
 						uni.showToast({
 							title:"请输入必填内容",
 							icon:"none"
 						})
 					}
+					else if(new Date(that.startTime)>=new Date(that.endTime)){
+						uni.showToast({
+							title:"结束时间必须大于开始时间",
+							icon:"none"
+						})
+					}
 					else{
-						uni.showModal({
-							content: "日志提交后将不可再次修改，确认提交日志？",
-							confirmText: "确认提交",
-							cancelText: "取消",
-							success: function (res) {
-								if (res.confirm) {
-									uni.showToast({
-										title:"提交成功"
-									})
-								} else if (res.cancel) {
-									
-								}	
-							}
-						});	
+						that.subAdd();
 						
 					}
 				},100)
 			},
-			searchCustomer(){
+			subAdd(){
 				const that = this;
-				that.$Router.push({
-					path:"/pages/my/manageNavs/searchCustomer"
+				
+				let param = {
+					title: that.title,
+					content: that.content,
+					startTime:that.startTime,
+					endTime:that.endTime
+				}
+				that.$api.noticeAdd(param).then(res => {
+					if (res.success) {
+						uni.showToast({
+							title:"发布成功"
+						})
+						setTimeout(()=>{
+							that.$Router.back(1);
+						},1000)	
+						var pages = getCurrentPages(); //当前页
+						var beforePage = pages[pages.length - 2].route; //上个页面
+						if(beforePage=="pages/my/manageNavs/notice/list"){
+							that.prevPageReload();
+						}	
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
 				})
+				
 			},
-			searchHouse(){
-				const that = this;
-				that.$Router.push({
-					path:"/pages/my/manageNavs/searchHouse"
-				})
+			prevPageReload(){
+				var pages = getCurrentPages(); //当前页
+				var beforePage = pages[pages.length - 2]; //上个页面
+				// #ifdef H5
+				beforePage.reload()
+				// #endif
+				// #ifndef H5
+				beforePage.onLoad()
+				// #endif
 			},
 			back(){
 				const that = this;
-				if(that.userId!=0||that.goodsId!=0||that.salesmanId!=0||that.textArea!=""){	
+				if(that.title!=""||that.content!=""||that.startTime!=""||that.endTime!=""){	
 					uni.showModal({
-							content: "退出后将不保留已编辑的内容，确认退出日志编辑？",
+							content: "退出后将不保留已编辑的内容，确认退出编辑？",
 							confirmText: "继续编辑",
 							cancelText: "退出",
 						success: function (res) {
@@ -133,5 +215,8 @@
 }
 .title-contents .backIocn {
 	line-height: 60rpx;
+}
+.pickerView{
+	padding-left: 30rpx;
 }
 </style>

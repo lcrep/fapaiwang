@@ -3,10 +3,21 @@ page {
 	font-size: 28rpx;
 	color: #222222;
 }
+.whiteBg {
+	background-color: #FFFFFF;
+}
 .nowrap {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+.endBox {
+	width: 750rpx;
+	height: 100rpx;
+	line-height: 100rpx;
+	text-align: center;
+	color: #DDDDDD;
+	font-size: 24rpx;
 }
 .title-contents {
 	height: calc(25px + 108rpx);
@@ -35,7 +46,8 @@ page {
 	-webkit-flex-direction: row;
 	        flex-direction: row;
 	padding: 20rpx;
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 	z-index: 9999;
 }
 .title-contents .backIocn {
@@ -104,12 +116,41 @@ page {
 	margin-left: 10rpx;
 	font-size: 28rpx;
 }
-.searchCancel{
-	padding:0 10rpx;
+.searchCancel {
+	padding: 0 10rpx;
 	line-height: 68rpx;
 	font-size: 28rpx;
 	color: #555555;
 	margin-left: 20rpx;
+}
+.noData {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	        justify-content: center;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: column;
+	        flex-direction: column;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+	width: 100%;
+	height: 80vh;
+	text-align: center;
+}
+.noData .noDataImg {
+	width: 200rpx;
+	height: 196rpx;
+}
+.noData .noDataText {
+	font-size: 24rpx;
+	color: #B8B8B8;
+	display: block;
+	line-height: 34rpx;
+	margin-top: 20rpx;
 }
 /* 房源item */
 .goodsItem {
@@ -219,6 +260,12 @@ page {
 	color: #ffffff;
 	font-size: 24rpx;
 }
+.goodsStatus1 .statusName {
+	background: #00BBC3;
+}
+.goodsStatus3 .statusName {
+	background: #999999;
+}
 .goodsTime {
 	-webkit-box-flex: 1;
 	-webkit-flex: 1;
@@ -304,6 +351,9 @@ page {
 .pickerValue {
 	line-height: 80rpx;
 }
+.pickerValue.noBirData {
+	color: #CECECE;
+}
 .pickerArrowIcon {
 	position: absolute;
 	right: 0;
@@ -318,7 +368,7 @@ page {
 	padding: 30rpx 30rpx 70rpx 30rpx;
 	position: relative;
 }
-.paySignItem{
+.paySignItem {
 	border-bottom: 20rpx solid #F7F7F7;
 	background-color: #fff;
 	padding: 0 0 70rpx 0;
@@ -335,6 +385,7 @@ page {
 	font-size: 24rpx;
 	line-height: 50rpx;
 	text-align: center;
+	background: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, .3)), color-stop(rgba(255, 255, 255, 1)), color-stop(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 1)));
 	background: -webkit-linear-gradient(top, rgba(255, 255, 255, .3), rgba(255, 255, 255, 1), rgba(255, 255, 255, 1), rgba(255, 255, 255, 1));
 	background: linear-gradient(to bottom, rgba(255, 255, 255, .3), rgba(255, 255, 255, 1), rgba(255, 255, 255, 1), rgba(255, 255, 255, 1));
 }
@@ -384,7 +435,7 @@ page {
 	text-align: center;
 	font-size: 24rpx;
 }
-.recordPersonBox .czBtns{
+.recordPersonBox .czBtns {
 	width: 152rpx;
 	height: 56rpx;
 	display: -webkit-box;
@@ -394,7 +445,7 @@ page {
 	-webkit-align-items: center;
 	        align-items: center;
 }
-.recordPersonBox .czBtns .czIcons{
+.recordPersonBox .czBtns .czIcons {
 	width: 56rpx;
 	height: 56rpx;
 	margin-left: 20rpx;
@@ -422,7 +473,7 @@ page {
 	line-height: 24rpx;
 	margin-top: 10rpx;
 }
-.pagTagHead{
+.pagTagHead {
 	height: 96rpx;
 	display: -webkit-box;
 	display: -webkit-flex;
@@ -431,24 +482,25 @@ page {
 	-webkit-align-items: center;
 	        align-items: center;
 	padding: 21rpx;
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 }
-.pagTagHead.payStatus1{
+.pagTagHead.payStatus1 {
 	background-color: #444444;
 }
-.pagTagHead.payStatus2{
+.pagTagHead.payStatus2 {
 	background-color: #00BBC3;
 }
 .recordItem .recordInfoBox {
 	padding-top: 30rpx;
 }
-.paySignItem .recordInfoBox{
+.paySignItem .recordInfoBox {
 	padding: 30rpx 30rpx 0 30rpx;
 }
-.pagTagHeadLeft{
-	-webkit-box-flex:1;
-	-webkit-flex:1;
-	        flex:1;
+.pagTagHeadLeft {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	        flex: 1;
 	display: -webkit-box;
 	display: -webkit-flex;
 	display: flex;
@@ -456,16 +508,16 @@ page {
 	-webkit-align-items: center;
 	        align-items: center;
 }
-.pagTagHeadLeft .pagStatusImg{
+.pagTagHeadLeft .pagStatusImg {
 	width: 56rpx;
 	height: 56rpx;
 	margin-right: 16rpx;
 }
-.pagTagHeadLeft .pagStatusText{
+.pagTagHeadLeft .pagStatusText {
 	font-size: 28rpx;
 	color: #FFFFFF;
 }
-.pagTagHeadBtn{
+.pagTagHeadBtn {
 	background-color: #CD282F;
 	color: #FFFFFF;
 	width: 156rpx;
@@ -475,7 +527,7 @@ page {
 	font-size: 24rpx;
 	border-radius: 6rpx;
 }
-.pagTagHeadBtn.status2{
+.pagTagHeadBtn.status2 {
 	background-color: #FFFFFF !important;
 	color: #00BBC3 !important;
 }
@@ -496,15 +548,16 @@ page {
 	width: 750rpx;
 	height: 160rpx;
 	padding: 10rpx 30rpx 0 30rpx;
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 	position: fixed;
 	top: 0;
 	right: 0;
 	background-color: #fff;
 	z-index: 888;
-	box-shadow: 0 9px 11px 0 rgba(229, 229, 229, 0.60);
+	-webkit-box-shadow: 0 9px 11px 0 rgba(229, 229, 229, 0.3);
+	        box-shadow: 0 9px 11px 0 rgba(229, 229, 229, 0.3);
 }
-
 .commRecordList {
 	padding-top: 200rpx;
 }
@@ -519,7 +572,7 @@ page {
 	position: relative;
 	margin-right: 40rpx;
 }
-.recordFixHeader .clearDatePicker{
+.recordFixHeader .clearDatePicker {
 	position: absolute;
 	height: 50rpx;
 	bottom: -50rpx;
@@ -533,9 +586,10 @@ page {
 	-webkit-box-align: center;
 	-webkit-align-items: center;
 	        align-items: center;
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 }
-.recordFixHeader .clearDatePicker .clearText{
+.recordFixHeader .clearDatePicker .clearText {
 	-webkit-box-flex: 1;
 	-webkit-flex: 1;
 	        flex: 1;
@@ -584,7 +638,8 @@ page {
 	right: 50rpx;
 	z-index: 887;
 	background-color: #d03b41;
-	box-shadow: 6rpx 6rpx 20rpx 6rpx rgba(113, 133, 133, .3);
+	-webkit-box-shadow: 6rpx 6rpx 20rpx 6rpx rgba(113, 133, 133, .3);
+	        box-shadow: 6rpx 6rpx 20rpx 6rpx rgba(113, 133, 133, .3);
 	display: -webkit-box;
 	display: -webkit-flex;
 	display: flex;
@@ -656,10 +711,10 @@ page {
 }
 .recordDetailRate {
 	display: block;
-	margin-top: 40rpx;
+	margin-top: 20rpx;
 }
 .recordAddItem {
-	margin-bottom: 30rpx;
+	margin-bottom: 40rpx;
 }
 .recordAddItemHead {
 	position: relative;
@@ -696,6 +751,22 @@ page {
 	font-size: 30rpx;
 	color: #CECECE;
 }
+.processLabelBox {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+}
+.processLabelBox_R {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	        flex: 1;
+}
+.processLabelBox_R .recordDetailRate {
+	margin-top: 0;
+}
 .hasSeled {
 	color: #555555;
 }
@@ -706,7 +777,8 @@ page {
 .recordAddSubBtn {
 	width: 100%;
 	height: 130rpx;
-	box-shadow: 0 -4rpx 10rpx 8rpx rgba(112, 112, 112, .1);
+	-webkit-box-shadow: 0 -4rpx 10rpx 8rpx rgba(112, 112, 112, .1);
+	        box-shadow: 0 -4rpx 10rpx 8rpx rgba(112, 112, 112, .1);
 	position: fixed;
 	left: 0;
 	bottom: 0;
@@ -726,6 +798,91 @@ page {
 	line-height: 92rpx;
 	font-size: 32rpx;
 }
+.annexUploadBtn {
+	width: 140rpx;
+	height: 54rpx;
+	text-align: center;
+	line-height: 54rpx;
+	color: #CD282F;
+	border: 1rpx solid #CD282F;
+	margin-top: 30rpx;
+	margin-left: 30rpx;
+	font-size: 24rpx;
+}
+.annexItemBox {
+	position: relative;
+	width: 142rpx;
+	height: 56rpx;
+}
+.annexList {
+	margin-left: 30rpx;
+	margin-top: 30rpx;
+	padding-bottom: 10rpx;
+}
+.annexItem {
+	margin-bottom: 30rpx;
+}
+.annexItem:last-child {
+	margin-bottom: 0;
+}
+.lookAnnex {
+	display: inline-block;
+	line-height: 54rpx;
+	width: 140rpx;
+	height: 54rpx;
+	border: 1rpx solid #555555;
+	font-size: 24rpx;
+	color: #555555;
+	text-align: center;
+	margin-top: 10rpx;
+}
+.annexItem .lookAnnex {
+	margin-top: 0;
+}
+.clearAnnex {
+	position: absolute;
+	top: -14rpx;
+	right: -14rpx;
+}
+.annexTitle {
+	margin-top: 20rpx;
+}
+.annexTitleLabel {
+	font-size: 30rpx;
+	color: #555555;
+	line-height: 60rpx;
+}
+.annexTitle .uni-input {
+	font-size: 30rpx;
+}
+.visitResBox{
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	        flex: 1;
+	padding-left: 28rpx;
+	overflow: hidden;
+}
+.visitResInfo1{
+	line-height: 42rpx;
+}
+.customerName{
+	margin-right: 20rpx;
+	line-height: 42rpx;
+}
+.heiAuto{
+	height: auto;
+}
+.tipPoint{
+	width: 16rpx;
+	height: 16rpx;
+	background-color: #CD282F;
+	border-radius: 50%;
+}
 /* 解决头条小程序组件内引入字体不生效的问题 */
+
+
+
+
+
 
 

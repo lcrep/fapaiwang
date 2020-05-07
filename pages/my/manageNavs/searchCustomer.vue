@@ -3,48 +3,30 @@
 		<view class="headerBox">
 			<view class="searchInputBox">
 				<uni-icons color="#f44a33" class="searchIcon" size="18" type="search" />
-				<input class="uni-input" placeholder="搜索标的物名称" confirm-type="search" @input="constantlySearch" placeholder-style="font-size:26rpx;color:#B8B8B8;"
-				 v-model="searchVal" @confirm="search" />
+				<input class="uni-input" placeholder="搜索客户手机号" confirm-type="search" @input="constantlySearch" @confirm="confirmSearch" maxlength="20" placeholder-style="font-size:26rpx;color:#B8B8B8;"
+				 v-model="searchVal"  />
 			</view>
 			<view class="searchCancel" v-if="searchVal.length>0" @click="searchCancel">
 				取消
 			</view>
 		</view>
-		<view class="customerList">
-			<view class="customerItem" @click="selectItem(1,'abc')">
-				<image src="../../../static/images/defaultUserPic.png" class="customerImg"></image>
+		<view class="customerList" v-if="total!==0">
+			<view class="customerItem" v-for="(item,index) in userList" :key="index"  @click="selectItem(item.id,item.nickname)">
+				<image :src="item.headImgUrl" class="customerImg"></image>
 				<view class="customerInfo">
 					<view class="customerNickName">
-						Angela123
+						{{item.nickname}}
 					</view>
 					<view class="customerName">
-						姓名：李某某
+						姓名：{{item.realName}}
 					</view>
 				</view>
 			</view>
-			<view class="customerItem">
-				<image src="../../../static/images/defaultUserPic.png" class="customerImg"></image>
-				<view class="customerInfo">
-					<view class="customerNickName">
-						Angela123
-					</view>
-					<view class="customerName">
-						姓名：李某某
-					</view>
-				</view>
-			</view>
-			<view class="customerItem">
-				<image src="../../../static/images/defaultUserPic.png" class="customerImg"></image>
-				<view class="customerInfo">
-					<view class="customerNickName">
-						Angela123
-					</view>
-					<view class="customerName">
-						姓名：李某某
-					</view>
-				</view>
-			</view>
-			<uni-load-more iconType="snow" :status="status" />
+			<uni-load-more iconType="snow" :status="loadStatus" />
+		</view>
+		<view class="noData" v-else>
+			<image src="../../../static/images/noRecord.png" mode="" class="noDataImg"></image>
+			<text class="noDataText">暂无数据</text>
 		</view>
 	</view>
 </template>
@@ -53,23 +35,81 @@
 	export default {
 		data() {
 			return {
-				status: "loading",
+				loadStatus: 'more',
 				searchVal: '',
 				canSearch: true,
-				timer: null
+				timer: null,
+				userList:[],
+				pageNum:1,
+				total:"",
+				pageSize:15
 			}
 		},
+		created() {
+			const that = this;
+			that.appuserSearch(1);
+		},
+		
 		methods: {
+			appuserSearch(startPage){
+				const that = this;
+				let param = {
+					username: that.searchVal,
+					startPage:startPage,
+					pageSize:that.pageSize
+				}
+				that.loadStatus="loading";
+				that.$api.appuserSearch(param).then(res => {
+					if (res.success) {
+						let result = res.datas.rows;
+						that.total=res.datas.total;
+						for(var i in result){
+							result[i].headImgUrl = result[i].headImgUrl?result[i].headImgUrl:'../../../static/images/defaultUserPic.png';
+							result[i].nickname=result[i].nickname?result[i].nickname:result[i].username;
+							that.userList.push(result[i]);
+						}
+						let total = res.datas.total;
+						let totalPageNum =Math.ceil(total/that.pageSize);
+						if(parseInt(totalPageNum)>parseInt(that.pageNum)){
+							that.pageNum++;
+							that.loadStatus="more";
+						}
+						else{
+							that.loadStatus="noMore";
+						}
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			
 			searchCancel() {
 				this.searchVal = "";
+				const that = this;
+				that.clearList();
+				that.appuserSearch(1);
 				uni.hideKeyboard();
 			},
 			constantlySearch(e) {
 				const that = this;
 				clearTimeout(that.timer);
 				that.timer = setTimeout(function() {
-					console.log(e.detail.value)
+					// that.appuserSearch();
 				}, 800);
+			},
+			confirmSearch(){
+				const that = this;
+				that.clearList();
+				that.appuserSearch(1);
+			},
+			clearList(){
+				const that = this;
+				that.pageNum=1;
+				that.total="";
+				that.userList=[];
 			},
 			selectItem(id, name) {
 				const that = this;
@@ -80,19 +120,28 @@
 				}
 				if (prevPage) {
 					// #ifdef H5
-					prevPage.userId = id;
-					prevPage.userName = name
+					prevPage.customerId = id;
+					prevPage.customerName = name
 					// #endif
 					// #ifdef APP-PLUS || MP-WEIXIN
-					prevPage.$vm.userId = id;
-					prevPage.$vm.userName = name
+					prevPage.$vm.customerId = id;
+					prevPage.$vm.customerName = name
 					// #endif
 				}
 				setTimeout(() => {
 					that.$Router.back(1);
 				}, 100)
 			}
-		}
+		},
+		onReachBottom() {
+			const that = this;
+			if(that.loadStatus=="noMore"){
+				return;
+			}
+			else if(that.pageNum!=1){
+				that.appuserSearch(that.pageNum);
+			}
+		},
 	}
 </script>
 
@@ -110,6 +159,7 @@
 		box-sizing: border-box;
 		background: #FFFFFF;
 		display: flex;
+		z-index: 100;
 	}
 
 	.headerBox .searchInputBox {

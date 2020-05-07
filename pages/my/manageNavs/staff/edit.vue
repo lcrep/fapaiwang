@@ -1,46 +1,47 @@
 <template>
 	<view class="content">
-		<view class="userPicBox" @click="updatePic">
-			<image :src="userPic" class="userPicImg"></image>
-			<image src="../../../../static/images/camera.png" class="cameraIcon"></image>
-		</view>
 		<view class="userForm">
-			<view class="formHead">
-				基本资料
-			</view>
 			<view class="formContent">
+				<view class="formInputBox">
+					<view class="formInputLabel">
+						姓名
+					</view>
+					<view class="formInputCont">
+						<input class="uni-input" placeholder-style="color:#CECECE" placeholder="请输入" maxlength="6" type="text" v-model="userData.name">
+					</view>
+				</view>
 				<view class="formInputBox">
 					<view class="formInputLabel">
 						手机号
 					</view>
 					<view class="formInputCont">
-						<input class="uni-input" disabled="disabled" value="13432432423" type="text">
+						<input class="uni-input" placeholder-style="color:#CECECE" disabled  value="" type="text" v-model="userData.mobile" placeholder="请输入手机号" maxlength="11">
 					</view>
 				</view>
-				<view class="formInputBox">
-					<view class="formInputLabel">
-						昵称
-					</view>
-					<view class="formInputCont">
-						<input class="uni-input" placeholder-style="color:#CECECE" placeholder="请输入(限12字以内)" maxlength="12" type="text">
-					</view>
-				</view>
-				<view class="formInputBox">
-					<view class="formInputLabel">
-						真实姓名
-					</view>
-					<view class="formInputCont">
-						<input class="uni-input" placeholder-style="color:#CECECE" placeholder="请输入" maxlength="6" type="text">
-					</view>
-				</view>
+				
 				<view class="formInputBox">
 					<view class="formInputLabel">
 						性别
 					</view>
 					<view class="formInputCont">
-						<picker @change="sexPicker" :range="sexArr" >
+						<picker @change="sexPicker" :range="sexArr">
 							<view class="uni-input pickerView">
-								<view class="pickerValue">{{sex}}</view>
+								<view class="pickerValue"  v-if="genderText">{{genderText}}</view>
+								<view class="pickerValue noBirData" v-else>请选择性别</view>
+								<uni-icons class="pickerArrowIcon" color="#cccccc" type="arrowright"></uni-icons>
+							</view>
+						</picker>
+					</view>
+				</view>
+				<view class="formInputBox">
+					<view class="formInputLabel">
+						员工类型
+					</view>
+					<view class="formInputCont">
+						<picker @change="typePicker" :range="typeArr">
+							<view class="uni-input pickerView">
+								<view class="pickerValue"  v-if="typeText">{{typeText}}</view>
+								<view class="pickerValue noBirData" v-else>请选择员工类型</view>
 								<uni-icons class="pickerArrowIcon" color="#cccccc" type="arrowright"></uni-icons>
 							</view>
 						</picker>
@@ -53,85 +54,192 @@
 					<view class="formInputCont">
 						<picker mode="date" @change="datePicker">
 							<view class="uni-input pickerView">
-								<view class="pickerValue">{{date}}</view>
+								<view class="pickerValue" v-if="userData.birthday">{{userData.birthday}}</view>
+								<view class="pickerValue noBirData" v-else>请选择生日</view>
 								<uni-icons class="pickerArrowIcon" color="#cccccc" type="arrowright"></uni-icons>
 							</view>
 						</picker>
 					</view>
 				</view>
+				
 				<view class="formInputBox">
 					<view class="formInputLabel">
-						推荐码
+						地址
 					</view>
 					<view class="formInputCont">
-						<input class="uni-input" placeholder-style="color:#CECECE" placeholder="请输入" maxlength="10" type="text">
+						<input class="uni-input" placeholder-style="color:#CECECE" placeholder="请输入" maxlength="50" type="text" v-model="userData.address">
 					</view>
 				</view>
-				<view class="formInputBox">
-					<view class="formInputLabel">
-						邮箱
-					</view>
-					<view class="formInputCont">
-						<input class="uni-input" placeholder-style="color:#CECECE" placeholder="请输入" maxlength="30" type="text">
-					</view>
-				</view>
-				<view class="formInputBox">
-					<view class="formInputLabel">
-						身份证
-					</view>
-					<view class="formInputCont">
-						<input class="uni-input" placeholder-style="color:#CECECE" placeholder="请输入" maxlength="18" type="text">
-					</view>
-				</view>
-				  <button type="warn" class="subBtn" @click="updateData">保存</button>
+				
+				<button type="warn" class="subBtn" @click="employeeUpdate">保存</button>
 			</view>
 		</view>
 
 
-		<avatar @upload="picUpload" ref="avatar">
-		</avatar>
+		
 	</view>
 </template>
 
 <script>
-	import avatar from "@/components/yq-avatar/yq-avatar.vue";
 	export default {
-		components: {
-			avatar
+
+		onLoad(options) {
+			const that = this;
+			that.id = options.id;
+			that.getDetail(options.id);
 		},
 		data() {
 			return {
-				userPic: "../../../../static/images/defaultPic.png",
-				sex: "保密",
-				sexArr: ["保密",
+				userData: {
+					name:"",
+					mobile:"",
+					gender:"",
+					employeeType:"",
+					birthday:"",
+					address:""
+				},
+				genderText:"",
+				typeText:"",
+				noUserPic: false,
+				noInvitationCode: false,
+				sexArr: [
 					"男", "女"
 				],
-				date: "1999-01-01",
+				typeArr: [
+					 "普通员工","管理层"
+				],
 			}
 		},
 		methods: {
-			updatePic() {
-				this.$refs.avatar.fChooseImg(0, {
-					selWidth: "300upx",
-					selHeight: "300upx",
-					expWidth: '260upx',
-					expHeight: '260upx'
-				});
-			},
-			picUpload(rsp) {
-				this.userPic = rsp.path;
-			},
+			
 			sexPicker: function(e) {
 				const that = this;
-				that.sex = that.sexArr[e.detail.value];
+				that.userData.gender=e.detail.value;
+				that.genderText = that.sexArr[e.detail.value];
+			},
+			typePicker: function(e) {
+				const that = this;
+				that.userData.employeeType=e.detail.value;
+				that.typeText = that.typeArr[e.detail.value];
 			},
 			datePicker: function(e) {
 				const that = this;
-				that.date = e.detail.value;
+				that.userData.birthday = e.detail.value;
 			},
-			updateData(){
-				
-			}
+			getDetail(id){
+				const that = this;
+				let param = {
+					id:id
+				}
+				uni.showLoading({
+					title:"加载中..."
+				})
+				that.$api.employeeDetail(param).then(res => {
+					if (res.success) {
+						
+						let result = res.datas;
+						that.userData.name = result.name;
+						that.userData.mobile = result.mobile;
+						that.userData.gender = result.gender;
+						that.userData.employeeType = result.employeeType;
+						that.userData.birthday = result.birthday;
+						that.userData.address = result.address;
+						if(result.gender==0){
+							that.genderText = "保密";
+						}
+						else if(result.gender==1){
+							that.genderText = "男";
+						}
+						else if(result.gender==2){
+							that.genderText = "女";
+						}
+						if(result.employeeType==1){
+							that.typeText = "管理层";
+						}
+						else if(result.employeeType==0){
+							that.typeText = "普通员工";
+						}
+						that.result = result;
+						uni.hideLoading();
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			employeeUpdate() {
+				const that = this;
+				var serverData = {};
+				serverData.id=that.id;
+				serverData.name = that.userData.name;
+				serverData.gender = that.userData.gender;
+				serverData.birthday = that.userData.birthday;
+				serverData.employeeType = that.userData.employeeType;
+				serverData.address = that.userData.address;
+				if (that.userData.name=="") {
+					uni.showToast({
+						title: "请输入姓名",
+						icon: "none"
+					})
+					return;
+				} else if (that.userData.gender==="") {
+					uni.showToast({
+						title: "请选择性别",
+						icon: "none"
+					})
+					return;
+				} else if (that.userData.employeeType==="") {
+					uni.showToast({
+						title: "请选择员工类型",
+						icon: "none"
+					})
+					return;
+				} else if (that.userData.address=="") {
+					uni.showToast({
+						title: "请输入地址",
+						icon: "none"
+					})
+					return;
+				} else {
+					uni.showLoading({
+						title: "请稍等...",
+						mask: true
+					})
+					let param = serverData;
+					that.$api.employeeUpdate(param).then(res => {
+						if (res.success) {
+							uni.showToast({
+								title: "添加成功"
+							})
+						
+							setTimeout(()=>{
+								that.$Router.back(1);
+							},1000)	
+							var pages = getCurrentPages(); //当前页
+							var beforePage = pages[pages.length - 2].route; //上个页面
+							that.prevPageReload();
+
+						} else {
+							uni.showToast({
+								title: res.message,
+								icon: "none"
+							})
+						}
+					})
+				}
+			},
+			prevPageReload(){
+				var pages = getCurrentPages(); //当前页
+				var beforePage = pages[pages.length - 2]; //上个页面
+				// #ifdef H5
+				beforePage.reload()
+				// #endif
+				// #ifndef H5
+				beforePage.onLoad()
+				// #endif
+			},
 		}
 	}
 </script>
@@ -171,10 +279,11 @@
 		padding: 28rpx 0;
 		line-height: 40rpx;
 	}
-	.subBtn{
+
+	.subBtn {
 		height: 92rpx;
 		font-size: 32rpx;
 		margin: 30rpx;
-		
+
 	}
 </style>

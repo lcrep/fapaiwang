@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="recordDetailPage">
+		<view class="recordDetailPage" v-if="result!=null">
 			<view class="recordDetailCont">
 				<view class="recordDetailItem">
 					<view class="detailHead">
@@ -12,19 +12,19 @@
 							<uni-icons type="arrowright" size="18" color="#B8B8B8"></uni-icons>
 						</view>
 					</view>
-					<view class="recordDetailText">真实姓名(为空则不显示) 13532554422</view>
+					<view class="recordDetailText">{{result.username}} {{result.mobile}}</view>
 				</view>
 				<view class="recordDetailItem">
 					<view class="detailHead">
 						<view class="detailHeadTitle">
 							意向房源:
 						</view>
-						<view class="detailHeadLink">
+						<view class="detailHeadLink" @click="gotoHouse(result.paimaiId,result.houseSource)">
 							<text class="detailHeadLinkLabel">查看房源详情</text>
 							<uni-icons type="arrowright" size="18" color="#B8B8B8"></uni-icons>
 						</view>
 					</view>
-					<view class="recordDetailText">武汉市江夏区经济开发区江夏大道东武汉市江夏区经济开发区江夏大道东武汉市江夏区经济开发区江夏大道东可完全显示</view>
+					<view class="recordDetailText">{{result.houseName}}</view>
 				</view>
 				<view class="recordDetailItem">
 					<view class="detailHead">
@@ -32,23 +32,24 @@
 							业务员:
 						</view>
 					</view>
-					<view class="recordDetailText">份额分</view>
+					<view class="recordDetailText">{{result.employeeName}}</view>
 				</view>
 				<view class="recordDetailItem">
 					<view class="detailHead">
 						<view class="detailHeadTitle">
-							付款状态:
+							参拍状态:
 						</view>
 					</view>
-					<view class="recordDetailText">已付款</view>
+					<view class="recordDetailText" v-if="result.completeState==0">未完成</view>
+					<view class="recordDetailText" v-else>已完成</view>
 				</view>
-				<view class="recordDetailItem">
+				<view class="recordDetailItem" v-if="result.completeState==1">
 					<view class="detailHead">
 						<view class="detailHeadTitle">
-							付款完成时间:
+							参拍完成时间:
 						</view>
 					</view>
-					<view class="recordDetailText">2020年3月29日 12:20</view>
+					<view class="recordDetailText">{{result.completeTime}}</view>
 				</view>
 				<view class="recordDetailItem">
 					<view class="detailHead">
@@ -56,7 +57,7 @@
 							备注:
 						</view>	
 					</view>
-					<view class="recordDetailText">武汉市江夏区经济开发区江夏大道东武汉市江夏区经济开发区江夏大道东武汉市江夏区经济开发区江夏大道东可完全显示</view>
+					<view class="recordDetailText">{{result.memo}}</view>
 				</view>
 			</view>
 		</view>
@@ -67,11 +68,42 @@
 	export default {
 		data() {
 			return {
-
+				id:"",
+				result:null
 			}
 		},
+		onLoad(options) {
+			this.id = options.id;
+			this.getDetail(options.id);
+		},
 		methods: {
-			
+			getDetail(id){
+				const that = this;
+				let param = {
+					id: id
+				}
+				that.$api.auctionDetail(param).then(res => {
+					if (res.success) {
+						let result = res.datas;
+						result.memo = result.memo ?result.memo :"暂无";
+						that.result = res.datas;
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			gotoHouse(paimaiId,houseSource) {
+				this.$Router.push({
+					path: "/pages/home/goodsDetail",
+					query:{
+						paimaiId:paimaiId,
+						houseSource:houseSource
+					}
+				})
+			},
 		}
 	}
 </script>

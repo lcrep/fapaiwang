@@ -11,8 +11,7 @@ const home = [
 	  path: '/pages/home/searchDetail',
 	  name: 'searchDetail',
 	    meta: {
-	        title: '搜索',
-			needLogin:true
+	        title: '搜索'
 	    },
 	},
 	{
@@ -27,8 +26,7 @@ const home = [
 	  path: '/pages/home/areaHousing',
 	  name: 'areaHousing',
 	    meta: {
-	        title: '区域选房',
-			needLogin:true
+	        title: '区域选房'
 	    },
 	},
 	{
@@ -36,6 +34,13 @@ const home = [
 	  name: 'leakHousing',
 	    meta: {
 	        title: '捡漏必看',
+	    },
+	},
+	{
+	  path: '/pages/home/areaPrice',
+	  name: 'areaPrice',
+	    meta: {
+	        title: '区域均价',
 	    },
 	},
     {

@@ -2,15 +2,10 @@
 import store from '../store'
 const request = {}
 let accessToken ="";
-uni.getStorage({
-	key: 'userInfo',
-	success: function(res) {
-		accessToken = res.data.accessToken
-	}
-});
+
 
 request.globalRequest = (url, method, data) => {
-	console.log("accessToken："+accessToken);
+	accessToken =uni.getStorageSync('userInfo').accessToken;
 	return uni.request({
 		url:  url,
 		method,
@@ -48,5 +43,6 @@ request.globalRequest = (url, method, data) => {
 		}
 	})
 }
+
 
 export default request

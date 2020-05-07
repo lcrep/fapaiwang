@@ -1,38 +1,67 @@
 <template>
-	<view class="container">
+	<view class="container" v-if="hasLoad">
 		<view class="headerBox">
 			<swiper class="swiper" circular indicator-dots="true" indicator-color="rgba(255,255,255,0.80)"
 			 indicator-active-color="rgba(205,40,47,0.80)">
-				<swiper-item v-for="(item, index) in bannerList" :key="index" class="swiper-item">
+				<swiper-item v-for="(item, index) in bannerList" :key="index" class="swiper-item" @click="previewImage(index)">
 					<view class="swiperBox">
-						<image :src="item.url" class="bannerBg" mode="aspectFill"></image>
+						<image :src="item" class="bannerBg" mode="aspectFill"></image>
 						<view class="shardowBox"></view>
-						<image :src="item.url" class="bannerImg" mode="aspectFit" />
+						<image :src="item" class="bannerImg" mode="aspectFit" />
 					</view>
 				</swiper-item>
 			</swiper>
 			<view :class="{'goodsStatusBox':true,'statusFixed':scrollTop>scrollTag1}">
-				<text class="statusLabel statusLabel1">即将开始</text>
-				<text class="statusTime">3月29日 10点结束</text>
+				<block v-if="houseInfo.paimaiStatus==1">
+					<text class="statusLabel statusLabel1">即将开始</text>
+					<text class="statusTime">{{houseInfo.timeText}}开始</text>
+				</block>
+				<block  v-else-if="houseInfo.paimaiStatus==2">
+					<text class="statusLabel statusLabel2">拍卖中</text>
+					<text class="statusTime">{{houseInfo.timeText}}结束</text>
+				</block>
+				<block  v-else>
+					<text class="statusLabel statusLabel3">已结束</text>
+					<text class="statusTime">{{houseInfo.timeText}}结束</text>
+				</block>
 			</view>
 			<view class="goodsStatusBox" v-if="scrollTop>scrollTag1"></view>
 			<view class="goodsInfoBox">
-				<view class="goodsTitle">一拍丨武汉市江夏区经济开发区江夏大道东创业农庄丰泽苑二期一拍丨武汉市江夏区经济开发区江夏大道东创业农庄丰泽苑二期A02-1206标题超2行显</view>
+				<view class="goodsTitle">{{houseInfo.paimaiTimesText}} | {{houseInfo.title}}</view>
 				<view class="goodsJoinNum">
-					2人报名<text>/</text>35人围观
+					{{houseDetail.accessEnsureNum}}人报名<text>/</text>{{houseDetail.accessNum}}人围观
 				</view>
-				<view class="startingPrice">
+				<view class="startingPrice" v-if="houseInfo.paimaiStatus==1">
 					<text class="priceLabel">起拍价</text>
 					<view class="priceCont">
 						<text class="priceSymbol">￥</text>
-						<text class="amount">30000000.33</text>
+						<text class="amount">{{houseInfo.currentPriceText}}</text>
+					</view>
+				</view>
+				<view class="startingPrice inPrice"  v-else-if="houseInfo.paimaiStatus==2">
+					<text class="priceLabel">当前价</text>
+					<view class="priceCont">
+						<text class="priceSymbol">￥</text>
+						<text class="amount">{{houseInfo.currentPriceText}}</text>
+					</view>
+				</view>
+				<view class="startingPrice endPrice"  v-else>
+					<text class="priceLabel">成交价</text>
+					<view class="priceCont">
+						<block v-if="houseDetail.dealPriceText">
+						<text class="priceSymbol">￥</text>
+						<text class="amount">{{houseDetail.dealPriceText}}</text>
+						</block>
+						<block v-else>
+							<text class="noPrice">无</text>
+						</block>
 					</view>
 				</view>
 				<view class="assPrice">
-					<text class="priceLabel">起拍价</text>
+					<text class="priceLabel">评估价</text>
 					<view class="priceCont">
 						<text class="priceSymbol">￥</text>
-						<text class="amount">30000000.33</text>
+						<text class="amount">{{houseInfo.assessmentPriceText}}</text>
 					</view>
 				</view>
 			</view>
@@ -42,7 +71,7 @@
 				详情
 			</view>
 			<view :class="{'navItem':true,'navActive':navCurrent==1}" @click="navTap(1)">
-				出价记录（1）
+				出价记录（{{recordList.length}}）
 			</view>
 			<view :class="{'navItem':true,'navActive':navCurrent==2}" @click="navTap(2)">
 				同区域成交
@@ -52,21 +81,18 @@
 		<view class="navs" v-if="scrollTop>scrollTag2"></view>
 		<view class="tabBox1">
 			<view class="infoList">
-				<view class="infoListItem">起拍价：￥3,209,399.22</view>
-				<view class="infoListItem">加价幅度：￥20000</view>
-				<view class="infoListItem">折扣率：8.9折</view>
-				<view class="infoListItem">保证金：￥20930</view>
-				<view class="infoListItem">房源类型：住宅</view>
+				<view class="infoListItem">起拍价：￥{{houseInfo.currentPriceText}}</view>
+				<view class="infoListItem">加价幅度：￥{{houseDetail.priceLowerOffset}}</view>
+				<view class="infoListItem">折扣率：{{houseInfo.discount}}折</view>
+				<view class="infoListItem">保证金：￥{{houseDetail.ensurePrice}}</view>
+				<view class="infoListItem">房源类型：{{houseInfo.houseTypeText}}</view>
 			</view>
 			<view class="descBox">
 				<view class="descBoxHead">
 					竞买须知
 				</view>
 				<view :class="{'descBoxCont':true,'descIsOpen':descIsOpen1}">
-					<text>隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规</text>
-					<text>隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规</text>
-					<text>隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规</text>
-					<text>隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规</text>
+				   <rich-text :nodes="houseDetail.notice"></rich-text>
 					<view class="descLookAll" @click="openDesc(1)" v-if="!descIsOpen1">
 						<text class="descLookAllText">查看全部</text>
 						<uni-icons class="arrowIcons" color="#b8b8b8" size="18" type="arrowdown" />
@@ -82,10 +108,7 @@
 					竞买公告
 				</view>
 				<view :class="{'descBoxCont':true,'descIsOpen':descIsOpen2}">
-					<text>隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规</text>
-					<text>隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规</text>
-					<text>隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规</text>
-					<text>隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规隔热服务服务费违法违规</text>
+					<rich-text :nodes="houseDetail.announcement"></rich-text>
 					<view class="descLookAll" @click="openDesc(2)" v-if="!descIsOpen2">
 						<text class="descLookAllText">查看全部</text>
 						<uni-icons class="arrowIcons" color="#b8b8b8" size="18" type="arrowdown" />
@@ -96,12 +119,28 @@
 					</view>
 				</view>
 			</view>
+			<view class="descBox">
+				<view class="descBoxHead">
+					标的物详情
+				</view>
+				<view :class="{'descBoxCont':true,'descIsOpen':descIsOpen3}">
+					<rich-text :nodes="houseDetail.productDescription"></rich-text>
+					<view class="descLookAll" @click="openDesc(3)" v-if="!descIsOpen2">
+						<text class="descLookAllText">查看全部</text>
+						<uni-icons class="arrowIcons" color="#b8b8b8" size="18" type="arrowdown" />
+					</view>
+					<view class="descLookAll" @click="openDesc(3)" v-else>
+						<text class="descLookAllText">收起</text>
+						<uni-icons class="arrowIcons" color="#b8b8b8" size="18" type="arrowup" />
+					</view>
+				</view>
+			</view>
 		</view>
 		<view class="tabBox2">
 			<view class="tabBoxHead">
-				出价记录（0）
+				出价记录（{{recordList.length}}）
 			</view>
-			<view :class="{'priceTable':true,'descIsOpen':offerIsOpen}">
+			<view :class="{'priceTable':true,'descIsOpen':offerIsOpen}"  v-if="recordList.length>0">
 				<view class="tableHead">
 					<view class="td td1">状态</view>
 					<view class="td td2">竞买号</view>
@@ -109,118 +148,31 @@
 					<view class="td td4">同区域成交</view>
 				</view>
 				<view class="tableCont">
-					<view class="tr">
-						<view class="td td1">
-							<view class="offerStatus isFirst">
+					<view class="tr" v-for="(item,index) in recordList" :key="index">
+						<view class="td td1" v-if="index==0">
+							<view class="offerStatus isFirst" v-if="houseInfo.paimaiStatus==2">
 								领先
 							</view>
+							<view class="offerStatus hasDone" v-else-if="houseInfo.paimaiStatus==3">
+								成交
+							</view>
 						</view>
-						<view class="td td2">
-							1214314313
-						</view>
-						<view class="td td3">
-							￥343223424.32
-						</view>
-						<view class="td td4">
-							09:30:12 2020.03.05
-						</view>
-					</view>
-					<view class="tr">
-						<view class="td td1">
+						<view class="td td1" v-else>
 							<view class="offerStatus">
 								出局
 							</view>
 						</view>
 						<view class="td td2">
-							1214314313
+							{{item.bidName}}
 						</view>
 						<view class="td td3">
-							￥343223424.32
+							￥{{item.bidPrice}}
 						</view>
 						<view class="td td4">
-							09:30:12 2020.03.05
+							{{item.bidTime}}
 						</view>
 					</view>
-					<view class="tr">
-						<view class="td td1">
-							<view class="offerStatus">
-								出局
-							</view>
-						</view>
-						<view class="td td2">
-							1214314313
-						</view>
-						<view class="td td3">
-							￥343223424.32
-						</view>
-						<view class="td td4">
-							09:30:12 2020.03.05
-						</view>
-					</view>
-					<view class="tr">
-						<view class="td td1">
-							<view class="offerStatus">
-								出局
-							</view>
-						</view>
-						<view class="td td2">
-							1214314313
-						</view>
-						<view class="td td3">
-							￥343223424.32
-						</view>
-						<view class="td td4">
-							09:30:12 2020.03.05
-						</view>
-					</view>
-					<view class="tr">
-						<view class="td td1">
-							<view class="offerStatus">
-								出局
-							</view>
-						</view>
-						<view class="td td2">
-							1214314313
-						</view>
-						<view class="td td3">
-							￥343223424.32
-						</view>
-						<view class="td td4">
-							09:30:12 2020.03.05
-						</view>
-					</view>
-					<view class="tr">
-						<view class="td td1">
-							<view class="offerStatus">
-								出局
-							</view>
-						</view>
-						<view class="td td2">
-							1214314313
-						</view>
-						<view class="td td3">
-							￥343223424.32
-						</view>
-						<view class="td td4">
-							09:30:12 2020.03.05
-						</view>
-					</view>
-					<view class="tr">
-						<view class="td td1">
-							<view class="offerStatus">
-								出局
-							</view>
-						</view>
-						<view class="td td2">
-							1214314313
-						</view>
-						<view class="td td3">
-							￥343223424.32
-						</view>
-						<view class="td td4">
-							09:30:12 2020.03.05
-						</view>
-					</view>
+					
 				</view>
 				<view class="descLookAll" @click="openOffers" v-if="!offerIsOpen">
 					<text class="descLookAllText">查看全部</text>
@@ -231,71 +183,56 @@
 					<uni-icons class="arrowIcons" color="#b8b8b8" size="18" type="arrowup" />
 				</view>
 			</view>
+			<view class="noRecord" v-else>
+				<image src="../../static/images/noRecord.png" mode="widthFix" class="noRecordImg"></image>
+				<text class="noRecordText">暂无出价记录</text>
+			</view>
 		</view>
 		<view class="tabBox3">
 			<view class="tabBoxHead">
 				同区域历史成交
 			</view>
-			<view class="goodsList">
-				<view class="goodsItem">
+			<view class="goodsList"  v-if="total!==0">
+				<view class="goodsItem" v-for="(item,index) in dealList" :key="index"  @click="itemTap(item.paimaiId,item.houseSource)">
 					<view class="goodsPic">
-						<text class="goodsTag">一拍</text>
-						<image class="goodsImage" src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg" mode="aspectFill"></image>
+						<text class="goodsTag">{{item.paimaiTimesText}}</text>
+						<image class="goodsImage" :src="item.productImage" mode="aspectFill"></image>
 					</view>
 					<view class="goodsInfo">
-						<view class="goodsName">武汉市江夏区经济开发区江夏大道东创业农庄丰分分为</view>
-						<view class="goodsAddress nowrap">1次出价/江夏区经济开发区某某街道</view>
-						<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">333.22万</text><text class="discount">8.7折</text></view>
-						<view class="goodsStatus"><text class="statusName">拍卖中</text><text class="goodsTime">剩余15天20小时30分钟</text></view>
+						<view class="goodsName">{{item.title}}</view>
+						<view class="goodsAddress nowrap" v-if="item.paimaiStatus==1">次围观/{{item.title}}</view>
+						<view class="goodsAddress nowrap" v-else>{{item.bidCount}}次出价 / 江夏区</view>
+						<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">{{item.currentPriceText}}万</text>
+						<text  v-if="item.discount!=10" class="discount">{{item.discount}}折</text></view>
+						<view class="goodsStatus goodsStatus1" v-if="item.paimaiStatus==1"><text class="statusName">未开始</text><text class="goodsTime">{{item.timeText}}开始</text></view>
+						<view class="goodsStatus goodsStatus2" v-else-if="item.paimaiStatus==2"><text class="statusName">拍卖中</text><text class="goodsTime">{{item.timeText}}开始</text></view>
+						<view class="goodsStatus goodsStatus3" v-else><text class="statusName">已结束</text><text class="goodsTime">{{item.timeText}}结束</text></view>
 					</view>
 				</view>
-				<view class="goodsItem">
-					<view class="goodsPic">
-						<text class="goodsTag">一拍</text>
-						<image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg" mode="aspectFill"></image>
-					</view>
-					<view class="goodsInfo">
-						<view class="goodsName">武汉市江夏区经济开发区江夏大道东创业农庄丰分分为</view>
-						<view class="goodsAddress nowrap">1次出价/江夏区经济开发区某某街道</view>
-						<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">333.22万</text><text class="discount">8.7折</text></view>
-						<view class="goodsStatus"><text class="statusName">拍卖中</text><text class="goodsTime">剩余15天20小时30分钟</text></view>
-					</view>
+				<uni-load-more iconType="snow" :status="loadStatus" />
+			</view>
+			<view class="noRecord" v-else>
+				<image src="../../static/images/noRecord.png" mode="widthFix" class="noRecordImg"></image>
+				<text class="noRecordText">暂无同区域历史成交</text>
+			</view>
+		</view>
+		<view class="consultantBtns">
+			<view class="consultBtn" v-if="collected==0" @click="collectHouse">
+				<image class="consultBtnImg" src="../../static/images/follow.png"></image>
+				<view class="consultBtnText">
+					收藏
 				</view>
-				<view class="goodsItem">
-					<view class="goodsPic">
-						<text class="goodsTag">一拍</text>
-						<image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg" mode="aspectFill"></image>
-					</view>
-					<view class="goodsInfo">
-						<view class="goodsName">武汉市江夏区经济开发区江夏大道东创业农庄丰分分为</view>
-						<view class="goodsAddress nowrap">1次出价/江夏区经济开发区某某街道</view>
-						<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">333.22万</text><text class="discount">8.7折</text></view>
-						<view class="goodsStatus"><text class="statusName">拍卖中</text><text class="goodsTime">剩余15天20小时30分钟</text></view>
-					</view>
+			</view>
+			<view class="consultBtn hasFollow" v-else >
+				<image class="consultBtnImg" src="../../static/images/hasFollowed.png"></image>
+				<view class="consultBtnText">
+					已收藏
 				</view>
-				<view class="goodsItem">
-					<view class="goodsPic">
-						<text class="goodsTag">一拍</text>
-						<image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg" mode="aspectFill"></image>
-					</view>
-					<view class="goodsInfo">
-						<view class="goodsName">武汉市江夏区经济开发区江夏大道东创业农庄丰分分为</view>
-						<view class="goodsAddress nowrap">1次出价/江夏区经济开发区某某街道</view>
-						<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">333.22万</text><text class="discount">8.7折</text></view>
-						<view class="goodsStatus"><text class="statusName">拍卖中</text><text class="goodsTime">剩余15天20小时30分钟</text></view>
-					</view>
-				</view>
-				<view class="goodsItem">
-					<view class="goodsPic">
-						<text class="goodsTag">一拍</text>
-						<image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg" mode="aspectFill"></image>
-					</view>
-					<view class="goodsInfo">
-						<view class="goodsName">武汉市江夏区经济开发区江夏大道东创业农庄丰分分为</view>
-						<view class="goodsAddress nowrap">1次出价/江夏区经济开发区某某街道</view>
-						<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">333.22万</text><text class="discount">8.7折</text></view>
-						<view class="goodsStatus"><text class="statusName">拍卖中</text><text class="goodsTime">剩余15天20小时30分钟</text></view>
-					</view>
+			</view>
+			<view class="consultBtn consultBtn2" @click="gotoChat">
+				<image class="consultBtnImg" src="../../static/images/Cons.png"></image>
+				<view class="consultBtnText">
+					咨询
 				</view>
 			</view>
 		</view>
@@ -306,6 +243,18 @@
 	export default {
 		data() {
 			return {
+				// 103922280,1
+				// 611884335520,2
+				// 613252498368,2
+				paimaiId: "611884335520",
+				houseSource: 2,
+				houseInfo: "",
+				houseDetail:"",
+				dealPage:1,
+				total:"",
+				dealList:[],
+				loadStatus: 'more',
+				hasLoad:false,
 				descIsOpen1: false,
 				descIsOpen2: false,
 				descIsOpen3: false,
@@ -318,25 +267,264 @@
 				scrollTag3: 0,
 				scrollTag4: 0,
 				navCurrent: 0,
-				bannerList: [{
-						colorClass: 'uni-bg-red',
-						url: 'https://artapp-dev-bucket.oss-cn-beijing.aliyuncs.com/studio_activity/23ef419c-2226-4a61-97c4-f24b22d754f8.jpg',
-						content: '内容 A'
-					},
-					{
-						colorClass: 'uni-bg-green',
-						url: 'https://artapp-dev-bucket.oss-cn-beijing.aliyuncs.com/studio_contest/32cbe106-7f4c-4ef9-8908-f459a6bd7b02.jpg',
-						content: '内容 B'
-					},
-					{
-						colorClass: 'uni-bg-blue',
-						url: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/cbd.jpg',
-						content: '内容 C'
-					}
-				]
+				bannerList: [],
+				recordList:[],
+				collected:false
 			}
 		},
+		onLoad(options) {
+			const that = this;
+			that.paimaiId = options.paimaiId;
+			that.houseSource = options.houseSource;
+			that.getHouseDetail(that.paimaiId, that.houseSource);
+			that.houseDetailRecord(that.paimaiId, that.houseSource);
+			that.collectState(that.paimaiId, that.houseSource);
+		},
+		onReady() {
+			let that = this;
+			setTimeout(()=>{
+				that.$utils.getBoxheight(`.goodsStatusBox`, (rects) => {
+					that.goodsStatusBoxHeight = rects[0].height;
+				});
+				that.$utils.getBoxheight(`.swiper`, (rects) => {
+					that.scrollTag1 = rects[0].height;
+				});
+				that.$utils.getBoxheight(`.headerBox`, (rects) => {
+					that.scrollTag2 = rects[0].height - that.goodsStatusBoxHeight;
+				});
+				that.$utils.getBoxheight(`.tabBox1`, (rects) => {
+					that.scrollTag3 = rects[0].height + that.scrollTag2;
+				});
+				that.$utils.getBoxheight(`.tabBox2`, (rects) => {
+					that.scrollTag4 = rects[0].height + that.scrollTag3;
+				
+				});
+			},300)
+			
+		},
 		methods: {
+			getHouseDetail(paimaiId, houseSource) {
+				const that = this;
+				uni.showLoading({
+					title:"加载中..."
+				})
+				let param = {
+					paimaiId: paimaiId,
+					houseSource: houseSource
+				}
+				that.$api.houseDetail(param).then(res => {
+					uni.hideLoading();
+					if (res.success) {
+						let houseDetail = res.datas.houseDetailDO;
+						let houseInfo = res.datas.houseInfoDO;
+						that.bannerList = JSON.parse(houseDetail.imgList);
+						var nowTime = new Date().getTime();
+						var startTime = new Date(houseInfo.startTime).getTime();
+						var endTime = new Date(houseInfo.endTime).getTime();
+						if (startTime > nowTime) {
+							houseInfo.paimaiStatus = 1; //未开始	
+							houseInfo.timeText = that.$utils.formatTime(startTime, 'MM月DD日 hh:mm');
+						} else if (nowTime >= startTime && nowTime <= endTime) {
+							houseInfo.paimaiStatus = 2; //拍卖中
+							houseInfo.timeText = that.$utils.formatTime(endTime, 'MM月DD日 hh:mm');
+						} else {
+							houseInfo.paimaiStatus = 3; //已结束
+							houseInfo.timeText = that.$utils.formatTime(endTime, 'YYYY年MM月DD日');
+						}
+						if (houseInfo.paimaiTimes == 1) {
+							houseInfo.paimaiTimesText = "一拍";
+						} else if (houseInfo.paimaiTimes == 2) {
+							houseInfo.paimaiTimesText = "二拍";
+						} else if (houseInfo.paimaiTimes == 4) {
+							houseInfo.paimaiTimesText = "变卖";
+						} else if (houseInfo.paimaiTimes == 5) {
+							houseInfo.paimaiTimesText = "重新拍卖";
+						}
+						houseDetail.dealPriceText = that.$utils.formatCurrency(houseDetail.dealPrice);//成交价
+						houseInfo.assessmentPriceText = that.$utils.formatCurrency(houseInfo.assessmentPrice);//评估价
+						houseInfo.currentPriceText = that.$utils.formatCurrency(houseInfo.currentPrice);//当前价
+						if(houseInfo.houseType==1){
+							houseInfo.houseTypeText='住宅用房';
+						}
+						else if(houseInfo.houseType==2){
+							houseInfo.houseTypeText='商业用房';
+						}
+						else if(houseInfo.houseType==3){
+							houseInfo.houseTypeText='工业用房';
+						}
+						else if(houseInfo.houseType==4){
+							houseInfo.houseTypeText='其他';
+						}
+						// houseDetail.productDescription=houseDetail.productDescription.replace(/width:[^;]+;/gi, 'max-width:100%;');
+						// houseDetail.productDescription=houseDetail.productDescription.replace(/width=[^;]+;/gi, 'width="100%');
+						// houseDetail.productDescription=houseDetail.productDescription.replace(/\<img/gi, '<img style="max-width:100%;height:auto" ');
+						// houseDetail.notice=houseDetail.notice.replace(/\\&quot;/gi,'"')
+						that.houseDetail=houseDetail;
+						that.houseInfo = houseInfo;
+						that.hasLoad=true;
+						that.dealdoneList(houseInfo.cityId,1);
+						that.browsesAdd();
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			dealdoneList(id,dealPage){
+				const that = this;
+				let param = {
+					cityId:id,
+					startPage:dealPage
+				}
+				that.loadStatus="loading";
+				that.$api.dealdoneList(param).then(res => {
+					if (res.success) {
+						let result = res.datas.rows;
+						for (var i in result) {
+							result[i].currentPriceText = (result[i].currentPrice * 0.0001).toFixed(2);
+							if (result[i].paimaiTimes == 1) {
+								result[i].paimaiTimesText = "一拍";
+							} else if (result[i].paimaiTimes == 2) {
+								result[i].paimaiTimesText = "二拍";
+							} else if (result[i].paimaiTimes == 4) {
+								result[i].paimaiTimesText = "变卖";
+							} else if (result[i].paimaiTimes == 5) {
+								result[i].paimaiTimesText = "重新拍卖";
+							}
+							var nowTime = new Date().getTime();
+							var startTime = new Date(result[i].startTime).getTime();
+							var endTime = new Date(result[i].endTime).getTime();
+							if (startTime > nowTime) {
+								result[i].paimaiStatus = 1; //未开始	
+								result[i].timeText = that.$utils.formatTime(startTime,'MM月DD日 hh:mm');
+							} else if (nowTime >= startTime && nowTime <= endTime) {
+								result[i].paimaiStatus = 2; //拍卖中
+								result[i].timeText = that.$utils.timeCount(endTime);
+							} else {
+								result[i].paimaiStatus = 3; //已结束
+								result[i].timeText = that.$utils.formatTime(endTime,'YYYY年MM月DD日');
+							}
+							that.houseList.push(result[i])
+						}
+						let total = res.datas.total;
+						that.total=total;
+						let totalPageNum =Math.ceil(total/10);
+						if(parseInt(totalPageNum)>parseInt(that.pageNum)){
+							that.dealPage++;
+							that.loadStatus="more";
+						}
+						else{
+							that.loadStatus="noMore";
+						}
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			browsesAdd(){
+				const that = this;
+				let param = {
+					paimaiId: that.paimaiId,
+					houseSource: that.houseSource
+				}
+				that.$api.browsesAdd(param).then(res => {
+					if (res.success) {
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			houseDetailRecord(paimaiId, houseSource) {
+				const that = this;
+				let param = {
+					paimaiId: paimaiId,
+					houseSource: houseSource
+				}
+				that.$api.houseDetailRecord(param).then(res => {
+					if (res.success) {
+						var result = res.datas;
+						that.recordList = result;
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			collectState(paimaiId, houseSource) {
+				const that = this;
+				let param = {
+					paimaiId: paimaiId,
+					houseSource: houseSource
+				}
+				that.$api.collectState(param).then(res => {
+					if (res.success) {
+						var result = res.datas.collected;
+						that.collected = result;
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			collectHouse(){
+				const that = this;
+				let param = {
+					paimaiId: that.paimaiId,
+					houseSource: that.houseSource
+				}
+				that.$api.houseCollect(param).then(res => {
+					if (res.success) {
+						that.collected=1;
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			gotoChat(){
+				const that = this;
+				let param = {}
+				that.$api.chatGetcsinfo(param).then(res => {
+					if (res.success) {
+						let chatUserId = res.datas.csId;
+						let myUserId = res.datas.curUserId;
+						that.$Router.push({
+							path: "/pages/consultant/charRoom",
+							query:{
+								myUserId:myUserId,
+								chatUserId:chatUserId
+							}
+						})
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			previewImage(index) {
+				const that = this;
+				uni.previewImage({
+					urls: that.bannerList,
+					current: that.bannerList[index]
+				});
+
+			},
 			onPageScroll(e) {
 				let that = this;
 				that.scrollTop = e.scrollTop;
@@ -368,21 +556,19 @@
 					});
 				}, 500)
 			},
-			navTap:function(index){
+			navTap: function(index) {
 				let that = this;
-				let scrollTo=0;
-				if(index==0){
-					scrollTo=that.scrollTag2;
-				}
-				else if(index==1){
-					scrollTo=that.scrollTag3+10;
-				}
-				else if(index==2){
-					scrollTo=that.scrollTag4+10;
+				let scrollTo = 0;
+				if (index == 0) {
+					scrollTo = that.scrollTag2;
+				} else if (index == 1) {
+					scrollTo = that.scrollTag3 + 10;
+				} else if (index == 2) {
+					scrollTo = that.scrollTag4 + 10;
 				}
 				uni.pageScrollTo({
-					duration:600,
-					scrollTop:scrollTo
+					duration: 600,
+					scrollTop: scrollTo
 				})
 			},
 			openOffers: function(e) {
@@ -394,28 +580,8 @@
 					});
 				}, 500)
 			},
-			
+
 		},
-		mounted() {
-			let that = this;
-			that.$utils.getBoxheight(`.goodsStatusBox`, (rects) => {
-				that.goodsStatusBoxHeight = rects[0].height;
-			});
-			that.$utils.getBoxheight(`.swiper`, (rects) => {
-				that.scrollTag1 = rects[0].height;
-			});
-			that.$utils.getBoxheight(`.headerBox`, (rects) => {
-				that.scrollTag2 = rects[0].height - that.goodsStatusBoxHeight;
-			});
-			that.$utils.getBoxheight(`.tabBox1`, (rects) => {
-				that.scrollTag3 = rects[0].height + that.scrollTag2;
-			});
-			that.$utils.getBoxheight(`.tabBox2`, (rects) => {
-				that.scrollTag4 = rects[0].height + that.scrollTag3;
-
-			});
-
-		}
 	}
 </script>
 
@@ -575,12 +741,19 @@
 	.startingPrice .priceCont {
 		color: #00BBC3;
 	}
-
+	.inPrice .priceCont {
+		color: #CD282F;
+	}
+	.endPrice .priceCont{
+		color: #CD282F;
+	}
 	.assPrice .priceCont {
 		color: #222222;
 		font-size: 28rpx;
 	}
-
+	.noPrice{
+		line-height: 50rpx;
+	}
 	.navs {
 		height: 90rpx;
 		width: 100%;
@@ -775,11 +948,67 @@
 	.isFirst {
 		background: #CD282F;
 	}
-
+	.hasDone{
+		background:#D8AF60;
+	}
 	.statusFixed {
 		position: fixed;
 		top: 0;
 		left: 0;
 		z-index: 999;
+	}
+	.consultantBtns{
+		position: fixed;
+		right: 30rpx;
+		bottom: 40rpx;
+		width: 116rpx;
+		height: 272rpx;
+		z-index: 99;
+	}
+	.consultBtn{
+		width: 116rpx;
+		height: 116rpx;
+		border-radius: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		background-color: #FFFFFF;
+		box-shadow: 0 0 20rpx 2rpx rgba(193,193,193,.2);
+		margin-top: 20rpx;
+		justify-content: center;
+	}
+	.consultBtn2{
+		background-color: #CD282F;
+	}
+	.consultBtnImg{
+		width: 44rpx;
+		height:44rpx;
+	}
+	.consultBtn .consultBtnText{
+		line-height: 40rpx;
+		font-size: 24rpx;
+	}
+	.hasFollow .consultBtnText{
+		color:#CD282F;
+	}
+	.consultBtn2 .consultBtnText{
+		color: #FFFFFF;
+	}
+	.noRecord{
+		height: 360rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+	}
+	.noRecord .noRecordImg{
+		width: 200rpx;
+	}
+	.noRecord .noRecordText{
+		color: #B8B8B8;
+		font-size: 24rpx;
+		line-height: 34rpx;
+		margin-top: 20rpx;
+		display: block;
 	}
 </style>

@@ -70,7 +70,8 @@
 	z-index: 5;
 	position: relative;
 	width: 100%;
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 	height: 90rpx;
 }
 .navItem {
@@ -112,8 +113,6 @@
 	z-index: 99;
 	margin-top: 0;
 }
-
-
 .userInfoBtn {
 	width: 188rpx;
 	height: 52rpx;

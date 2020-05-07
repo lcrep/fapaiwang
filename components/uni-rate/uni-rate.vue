@@ -1,14 +1,14 @@
 <template>
 	<view class="uni-rate">
-		<view :key="index" :style="{ marginRight: margin + 'px' }" @click="_onClick(index)" class="uni-rate__icon" v-for="(star, index) in stars">
-			<uni-icons :color="color" :size="size" :type="isFill ? 'star-filled' : 'star'" />
+		<view :key="index" :style="{ marginRight: margin + 'px',width:size+'px',height:size+'px' }" @click="_onClick(index)" class="uni-rate__icon" v-for="(star, index) in stars">
+			<uni-icons :color="color" class="noFilled" :size="size" :type="isFill ? 'star-filled' : 'star'" />
 			<!-- #ifdef APP-NVUE -->
 			<view :style="{ width: star.activeWitch.replace('%','')*size/100+'px'}" class="uni-rate__icon-on">
 				<uni-icons style="text-align: left;" :color="activeColor" :size="size" type="star-filled" />
 			</view>
 			<!-- #endif -->
 			<!-- #ifndef APP-NVUE -->
-			<view :style="{ width: star.activeWitch,top:-size/2+'px' }" class="uni-rate__icon-on">
+			<view :style="{ width: star.activeWitch }" class="uni-rate__icon-on">
 				<uni-icons :color="activeColor" :size="size" type="star-filled" />
 			</view>
 			<!-- #endif -->
@@ -144,7 +144,7 @@
 		position: relative;
 		line-height: 0;
 		font-size: 0;
-		height: 50rpx;
+		
 	}
 
 	.uni-rate__icon-on {
@@ -154,5 +154,8 @@
 		left: 0;
 		line-height: 1;
 		text-align: left;
+	}
+	.noFilled{
+		line-height: 1;
 	}
 </style>

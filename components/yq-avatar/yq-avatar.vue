@@ -282,6 +282,7 @@
 					fileType: 'png',
 					quality: this.qlty,
 					success: (r)=>{
+						
 						r = r.tempFilePath;
 						// #ifdef H5
 						this.btop(r).then((r)=> {
@@ -303,6 +304,7 @@
 										fileType: 'png',
 										quality: this.qlty,
 										success: (r)=>{
+											console.log(r);
 											r = r.tempFilePath;
 											this.btop(r).then((r)=> {
 												this.$emit("upload", {avatar: this.imgSrc, path: r, index: this.indx, data: this.rtn});

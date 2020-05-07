@@ -29,7 +29,8 @@
 	top: 50%;
 	-webkit-transform: translateX(-50%) translateY(-50%);
 	        transform: translateX(-50%) translateY(-50%);
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 	padding: 0 20rpx;
 	display: -webkit-box;
 	display: -webkit-flex;

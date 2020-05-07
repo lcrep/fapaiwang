@@ -132,6 +132,14 @@ const my = [
 		},
 	},
 	{
+		path: '/pages/my/manageNavs/searchVisit',
+		name: 'searchVisit',
+		meta: {
+			title: '选择客户和房源',
+			needLogin:true
+		},
+	},
+	{
 		path: '/pages/my/manageNavs/returnVisit/list',
 		name: 'returnVisitList',
 		meta: {
@@ -300,6 +308,14 @@ const my = [
 		},
 	},
 	{
+		path: '/pages/my/manageNavs/notice/listC',
+		name: 'noticeListC',
+		meta: {
+			title: '公告',
+			needLogin:true
+		},
+	},
+	{
 		path: '/pages/my/manageNavs/notice/detail',
 		name: 'noticeDetail',
 		meta: {
@@ -312,6 +328,14 @@ const my = [
 		name: 'noticeAdd',
 		meta: {
 			title: '发布公告',
+			needLogin:true
+		},
+	},
+	{
+		path: '/pages/my/manageNavs/notice/edit',
+		name: 'noticeEdit',
+		meta: {
+			title: '公告编辑',
 			needLogin:true
 		},
 	},
@@ -336,6 +360,14 @@ const my = [
 		name: 'staffEdit',
 		meta: {
 			title: '编辑资料',
+			needLogin:true
+		},
+	},
+	{
+		path: '/pages/my/manageNavs/staff/add',
+		name: 'staffAdd',
+		meta: {
+			title: '新增员工',
 			needLogin:true
 		},
 	},
@@ -368,6 +400,46 @@ const my = [
 		name: 'exchangeDetailed',
 		meta: {
 			title: '兑换明细',
+			needLogin:true
+		},
+	},
+	{
+		path: '/pages/my/manageNavs/process/index',
+		name: 'processIndex',
+		meta: {
+			title: '流程明细',
+			needLogin:true
+		},
+	},
+	{
+		path: '/pages/my/manageNavs/process/allDaily',
+		name: 'allDaily',
+		meta: {
+			title: '全部日志',
+			needLogin:true
+		},
+	},
+	{
+		path: '/pages/my/manageNavs/process/allReturn',
+		name: 'allReturn',
+		meta: {
+			title: '全部回访',
+			needLogin:true
+		},
+	},
+	{
+		path: '/pages/my/manageNavs/process/operate',
+		name: 'processOperate',
+		meta: {
+			title: '操作确认',
+			needLogin:true
+		},
+	},
+	{
+		path: '/pages/consultant/charRoom',
+		name: 'charRoom',
+		meta: {
+			title: '聊天',
 			needLogin:true
 		},
 	}

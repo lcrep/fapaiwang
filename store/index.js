@@ -6,21 +6,29 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
 	state: {
 		userInfo: {},
+		address:{},
 		hasLogin: false
 	},
 	mutations: {
 		login(state, provider) {
 			state.hasLogin = true
 			state.userInfo.accessToken = provider.accessToken
-			state.userInfo.mobile = provider.mobile
+			uni.setStorageSync( 'userInfo',provider)
+		},
+		updateAddress(state,provider){
+			state.address.provinceId=provider.provinceId
+			state.address.cityId=provider.cityId
+			state.address.cityIndex=provider.cityIndex
 			uni.setStorage({
-				key: 'userInfo',
+				key: 'address',
 				data: provider
 			})
 		},
 		logout(state) {
 			state.hasLogin = false
-			state.userInfo = {}
+			state.userInfo = {
+				accessToken:""
+			}
 			uni.removeStorage({
 				key: 'userInfo'
 			});

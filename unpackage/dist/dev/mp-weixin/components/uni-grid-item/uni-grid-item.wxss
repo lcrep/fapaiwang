@@ -1,19 +1,18 @@
 
 .uni-grid-item.data-v-20b005ca {
-		
+
 		height: 100%;
 		display: -webkit-box;
 		display: -webkit-flex;
 		display: flex;
-		
 }
 .uni-grid-item__box.data-v-20b005ca {
-		
+
 		display: -webkit-box;
 		display: -webkit-flex;
 		display: flex;
 		width: 100%;
-		
+
 		position: relative;
 		-webkit-box-flex: 1;
 		-webkit-flex: 1;
@@ -40,10 +39,10 @@
 		border-top-color: #e5e5e5;
 		border-top-style: solid;
 		border-top-width: 1px;
-		
+
 		height: 100%;
-		box-sizing: border-box;
-		
+		-webkit-box-sizing: border-box;
+		        box-sizing: border-box;
 }
 .uni-highlight.data-v-20b005ca:active {
 		background-color: #f1f1f1;

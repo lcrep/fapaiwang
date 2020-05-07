@@ -1,4 +1,13 @@
 
+page{
+	background-color: #F7F7F7;
+}
+.commRecordList{
+	padding-top: 110rpx;
+}
+.recordFixHeader{
+	height: 100rpx;
+}
 .searchInputBox {
 	margin-left: 0;
 }

@@ -16,100 +16,68 @@
 							<uni-icons type="arrowdown" size="18" color="#b8b8b8"></uni-icons>
 						</view>
 					</picker>
-					<!-- <uni-icons type="clear" v-if="star!=='按评分筛选'" @click="clear(1)" class="clear" size="18" color="#f44a33"></uni-icons> -->
 				</view>
 			</view>
 		</view>
-		<view class="commRecordList">
-			<view class="paySignItem">
-				<view class="pagTagHead payStatus1">
+		<view class="commRecordList"  v-if="total!==0">
+			<view class="paySignItem" v-for="(item,index) in list" :key="index">
+				<view class="pagTagHead payStatus1" v-if="item.completeState==0">
 					<view class="pagTagHeadLeft">
 						<image class="pagStatusImg" src="../../../../static/images/noPay.png"></image>
 						<text class="pagStatusText">未付款</text>
 					</view>
-					<view class="pagTagHeadBtn">
+					<view class="pagTagHeadBtn" @click="gotoProcess(item.visitId)">
 						去操作
 					</view>
 				</view>
-				<view class="recordInfoBox">
-					<view class="recordInfoItem">
-						客户名称：姓名描述  13735223455
-					</view>
-					<view class="recordInfoItem">
-						意向房源：武汉市江夏区经济开发区江夏大道东创业农庄丰江夏大道东创业农庄丰江夏江夏大道东创业农超武汉市江夏区经济开发区江夏大道东创业农庄丰江夏大道东创业农庄丰江夏江夏大道东创业农超2行显示…
-					</view>
-					<view class="recordInfoItem">
-						业务员：姓名描述
-					</view>
-					<view class="recordInfoItem">
-						交易状态:  签约
-					</view>
-				</view>
-				<view class="recordLookAll" @click="gotoDetail(1)">
-					<text class="lookAllText">查看全文</text>
-					<uni-icons class="arrowIcons" color="#b8b8b8" size="18" type="arrowright" />
-				</view>
-			</view>
-			<view class="paySignItem">
-				<view class="pagTagHead payStatus2">
+				<view class="pagTagHead payStatus2" v-else>
 					<view class="pagTagHeadLeft">
 						<image class="pagStatusImg" src="../../../../static/images/hasPay.png"></image>
 						<text class="pagStatusText">已付款</text>
 					</view>
-					<view class="pagTagHeadBtn status2">
+					<view class="pagTagHeadBtn status2"  @click="gotoProcess(item.visitId)">
 						当前进展
 					</view>
 				</view>
 				<view class="recordInfoBox">
 					<view class="recordInfoItem">
-						客户名称：姓名描述  13735223455
+						客户名称：{{item.username}} {{item.mobile}}
 					</view>
 					<view class="recordInfoItem">
-						意向房源：武汉市江夏区经济开发区江夏大道东创业农庄丰江夏大道东创业农庄丰江夏江夏大道东创业农超武汉市江夏区经济开发区江夏大道东创业农庄丰江夏大道东创业农庄丰江夏江夏大道东创业农超2行显示…
+						意向房源：{{item.houseName}}
 					</view>
 					<view class="recordInfoItem">
-						业务员：姓名描述
+						业务员：{{item.employeeName}}
 					</view>
-					<view class="recordInfoItem">
-						交易状态:  签约
-					</view>
+					<block v-if="item.completeState==0">
+						<view class="recordInfoItem">
+							付款状态：未付款
+						</view>
+						<view class="recordInfoItem">
+							付款时间: 暂无
+						</view>
+					</block>
+					<block v-else>
+						<view class="recordInfoItem">
+							付款状态：已付款
+						</view>
+						<view class="recordInfoItem">
+							付款时间: {{item.completeTime}}
+						</view>
+					</block>
 				</view>
-				<view class="recordLookAll" >
+				<view class="recordLookAll" @click="gotoDetail(item.visitId)">
 					<text class="lookAllText">查看全文</text>
 					<uni-icons class="arrowIcons" color="#b8b8b8" size="18" type="arrowright" />
 				</view>
 			</view>
-			<view class="paySignItem">
-				<view class="pagTagHead payStatus2">
-					<view class="pagTagHeadLeft">
-						<image class="pagStatusImg" src="../../../../static/images/hasPay.png"></image>
-						<text class="pagStatusText">已付款</text>
-					</view>
-					<view class="pagTagHeadBtn status2">
-						当前进展
-					</view>
-				</view>
-				<view class="recordInfoBox">
-					<view class="recordInfoItem">
-						客户名称：姓名描述  13735223455
-					</view>
-					<view class="recordInfoItem">
-						意向房源：武汉市江夏区经济开发区江夏大道东创业农庄丰江夏大道东创业农庄丰江夏江夏大道东创业农超武汉市江夏区经济开发区江夏大道东创业农庄丰江夏大道东创业农庄丰江夏江夏大道东创业农超2行显示…
-					</view>
-					<view class="recordInfoItem">
-						业务员：姓名描述
-					</view>
-					<view class="recordInfoItem">
-						交易状态:  签约
-					</view>
-				</view>
-				<view class="recordLookAll" >
-					<text class="lookAllText">查看全文</text>
-					<uni-icons class="arrowIcons" color="#b8b8b8" size="18" type="arrowright" />
-				</view>
-			</view>
+			<uni-load-more iconType="snow" :status="loadStatus" />
 		</view>
-		<uni-load-more iconType="snow" :status="listStatus" />
+		<view class="noData" v-else>
+			<image src="../../../../static/images/noRecord.png" mode="" class="noDataImg"></image>
+			<text class="noDataText">暂无标记</text>
+		</view>
+		
 	</view>
 </template>
 
@@ -117,49 +85,117 @@
 	export default {
 		data() {
 			return {
-				listStatus:"loading",
+				loadStatus: "more",
+				pageNum: 1,
+				pageSize: 10,
+				total: "",
+				list: [],
 				searchVal: "",
+				queryStatus:0,//0-所有  1-已完成  2-未完成
 				statusArr: [
 					"全部",
-					"未付款",
-					"已付款"
+					"已付款",
+					"未付款"
 				],
 				status: "按状态筛选"
 			}
 		},
+		onLoad() {
+			this.getList(1);
+		},
 		methods: {
-			search() {
+			getList(startPage) {
+				const that = this;
+				let param = {
+					dynamicParam: that.searchVal,
+					queryStatus:that.queryStatus,
+					startPage: startPage,
+					pageSize: that.pageSize
+				}
+				that.loadStatus = "loading";
+				that.$api.housepayList(param).then(res => {
+					if (res.success) {
+						let result = res.datas.rows;
 
+						for (var i in result) {
+							result[i].memo = result[i].memo?result[i].memo:"暂无";
+							that.list.push(result[i]);
+						}
+						let total = res.datas.total;
+						that.total = total;
+						let totalPageNum = Math.ceil(total / that.pageSize);
+						console.log(totalPageNum);
+						if (parseInt(totalPageNum) > parseInt(that.pageNum)) {
+							that.pageNum++;
+							that.loadStatus = "more";
+						} else {
+							that.loadStatus = "noMore";
+						}
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			clearList() {
+				const that = this;
+				that.pageNum = 1;
+				that.total = "";
+				that.list = [];
+			},
+			search() {
+				const that = this;
+				that.clearList();
+				that.getList(1);
 			},
 
 			statusPicker: function(e) {
 				const that = this;
 				that.status = that.statusArr[e.detail.value];
+				that.queryStatus = e.detail.value;
+				that.clearList();
+				that.getList(1);
 			},
-			gotoDetail(id){
+			gotoDetail(id) {
 				const that = this;
 				that.$Router.push({
-					path:"/pages/my/manageNavs/payTag/detail",
+					path: "/pages/my/manageNavs/payTag/detail",
+					query: {
+						id: id
+					}
+				})
+			},
+			gotoProcess(id){
+				const that =this;
+				that.$Router.push({
+					path:"/pages/my/manageNavs/process/index",
 					query:{
 						id:id
 					}
 				})
 			},
-			clear(index) {
-				const that = this;
-				if (index == 0) {
-					that.date = "按日期筛选";
-				} else {
-					that.star = "按评分筛选";
-				}
+		},
+		onReachBottom() {
+			const that = this;
+			if (that.loadStatus == "noMore") {
+				return;
+			} else if (that.pageNum != 1) {
+				that.getList(that.pageNum);
 			}
-		}
+		},
 	}
 </script>
 
 <style>
+	page{
+		background-color: #F7F7F7;
+	}
+	.commRecordList{
+		padding-top: 170rpx;
+	}
 	.searchInputBox {
 		margin-left: 0;
 	}
-	
 </style>

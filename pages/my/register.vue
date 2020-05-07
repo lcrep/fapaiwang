@@ -15,6 +15,10 @@
 					 @click="getCode">获取验证码</button>
 					<button class="mini-btn getCode" disabled="true" type="warn" size="mini" v-else>重新获取({{codeSecond}})</button>
 				</view>
+				<view class="uni-input-wrapper inputItem">
+					<view class="inputLabel">推荐码</view>
+					<input class="uni-input" maxlength="6" placeholder="请输入推荐码(选填)" type="number" v-model="invitationCode" />
+				</view>
 				<button type="warn" :disabled="mobile.length==11&&code.length==4?false:true" class="loginBtn" @click="next">下一步</button>
 				<view class="loginTips">点击下一步即表示您已同意<text class="loginTipsText" @click="gotoAgreement1">《服务协议》</text>和<text @click="gotoAgreement1"  class="loginTipsText">《隐私协议》</text></view>
 			</view>
@@ -30,7 +34,8 @@
 				hasSendCode: false,
 				codeSecond: 60,
 				mobile: '',
-				code: ''
+				code: '',
+				invitationCode:""
 			}
 		},
 		methods: {
@@ -91,8 +96,13 @@
 			},
 			next(){
 				const that = this;
-				uni.navigateTo({
-					url:'./setPassword?code='+that.code+'&mobile='+that.mobile
+				that.$Router.push({
+					path:"/pages/my/setPassword",
+					query:{
+						code:that.code,
+						mobile:that.mobile,
+						invitationCode:that.invitationCode
+					}
 				})
 			}
 		}

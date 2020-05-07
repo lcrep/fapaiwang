@@ -24,15 +24,46 @@ function formatTime(date, type) {
 	switch (type) {
 		case "YYYY-MM-DD":
 			return [year, month, day].map(formatNumber).join('-');
+		case "YYYY年MM月DD日":
+			return year + '年' + month + '月' + day + '日';
 		case "YYYY.MM.DD":
 			return [year, month, day].map(formatNumber).join('.');
 		case "YYYY.MM.DD hh:mm":
 			return [year, month, day].map(formatNumber).join('.') + ' ' + [hour, minute].map(formatNumber).join(':');
+		case "MM月DD日 hh:mm":
+			return month + '月' + day + '日' + ' ' + [hour, minute].map(formatNumber).join(':');
 		default:
-			return [year, month, day].map(formatNumber).join('.') + ' ' + [hour, minute, second].map(formatNumber).join(':');
+			return [year, month, day].map(formatNumber).join('-') + ' ' + [hour, minute, second].map(formatNumber).join(':');
 	}
 }
+//为金额添加千分位逗号分割符
+function formatCurrency(num) {
+	if (num) {
+		num = num.toString().replace(/\$|\,/g, '');
+		if ('' == num || isNaN(num)) {
+			return 'Not a Number ! ';
+		}
+		var sign = num.indexOf("-") > 0 ? '-' : '';
+		var cents = num.indexOf(".") > 0 ? num.substr(num.indexOf(".")) : '';
+		cents = cents.length > 1 ? cents : '';
+		num = num.indexOf(".") > 0 ? num.substring(0, (num.indexOf("."))) : num;
+		if ('' == cents) {
+			if (num.length > 1 && '0' == num.substr(0, 1)) {
+				return 'Not a Number ! ';
+			}
+		} else {
+			if (num.length > 1 && '0' == num.substr(0, 1)) {
+				return 'Not a Number ! ';
+			}
+		}
 
+		for (var i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++) {
+			num = num.substring(0, num.length - (4 * i + 3)) + ',' + num.substring(num.length - (4 * i + 3));
+		}
+		return (sign + num + cents);
+	}
+
+}
 //获取url参数
 function getUrlParam(name) {
 	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -79,7 +110,11 @@ function timeCount(endtimestr, type) {
 			case "hh:mm:ss":
 				str = hh + ':' + mm + ':' + ss;
 			default:
-				str = dd + '天' + hh + '时' + mm + '分' + ss + '秒';
+				if (dd > 0) {
+					str = dd + '天' + hh + '小时' + mm + '分钟';
+				} else {
+					str = hh + '小时' + mm + '分钟';
+				}
 		}
 	} else {
 		str = '00天00时00分00秒';
@@ -88,12 +123,12 @@ function timeCount(endtimestr, type) {
 }
 //计算容器高度
 function getBoxheight(className, callback) {
-	var that = this;
 	uni.createSelectorQuery().selectAll(className).boundingClientRect(callback).exec()
 }
 export default {
 	common,
 	formatTime,
+	formatCurrency,
 	getUrlParam,
 	getParameter,
 	timeCount,

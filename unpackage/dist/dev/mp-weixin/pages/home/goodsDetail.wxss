@@ -3,11 +3,11 @@
 	height: 558rpx;
 }
 .swiper-item {
-	
+
 	display: -webkit-box;
 	display: -webkit-flex;
 	display: flex;
-	
+
 	-webkit-box-orient: vertical;
 	-webkit-box-direction: normal;
 	-webkit-flex-direction: column;
@@ -155,14 +155,24 @@
 .startingPrice .priceCont {
 	color: #00BBC3;
 }
+.inPrice .priceCont {
+	color: #CD282F;
+}
+.endPrice .priceCont{
+	color: #CD282F;
+}
 .assPrice .priceCont {
 	color: #222222;
 	font-size: 28rpx;
 }
+.noPrice{
+	line-height: 50rpx;
+}
 .navs {
 	height: 90rpx;
 	width: 100%;
-	box-shadow: 0 9rpx 25rpx 0 #E5E5E5;
+	-webkit-box-shadow: 0 9rpx 25rpx 0 #E5E5E5;
+	        box-shadow: 0 9rpx 25rpx 0 #E5E5E5;
 	background-color: #fff;
 }
 .navsFixed {
@@ -203,7 +213,8 @@
 }
 .infoListItem {
 	width: 50%;
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 	padding-right: 20rpx;
 	font-size: 24rpx;
 	color: #222222;
@@ -236,11 +247,13 @@
 	width: 100%;
 	height: 120rpx;
 	padding-top: 60rpx;
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 	color: #B8B8B8;
 	font-size: 24rpx;
 	line-height: 54rpx;
 	text-align: center;
+	background: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, .3)), color-stop(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 1)));
 	background: -webkit-linear-gradient(top, rgba(255, 255, 255, .3), rgba(255, 255, 255, 1), rgba(255, 255, 255, 1));
 	background: linear-gradient(to bottom, rgba(255, 255, 255, .3), rgba(255, 255, 255, 1), rgba(255, 255, 255, 1));
 }
@@ -327,10 +340,86 @@
 .isFirst {
 	background: #CD282F;
 }
+.hasDone{
+	background:#D8AF60;
+}
 .statusFixed {
 	position: fixed;
 	top: 0;
 	left: 0;
 	z-index: 999;
+}
+.consultantBtns{
+	position: fixed;
+	right: 30rpx;
+	bottom: 40rpx;
+	width: 116rpx;
+	height: 272rpx;
+	z-index: 99;
+}
+.consultBtn{
+	width: 116rpx;
+	height: 116rpx;
+	border-radius: 100%;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: column;
+	        flex-direction: column;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+	background-color: #FFFFFF;
+	-webkit-box-shadow: 0 0 20rpx 2rpx rgba(193,193,193,.2);
+	        box-shadow: 0 0 20rpx 2rpx rgba(193,193,193,.2);
+	margin-top: 20rpx;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	        justify-content: center;
+}
+.consultBtn2{
+	background-color: #CD282F;
+}
+.consultBtnImg{
+	width: 44rpx;
+	height:44rpx;
+}
+.consultBtn .consultBtnText{
+	line-height: 40rpx;
+	font-size: 24rpx;
+}
+.hasFollow .consultBtnText{
+	color:#CD282F;
+}
+.consultBtn2 .consultBtnText{
+	color: #FFFFFF;
+}
+.noRecord{
+	height: 360rpx;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	        justify-content: center;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: column;
+	        flex-direction: column;
+}
+.noRecord .noRecordImg{
+	width: 200rpx;
+}
+.noRecord .noRecordText{
+	color: #B8B8B8;
+	font-size: 24rpx;
+	line-height: 34rpx;
+	margin-top: 20rpx;
+	display: block;
 }
 

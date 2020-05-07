@@ -14,8 +14,8 @@
 					<text class="needTag">*</text>
 				</view>
 				<view class="recordSelItem" @click="searchCustomer">
-					<view :class="{'recordSelInput':true,'nowrap':true,'hasSeled':userId!=0 }">
-						{{userName}}
+					<view :class="{'recordSelInput':true,'nowrap':true,'hasSeled':customerId!=0 }">
+						{{customerName}}
 					</view>
 					<uni-icons type="arrowright" size="18" color="#b8b8b8"></uni-icons>
 				</view>
@@ -26,8 +26,8 @@
 					<text class="needTag">*</text>
 				</view>
 				<view class="recordSelItem" @click="searchHouse">
-					<view :class="{'recordSelInput':true,'nowrap':true,'hasSeled':goodsId!=0 }">
-						{{goodsName}}
+					<view :class="{'recordSelInput':true,'nowrap':true,'hasSeled':paimaiId!=0 }">
+						{{houseName}}
 					</view>
 					<uni-icons type="arrowright" size="18" color="#b8b8b8"></uni-icons>
 				</view>
@@ -39,7 +39,7 @@
 				</view>
 				<view class="recordSelItem">
 					<uni-rate class="recordDetailRate" :margin="8" :is-fill="false" color="#dadada" active-color="#d03b41" @change="getRate"
-					 :size="18" :value="rate" />
+					 :size="18" :value="evaluateScore" />
 				</view>
 			</view>
 			<view class="recordAddItem">
@@ -64,12 +64,13 @@
 		},
 		data() {
 			return {
-				userId:0,
-				userName:"请选择客户",
-				goodsId:0,
-				goodsName:"请选择房源",
-				rate:0,
-				textArea:"",
+				customerId:0,
+				customerName:"请选择客户",
+				paimaiId:0,
+				houseSource:"",
+				houseName:"请选择房源",
+				evaluateScore:0,
+				content:"",
 				hasclickback:false
 			}
 		},
@@ -79,15 +80,15 @@
 		methods: {
 			getRate(e){
 				const that = this;
-				that.rate=e.value
+				that.evaluateScore=e.value
 			},
 			bindTextAreaBlur(e){
-				this.textArea=e.detail.value;
+				this.content=e.detail.value;
 			},
 			sub(){
 				const that = this;
 				setTimeout(()=>{
-					if(that.userId==0||that.goodsId==0||that.rate==0||that.textArea==""){
+					if(that.customerId==0||that.paimaiId==0||that.evaluateScore==0||that.textArea==""){
 						uni.showToast({
 							title:"请输入必填内容",
 							icon:"none"
@@ -101,9 +102,39 @@
 							cancelText: "取消",
 							success: function (res) {
 								if (res.confirm) {
-									uni.showToast({
-										title:"提交成功"
+									uni.showLoading({
+										title:"提交中..."
 									})
+									let param = {
+										paimaiId: that.paimaiId,
+										houseSource: that.houseSource,
+										customerId:that.customerId,
+										content:that.content,
+										evaluateScore:that.evaluateScore
+									}
+									that.$api.dailyAdd(param).then(res => {
+										if (res.success) {
+											uni.showToast({
+												title:"提交成功"
+											})
+											setTimeout(()=>{
+												that.$Router.back(1);
+											},1000)	
+											var pages = getCurrentPages(); //当前页
+											var beforePage = pages[pages.length - 2].route; //上个页面
+											if(beforePage=="pages/my/manageNavs/journal/list"){
+												that.prevPageReload();
+											}			
+										} else {
+											uni.showToast({
+												title: res.message,
+												icon: "none"
+											})
+										}
+									})
+									// uni.showToast({
+									// 	title:"提交成功"
+									// })
 								} else if (res.cancel) {
 									
 								}	
@@ -112,6 +143,16 @@
 						
 					}
 				},100)
+			},
+			prevPageReload(){
+				var pages = getCurrentPages(); //当前页
+				var beforePage = pages[pages.length - 2]; //上个页面
+				// #ifdef H5
+				beforePage.reload()
+				// #endif
+				// #ifndef H5
+				beforePage.onLoad()
+				// #endif
 			},
 			searchCustomer(){
 				const that = this;
@@ -127,7 +168,7 @@
 			},
 			back(){
 				const that = this;
-				if(that.userId!=0||that.goodsId!=0||that.rate!=0||that.textArea!=""){	
+				if(that.paimaiId!=0||that.customerId!=0||that.evaluateScore!=0||that.content!=""){	
 					uni.showModal({
 							content: "退出后将不保留已编辑的内容，确认退出日志编辑？",
 							confirmText: "继续编辑",

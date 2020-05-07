@@ -6,11 +6,14 @@ let domainurl="";
 let restPath="";
 
 if (process.env.NODE_ENV == 'development') {
-  domainurl = '/proxy';//代理跨域 http://c18l443134.51mypc.cn/
+	 domainurl = '/proxy';//代理跨域 http://c18l443134.51mypc.cn/
+	// #ifdef MP-WEIXIN
+		domainurl = 'https://mobile.fpw365.cn'
+	// #endif
   restPath = '';
 
 } else if (process.env.NODE_ENV == 'production') {
-  domainurl = '/proxy';//代理跨域 http://c18l443134.51mypc.cn/
+ domainurl = 'https://mobile.fpw365.cn'
   restPath = '';
 }
 

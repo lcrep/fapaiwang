@@ -1,10 +1,10 @@
 
 .uni-grid-wrap.data-v-3208766e {
-		
+
 		display: -webkit-box;
 		display: -webkit-flex;
 		display: flex;
-		
+
 		-webkit-box-flex: 1;
 		-webkit-flex: 1;
 		        flex: 1;
@@ -12,14 +12,13 @@
 		-webkit-box-direction: normal;
 		-webkit-flex-direction: column;
 		        flex-direction: column;
-		
 }
 .uni-grid.data-v-3208766e {
-		
+
 		display: -webkit-box;
 		display: -webkit-flex;
 		display: flex;
-		
+
 		/* flex: 1;
  */
 		-webkit-box-orient: horizontal;

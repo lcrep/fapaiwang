@@ -19,24 +19,38 @@ uni.getStorage({
 
 	}
 });
+uni.getStorage({
+	key: 'address',
+	success: (res) => {
+		store.commit('updateAddress', res.data)
+
+	}
+});
 //全局路由前置守卫
 router.beforeEach((to, from, next) => {
-	if (to.meta.needLogin) {
-		if (store.state.hasLogin) {
-			next()
-		} else {
-			let toQuery = getQuery(to.query);
-			next({
-				path: '/pages/my/login',
-				query: {
-					path:to.path+toQuery,
-				},
-				NAVTYPE: 'push'
-			});
-		}
-	} else {
+	if(to.name=="previewImage"){
+		//图片预览
 		next()
 	}
+	else{
+		if (to.meta.needLogin) {
+			if (store.state.hasLogin) {
+				next()
+			} else {
+				let toQuery = getQuery(to.query);
+				next({
+					path: '/pages/my/login',
+					query: {
+						path:to.path+toQuery,
+					},
+					NAVTYPE: 'push'
+				});
+			}
+		} else {
+			next()
+		}
+	}
+	
 
 })
 function getQuery(obj){

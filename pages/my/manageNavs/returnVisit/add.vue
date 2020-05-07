@@ -10,65 +10,92 @@
 		<view class="recordAddCont">
 			<view class="recordAddItem">
 				<view class="recordAddItemHead">
-					客户名称：
+					客户和房源：
 					<text class="needTag">*</text>
 				</view>
-				<view class="recordSelItem" @click="searchCustomer">
-					<view :class="{'recordSelInput':true,'nowrap':true,'hasSeled':userId!=0 }">
-						{{userName}}
+				<view class="recordSelItem heiAuto" @click="searchVisit">
+					<view class="visitResBox" v-if="oriVisitId!=0">
+						<view class="visitResInfo1 nowrap">
+							<text class="customerName" v-if="customerName!=''">{{customerName}}</text>
+							<text class="customerMobile">{{customerMobile}}</text>
+						</view>
+						<view class="visitResInfo2 nowrap">
+							{{houseName}}
+						</view>
+					</view>
+					<view class="recordSelInput" v-else>
+						请选择客户
 					</view>
 					<uni-icons type="arrowright" size="18" color="#b8b8b8"></uni-icons>
 				</view>
 			</view>
-			<view class="recordAddItem">
-				<view class="recordAddItemHead">
-					意向房源：
-					<text class="needTag">*</text>
-				</view>
-				<view class="recordSelItem" @click="searchHouse">
-					<view :class="{'recordSelInput':true,'nowrap':true,'hasSeled':goodsId!=0 }">
-						{{goodsName}}
-					</view>
-					<uni-icons type="arrowright" size="18" color="#b8b8b8"></uni-icons>
-				</view>
-			</view>
-			<view class="recordAddItem">
+			<view class="recordAddItem" v-if="employeeName!=''">
 				<view class="recordAddItemHead">
 					业务员:
+				</view>
+				<view class="recordSelItem">
+					<view class="recordSelInput nowrap hasSeled">
+						{{employeeName}}
+					</view>
+				</view>
+			</view>
+			<view class="recordAddItem">
+				<view class="recordAddItemHead">
+					回访时间:
 					<text class="needTag">*</text>
 				</view>
 				<view class="recordSelItem">
-					<view :class="{'recordSelInput':true,'nowrap':true,'hasSeled':salesmanId!=0 }">
-						{{salesman}}
+					<view class="recordSelInput nowrap" @click="datePicker" v-if="visitTime==''">
+						请选择回访时间
 					</view>
-					<uni-icons type="arrowright" size="18" color="#b8b8b8"></uni-icons>
+					<view class="recordSelInput nowrap hasSeled" @click="datePicker" v-else>
+						{{visitTime}}
+					</view>
 				</view>
 			</view>
 			<view class="recordAddItem">
 				<view class="recordAddItemHead">
-					日志描述:
+					回访内容:
 					<text class="needTag">*</text>
 				</view>
 				<textarea class="recordAddTextArea" @blur="bindTextAreaBlur" placeholder="请输入内容" maxlength="300" placeholder-style="font-size:30rpx;color:#cecece" />
 				</view>
 		</view>
 		<view class="recordAddSubBtn">
-			<button type="warn" class="subBtn" @click="sub">提交日志</button>
+			<button type="warn" class="subBtn" @click="sub">提交回访</button>
 		</view>
+		<w-picker
+			mode="date" 
+			startYear="2017" 
+			endYear="2029"
+			:current="false"
+			fields="second"
+			@confirm="onConfirmDate"
+			:disabled-after="false"
+			ref="date"
+			themeColor="#f00"
+		></w-picker>
 	</view>
+	
 </template>
 
 <script>
+	import wPicker from "@/components/w-picker/w-picker.vue";
 	export default {
+		 components:{
+		        wPicker
+		    },
 		data() {
 			return {
-				userId:0,
-				userName:"请选择客户",
-				goodsId:0,
-				goodsName:"请选择房源",
-				salesmanId:0,
-				salesman:"业务员姓名",
-				textArea:"",
+				oriVisitId:0,
+				customerName:"",
+				customerMobile:'',
+				employeeName:'',
+				houseName:"",
+				visitTime:"",
+				content:"",
+				paimaiId:"",
+				houseSource:"",
 				hasclickback:false
 			}
 		},
@@ -76,33 +103,64 @@
 			console.log(this.userId)
 		},
 		methods: {
-			getRate(e){
-				const that = this;
-				that.rate=e.value
-			},
 			bindTextAreaBlur(e){
-				this.textArea=e.detail.value;
+				this.content=e.detail.value;
+			},
+			datePicker: function(e) {
+				const that = this;
+				that.$refs.date.show();
+			},
+			onConfirmDate(val){
+				const that= this;
+				that.visitTime=val.result;
 			},
 			sub(){
 				const that = this;
 				setTimeout(()=>{
-					if(that.userId==0||that.goodsId==0||that.salesmanId==0||that.textArea==""){
+					if(that.oriVisitId==0||that.content==""||that.visitTime==""){
 						uni.showToast({
 							title:"请输入必填内容",
 							icon:"none"
 						})
 					}
-					else{
-						
+					else{	
 						uni.showModal({
-							content: "日志提交后将不可再次修改，确认提交日志？",
+							content: "回访提交后将不可再次修改，确认提交日志？",
 							confirmText: "确认提交",
 							cancelText: "取消",
 							success: function (res) {
 								if (res.confirm) {
-									uni.showToast({
-										title:"提交成功"
+									uni.showLoading({
+										title:"提交中..."
 									})
+									let param = {
+										oriVisitId: that.oriVisitId,
+										visitTime:that.visitTime,
+										content:that.content
+									}
+									that.$api.returnvisitAdd(param).then(res => {
+										if (res.success) {
+											uni.showToast({
+												title:"提交成功"
+											})
+											setTimeout(()=>{
+												that.$Router.back(1);
+											},1000)	
+											var pages = getCurrentPages(); //当前页
+											var beforePage = pages[pages.length - 2].route; //上个页面
+											if(beforePage=="pages/my/manageNavs/returnVisit/list"){
+												that.prevPageReload();
+											}	
+										} else {
+											uni.showToast({
+												title: res.message,
+												icon: "none"
+											})
+										}
+									})
+									// uni.showToast({
+									// 	title:"提交成功"
+									// })
 								} else if (res.cancel) {
 									
 								}	
@@ -112,21 +170,25 @@
 					}
 				},100)
 			},
-			searchCustomer(){
+			searchVisit(){
 				const that = this;
 				that.$Router.push({
-					path:"/pages/my/manageNavs/searchCustomer"
+					path:"/pages/my/manageNavs/searchVisit"
 				})
 			},
-			searchHouse(){
-				const that = this;
-				that.$Router.push({
-					path:"/pages/my/manageNavs/searchHouse"
-				})
+			prevPageReload(){
+				var pages = getCurrentPages(); //当前页
+				var beforePage = pages[pages.length - 2]; //上个页面
+				// #ifdef H5
+				beforePage.reload()
+				// #endif
+				// #ifndef H5
+				beforePage.onLoad()
+				// #endif
 			},
 			back(){
 				const that = this;
-				if(that.userId!=0||that.goodsId!=0||that.salesmanId!=0||that.textArea!=""){	
+				if(that.oriVisitId!=0||that.content!=""||that.visitTime!=""){	
 					uni.showModal({
 							content: "退出后将不保留已编辑的内容，确认退出日志编辑？",
 							confirmText: "继续编辑",

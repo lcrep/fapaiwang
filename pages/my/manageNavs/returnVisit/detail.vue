@@ -1,17 +1,17 @@
 <template>
 	<view>
-		<view class="recordDetailPage">
+		<view class="recordDetailPage" v-if="result!=null">
 			<view class="recordPersonBox">
 				<view class="recordPersonInfo">
-					<image class="recordPersonPic" mode="aspectFill" src="../../../../static/images/defaultUserPic.png"></image>
+					<image class="recordPersonPic" mode="aspectFill" :src="result.headImgUrl"></image>
 					<view class="recordPersonInfoCont">
-						<view class="recordPersonName">安吉Aj拉的客户</view>
+						<view class="recordPersonName">{{result.employeeName}}的回访</view>
 						<view class="recordTime">
-							2020-12-12 10:12
+							{{result.createTime}}
 						</view>
 					</view>
 				</view>
-				<view class="nowStatus">当前进展</view>
+				<view class="nowStatus" @click="gotoProcess(result.visitId)">当前进展</view>
 			</view>
 			<view class="recordDetailCont">
 				<view class="recordDetailItem">
@@ -24,19 +24,19 @@
 							<uni-icons type="arrowright" size="18" color="#B8B8B8"></uni-icons>
 						</view>
 					</view>
-					<view class="recordDetailText">真实姓名(为空则不显示) 13532554422</view>
+					<view class="recordDetailText">{{result.customerName}}  {{result.customerMobile}}</view>
 				</view>
 				<view class="recordDetailItem">
 					<view class="detailHead">
 						<view class="detailHeadTitle">
 							意向房源:
 						</view>
-						<view class="detailHeadLink">
+						<view class="detailHeadLink" @click="gotoHouse(result.paimaiId,result.houseSource)">
 							<text class="detailHeadLinkLabel">查看房源详情</text>
 							<uni-icons type="arrowright" size="18" color="#B8B8B8"></uni-icons>
 						</view>
 					</view>
-					<view class="recordDetailText">武汉市江夏区经济开发区江夏大道东武汉市江夏区经济开发区江夏大道东武汉市江夏区经济开发区江夏大道东可完全显示</view>
+					<view class="recordDetailText">{{result.houseName}}</view>
 				</view>
 				<view class="recordDetailItem">
 					<view class="detailHead">
@@ -44,7 +44,7 @@
 							业务员:
 						</view>
 					</view>
-					<view class="recordDetailText">份额分</view>
+					<view class="recordDetailText">{{result.customerName}}</view>
 				</view>
 				<view class="recordDetailItem">
 					<view class="detailHead">
@@ -52,7 +52,7 @@
 							回访内容:
 						</view>	
 					</view>
-					<view class="recordDetailText">武汉市江夏区经济开发区江夏大道东武汉市江夏区经济开发区江夏大道东武汉市江夏区经济开发区江夏大道东可完全显示</view>
+					<view class="recordDetailText">{{result.content}}</view>
 				</view>
 			</view>
 		</view>
@@ -67,10 +67,52 @@
 	export default {
 		data() {
 			return {
-
+				id:"",
+				result:null
 			}
 		},
+		onLoad(options) {
+			let that = this;
+			that.id = options.id;			
+			that.detail(options.id);
+		},
 		methods: {
+			detail(id){
+				const that = this;
+				let param = {
+					id: id
+				}
+				that.$api.returnvisitDetail(param).then(res => {
+					if (res.success) {
+						let result = res.datas;
+						result.headImgUrl = result.headImgUrl?result.headImgUrl:"../../../../static/images/defaultUserPic.png";
+						that.result = result;
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			gotoHouse(paimaiId,houseSource) {
+				this.$Router.push({
+					path: "/pages/home/goodsDetail",
+					query:{
+						paimaiId:paimaiId,
+						houseSource:houseSource
+					}
+				})
+			},
+			gotoProcess(id){
+				const that =this;
+				that.$Router.push({
+					path:"/pages/my/manageNavs/process/index",
+					query:{
+						id:id
+					}
+				})
+			},
 			gotoAdd(){
 				const that =this;
 				that.$Router.push({

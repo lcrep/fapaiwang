@@ -1,5 +1,5 @@
 <template>
-	<view class="container">
+	<view class="container" v-if="!hasLogin||userData">
 		<!-- #ifdef APP-PLUS -->
 		<view class="status">
 			<view class="top-view"></view>
@@ -21,13 +21,13 @@
 			</view>
 		</view>
 		<view class="userBox" v-else>
-			<image src="../../static/images/logo.png" mode="aspectFill" class="blurBg"></image>
+			<image :src="userData.headImgUrl" mode="aspectFill" class="blurBg"></image>
 			<view class="userBoxShadow"></view>
 			<view class="userInfoBox">
-				<image class="userPhoto" src="../../static/images/defaultUserPic.png"></image>
+				<image class="userPhoto" :src="userData.headImgUrl"></image>
 				<view class="userInfoBoxCont">
 					<view class="userName nowrap">
-						{{userInfo.mobile}}
+						{{userData.nickName}}
 					</view>
 					<view class="userInfoBoxBot">
 						<view class="userInfoBtn" @click="edit">
@@ -53,19 +53,19 @@
 				</uni-grid-item>
 			</uni-grid>
 		</view>
-		<view class="userBtnsBox2" v-if="hasLogin">
+		<view class="userBtnsBox2" v-if="hasLogin&&userType==2">
 			<uni-grid :column="4" :show-border="false" @change="btnTap2">
 				<uni-grid-item v-for="(item,index) in navBtns2" :key="index" :index="index">
 					<view class="grid-item-box">
-						<image class="navBtnImg" :src="item.src" mode="aspectFill" />
+						<image class="navBtnImg" :src="item.icon" mode="aspectFill" />
 						<view class="navBtnName">
 							{{item.name}}
 						</view>
 					</view>
 				</uni-grid-item>
 			</uni-grid>
-			<button type="default" class="logoutBtn" @click="logout">退出登录</button>
 		</view>
+		<button type="default" class="logoutBtn"  v-if="hasLogin" @click="logout">退出登录</button>
 	</view>
 </template>
 
@@ -78,6 +78,8 @@
 		computed: mapState(['hasLogin', 'userInfo']),
 		data() {
 			return {
+				userData:"",
+				userType:1,
 				navBtns1: [{
 						name: "我的收藏",
 						src: '../../static/images/Btns/publicBtn1.png',
@@ -91,7 +93,7 @@
 					{
 						name: "交易记录",
 						src: '../../static/images/Btns/publicBtn3.png',
-						router: '/pages/my/navs/recordTypeB'
+						router: '/pages/my/navs/recordTypeC'
 
 					},
 					{
@@ -100,81 +102,197 @@
 						router: '/pages/my/navs/feedback'
 					}
 				],
-				navBtns2: [{
-						name: "日志",
-						src: '../../static/images/Btns/myBtn1.png',
-						router: '/pages/my/manageNavs/journal/list'
-					},
-					{
-						name: "回访",
-						src: '../../static/images/Btns/myBtn2.png',
-						router: '/pages/my/manageNavs/returnVisit/list'
-					},
-					{
-						name: "合同",
-						src: '../../static/images/Btns/myBtn3.png',
-						router: '/pages/my/manageNavs/contract/list'
+				 navBtns2: [
+				//	 {
+				// 		name: "日志",
+				// 		src: '../../static/images/Btns/myBtn1.png',
+				// 		router: '/pages/my/manageNavs/journal/list'
+				// 	},
+				// 	{
+				// 		name: "回访",
+				// 		src: '../../static/images/Btns/myBtn2.png',
+				// 		router: '/pages/my/manageNavs/returnVisit/list'
+				// 	},
+				// 	{
+				// 		name: "合同",
+				// 		src: '../../static/images/Btns/myBtn3.png',
+				// 		router: '/pages/my/manageNavs/contract/list'
 						
-					},
-					{
-						name: "付款标记",
-						src: '../../static/images/Btns/myBtn4.png',
-						router: '/pages/my/manageNavs/payTag/list'
-					},
-					{
-						name: "尽职调查",
-						src: '../../static/images/Btns/myBtn5.png',
-						router: '/pages/my/manageNavs/inquire/list'
-					},
-					{
-						name: "贷款",
-						src: '../../static/images/Btns/myBtn6.png',
-						router: '/pages/my/manageNavs/loan/list'
-					},
-					{
-						name: "参拍",
-						src: '../../static/images/Btns/myBtn7.png',
-						router: '/pages/my/manageNavs/hasJoin/list'
-					},
-					{
-						name: "办理过户",
-						src: '../../static/images/Btns/myBtn8.png',
-						router: '/pages/my/manageNavs/transfer/list'
-					},
-					{
-						name: "腾退",
-						src: '../../static/images/Btns/myBtn9.png',
-						router: '/pages/my/manageNavs/vacate/list'
-					},
-					{
-						name: "交房",
-						src: '../../static/images/Btns/myBtn10.png',
-						router: '/pages/my/manageNavs/handed/list'
-					},
-					{
-						name: "公告",
-						src: '../../static/images/Btns/myBtn11.png',
-						router: '/pages/my/manageNavs/notice/list'
-					},
-					{
-						name: "员工",
-						src: '../../static/images/Btns/myBtn12.png',
-						router: '/pages/my/manageNavs/staff/list'
-					},
-					{
-						name: "兑换名额",
-						src: '../../static/images/Btns/myBtn13.png',
-						router: '/pages/my/manageNavs/exchange/index'
-					}
+				// 	},
+				// 	{
+				// 		name: "付款标记",
+				// 		src: '../../static/images/Btns/myBtn4.png',
+				// 		router: '/pages/my/manageNavs/payTag/list'
+				// 	},
+				// 	{
+				// 		name: "尽职调查",
+				// 		src: '../../static/images/Btns/myBtn5.png',
+				// 		router: '/pages/my/manageNavs/inquire/list'
+				// 	},
+				// 	{
+				// 		name: "贷款",
+				// 		src: '../../static/images/Btns/myBtn6.png',
+				// 		router: '/pages/my/manageNavs/loan/list'
+				// 	},
+				// 	{
+				// 		name: "参拍",
+				// 		src: '../../static/images/Btns/myBtn7.png',
+				// 		router: '/pages/my/manageNavs/hasJoin/list'
+				// 	},
+				// 	{
+				// 		name: "办理过户",
+				// 		src: '../../static/images/Btns/myBtn8.png',
+				// 		router: '/pages/my/manageNavs/transfer/list'
+				// 	},
+				// 	{
+				// 		name: "腾退",
+				// 		src: '../../static/images/Btns/myBtn9.png',
+				// 		router: '/pages/my/manageNavs/vacate/list'
+				// 	},
+				// 	{
+				// 		name: "交房",
+				// 		src: '../../static/images/Btns/myBtn10.png',
+				// 		router: '/pages/my/manageNavs/handed/list'
+				// 	},
+				// 	{
+				// 		name: "公告",
+				// 		src: '../../static/images/Btns/myBtn11.png',
+				// 		router: '/pages/my/manageNavs/notice/list'
+				// 	},
+				// 	{
+				// 		name: "员工",
+				// 		src: '../../static/images/Btns/myBtn12.png',
+				// 		router: '/pages/my/manageNavs/staff/list'
+				// 	},
+				// 	{
+				// 		name: "兑换名额",
+				// 		src: '../../static/images/Btns/myBtn13.png',
+				// 		router: '/pages/my/manageNavs/exchange/index'
+				// 	}
+				// 
 				]
 			}
 		},
-		created() {
-			const that = this;
-
+		onLoad() {
+			if(this.hasLogin){
+				this.getUserInfo();
+				
+			}
+		},
+		onShow() {
+			if(this.hasLogin){
+				setTimeout(()=>{
+					this.getUserInfo();
+				},300)			
+			}
 		},
 		methods: {
 			...mapMutations(['logout']),
+			reload(){
+				if(this.hasLogin){
+					this.getUserInfo();
+				}
+			},
+			getUserInfo(){
+				const that = this;
+				that.$api.userinfoQuery({}).then(res => {
+					if (res.success) {
+						let result =res.datas;
+						result.headImgUrl = result.headImgUrl?result.headImgUrl:'../../static/images/defaultUserPic.png';
+						result.nickName=result.nickName?result.nickName:result.mobile;
+						that.userType = result.userType;
+						if(result.userType==2){
+							that.queryjiumenu();
+							that.navBtns1[2].router="/pages/my/navs/recordTypeB";
+						}
+						else{
+							that.navBtns1[2].router="/pages/my/navs/recordTypeC";
+						}
+						that.userData=result;
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			queryjiumenu(){
+				const that = this;
+				that.$api.queryjiumenu().then(res => {
+					if (res.success) {
+						let result = res.datas;
+						for(var i in result){
+							if(result[i].code=="log"){
+								//回访
+								result[i].icon="../../static/images/Btns/myBtn1.png";
+								result[i].router="/pages/my/manageNavs/journal/list";
+							}
+							else if(result[i].code=="return_visit"){
+								//回访
+								result[i].icon="../../static/images/Btns/myBtn2.png";
+								result[i].router="/pages/my/manageNavs/returnVisit/list";
+							}
+							else if(result[i].code=="contract"){
+								//合同
+								result[i].icon="../../static/images/Btns/myBtn3.png";
+								result[i].router="/pages/my/manageNavs/contract/list";
+							}
+							else if(result[i].code=="pay"){
+								//付款标记
+								result[i].icon="../../static/images/Btns/myBtn4.png";
+								result[i].router="/pages/my/manageNavs/payTag/list";
+							}
+							else if(result[i].code=="diligence"){
+								//尽职调查
+								result[i].icon="../../static/images/Btns/myBtn5.png";
+								result[i].router="/pages/my/manageNavs/inquire/list";
+							}
+							else if(result[i].code=="loan"){
+								//贷款
+								result[i].icon="../../static/images/Btns/myBtn6.png";
+								result[i].router="/pages/my/manageNavs/loan/list";
+							}
+							else if(result[i].code=="auction"){
+								//参拍
+								result[i].icon="../../static/images/Btns/myBtn7.png";
+								result[i].router="/pages/my/manageNavs/hasJoin/list";
+							}
+							else if(result[i].code=="transfer"){
+								//办理过户
+								result[i].icon="../../static/images/Btns/myBtn8.png";
+								result[i].router="/pages/my/manageNavs/transfer/list";
+							}
+							else if(result[i].code=="retreat"){
+								//腾退
+								result[i].icon="../../static/images/Btns/myBtn9.png";
+								result[i].router="/pages/my/manageNavs/vacate/list";
+							}
+							else if(result[i].code=="over"){
+								//交房
+								result[i].icon="../../static/images/Btns/myBtn10.png";
+								result[i].router="/pages/my/manageNavs/handed/list";
+							}
+							else if(result[i].code=="notice"){
+								//公告
+								result[i].icon="../../static/images/Btns/myBtn11.png";
+								result[i].router="/pages/my/manageNavs/notice/list";
+							}
+							else if(result[i].code=="employee"){
+								//员工管理
+								result[i].icon="../../static/images/Btns/myBtn12.png";
+								result[i].router="/pages/my/manageNavs/staff/list";
+							}
+						}
+						that.navBtns2 = result;
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
 			btnTap1(e) {
 				this.$Router.push({
 					path: this.navBtns1[e.detail.index].router
@@ -362,7 +480,7 @@
 	}
 
 	.logoutBtn {
-		margin: 50rpx 20rpx 0 20rpx;
+		margin: 30rpx 50rpx;
 		font-size: 24rpx;
 		color: #B8B8B8;
 		padding: 10rpx;

@@ -76,8 +76,12 @@
 			},
 			next() {
 				let that = this;
-				uni.navigateTo({
-					url: './forgetpwd2?code='+that.code+'&mobile='+that.mobile
+				that.$Router.push({
+					path:"/pages/my/forgetpwd2",
+					query:{
+						code:that.code,
+						mobile:that.mobile
+					}
 				})
 			}
 		}

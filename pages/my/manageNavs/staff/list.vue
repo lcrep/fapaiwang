@@ -14,9 +14,9 @@
 			<view class="compInfoBox">
 				<image src="../../../../static/images/logo.png" mode="aspectFill" class="compPic"></image>
 				<view class="compInfoCont">
-					<view class="compName nowrap">公司名称描述超过1行显示…</view>
+					<view class="compName nowrap">法拍网</view>
 					<view class="staffNum">
-						共4名员工
+						共{{total}}名员工
 					</view>
 				</view>
 				<view class="czBtn" @click="editBtn" v-if="!isEdit">
@@ -26,9 +26,9 @@
 					取消
 				</view>
 			</view>
-			<view class="customerItem" v-for="(item,index) in staffList" :key="index">
-				<view class="staffInfoBox"  @click="gotoDetail(item.id)">
-					<image :src="item.img" class="customerImg"></image>
+			<view class="customerItem" v-for="(item,index) in list" :key="index">
+				<view class="staffInfoBox" @click="gotoDetail(item.id)">
+					<image :src="item.headImgUrl" class="customerImg"></image>
 					<view class="customerInfo">
 						<view class="customerNickName">
 							{{item.name}}
@@ -39,13 +39,13 @@
 					</view>
 				</view>
 				<view class="staffEditBtns" v-if="isEdit">
-					<image src="../../../../static/images/addia.png" class="staffItemBtn"  @click="gotoDistri(item.id)"></image>
-					<image src="../../../../static/images/edit.png" class="staffItemBtn"  @click="czBtn(item.id,index)"></image>
-					
+					<image src="../../../../static/images/addia.png" class="staffItemBtn" @click="gotoDistri(item.id)"></image>
+					<image src="../../../../static/images/edit.png" class="staffItemBtn" @click="czBtn(item.id,index)"></image>
+
 				</view>
 			</view>
 		</view>
-		<uni-load-more iconType="snow" :status="status" />
+		<uni-load-more iconType="snow" :status="loadStatus" />
 		<view class="recordFixBtn" @click="gotoAdd">
 			<uni-icons type="compose" class="fixBtnIcon" color="#ffffff" size="20"></uni-icons>
 			<text class="fixBtnText">新增</text>
@@ -57,9 +57,12 @@
 	export default {
 		data() {
 			return {
-				status: "loading",
-				searchVal: '',
-				canSearch: true,
+				loadStatus: "more",
+				pageNum: 1,
+				pageSize: 10,
+				total: "",
+				list: [],
+				searchVal: "",
 				timer: null,
 				isEdit: false,
 				staffList: [{
@@ -95,10 +98,47 @@
 				]
 			}
 		},
+		onLoad() {
+			this.clearList();
+			this.getList(1);
+		},
 		methods: {
-			searchCancel() {
-				this.searchVal = "";
-				uni.hideKeyboard();
+			reload() {
+				this.clearList();
+				this.getList(1);
+			},
+			getList(startPage) {
+				const that = this;
+				let param = {
+					name: that.searchVal,
+					startPage: startPage,
+					pageSize: that.pageSize,
+				}
+				that.loadStatus = "loading";
+				that.$api.employeeList(param).then(res => {
+					if (res.success) {
+						let result = res.datas.rows;
+						that.total = res.datas.total;
+						for (var i in result) {
+							result[i].headImgUrl = result[i].headImgUrl ? result[i].headImgUrl :
+								'../../../../static/images/defaultUserPic.png';
+							that.list.push(result[i]);
+						}
+						let total = res.datas.total;
+						let totalPageNum = Math.ceil(total / that.pageSize);
+						if (parseInt(totalPageNum) > parseInt(that.pageNum)) {
+							that.pageNum++;
+							that.loadStatus = "more";
+						} else {
+							that.loadStatus = "noMore";
+						}
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
 			},
 			editBtn() {
 				this.isEdit = !this.isEdit
@@ -107,7 +147,7 @@
 				const that = this;
 				clearTimeout(that.timer);
 				that.timer = setTimeout(function() {
-					console.log(e.detail.value)
+					that.search();
 				}, 800);
 			},
 			gotoDetail(id) {
@@ -119,7 +159,7 @@
 					}
 				})
 			},
-			gotoDistri(id){
+			gotoDistri(id) {
 				const that = this;
 				that.$Router.push({
 					path: "/pages/my/manageNavs/staff/distribution",
@@ -128,38 +168,81 @@
 					}
 				})
 			},
-			czBtn(id,index) {
+			czBtn(id, index) {
 				const that = this;
 				uni.showActionSheet({
 					itemList: ['编辑员工资料', '删除员工'],
 					success: (e) => {
 						if (e.tapIndex == 0) {
-							that.gotoEdit();
+							that.gotoEdit(id);
 						} else if (e.tapIndex == 1) {
 							uni.showModal({
 								content: "确定要删除员工？",
 								confirmText: "确认删除",
 								cancelText: "取消",
-								success: function (res) {
+								success: function(res) {
 									if (res.confirm) {
-										that.staffList.splice(index,1);
-										uni.showToast({
-											title:"删除成功"
-										})
-									} else if (res.cancel) {
+										that.delEmployee(id, index);
 										
-									}	
+									} else if (res.cancel) {
+
+									}
 								}
-							});	
+							});
 						}
 					}
 				})
 			},
-			gotoEdit() {
-				this.$Router.push({
-					path: "/pages/my/manageNavs/staff/edit"
+			delEmployee(id,index) {
+				const that = this;
+				let param = {
+					id:id
+				}
+				that.$api.employeeDelete(param).then(res => {
+					if (res.success) {
+						that.list.splice(index, 1);
+						uni.showToast({
+							title: "删除成功"
+						})
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
 				})
-			}
+			},
+			gotoEdit(id) {
+				this.$Router.push({
+					path: "/pages/my/manageNavs/staff/edit",
+					query:{
+						id:id
+					}
+				})
+			},
+			gotoAdd() {
+				this.$Router.push({
+					path: "/pages/my/manageNavs/staff/add"
+				})
+			},
+			clearList() {
+				const that = this;
+				that.pageNum = 1;
+				that.total = "";
+				that.list = [];
+			},
+			search() {
+				const that = this;
+				that.clearList();
+				that.getList(1);
+			},
+			searchCancel() {
+				const that = this;
+				that.searchVal = "";
+				that.clearList();
+				that.getList(1);
+				uni.hideKeyboard();
+			},
 		}
 	}
 </script>
@@ -249,15 +332,18 @@
 		transition: all linear 0.1s;
 		position: relative;
 	}
-	.staffInfoBox{
+
+	.staffInfoBox {
 		flex: 1;
 		display: flex;
 		align-items: center;
 	}
-	.staffEditBtns{
+
+	.staffEditBtns {
 		width: 144rpx;
 		height: 56rpx;
 	}
+
 	.staffItemBtn {
 		width: 56rpx;
 		height: 56rpx;

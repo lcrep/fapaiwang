@@ -78,21 +78,21 @@
 						uni.showLoading({
 							title:"登录中..."
 						})
-						
 						that.$api.login(that.loginInfo).then(res => {
 							uni.hideLoading();
 							if(res.success){
-								
+								var storageData={
+									accessToken:res.datas.accessToken
+								}
+								that.login(storageData);
 								uni.showToast({
 									title: "登录成功",
 									icon: "success"
 								})
-								var storageData={
-									accessToken:res.datas.accessToken,
-									mobile:that.loginInfo.mobile
-								}
-								that.login(storageData);
-								that.goback();
+								setTimeout(()=>{
+									that.goback();
+								},400)
+								
 							}
 							else{
 								uni.showToast({
@@ -107,7 +107,6 @@
 			},
 			goback(){
 				const that = this;
-					
 				if(that.path){
 						var path = decodeURIComponent(that.path);
 						this.$Router.replace({
@@ -116,24 +115,36 @@
 						})
 				}
 				else{
-					this.$Router.back(1)
+					uni.switchTab({
+					    url: '/pages/my/index',
+					    success: function(e) {
+					       // #ifdef H5
+					       var pages = getCurrentPages(); //当前页
+					       var beforePage = pages[pages.length - 2]; //上个页面
+					       beforePage.reload()
+					       // #endif
+					       // #ifndef H5
+					       var page = getCurrentPages()[0]
+					       if (page == undefined || page == null) return;
+					       page.onLoad()
+					       // #endif
+					    }
+					});
+					// this.$Router.pushTab({
+					// 	path:"/pages/my/index"
+					// })
 				}
 			},
 			forgetPassword(){
 				let that = this;
-				uni.navigateTo({
-					url:'./forgetpwd'
+				that.$Router.push({
+					path:"/pages/my/forgetpwd"
 				})
 			},
 			register(){
 				let that = this;
-				uni.navigateTo({
-					url:'./register'
-				})
-			},
-			back() {
-				uni.navigateBack({
-					delta:1
+				that.$Router.push({
+					path:"/pages/my/register"
 				})
 			},
 			  ...mapMutations(['login'])
