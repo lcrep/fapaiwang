@@ -442,6 +442,14 @@ const my = [
 			title: '聊天',
 			needLogin:true
 		},
+	},
+	{
+		path: '/pages/my/otherSelfPage',
+		name: 'otherSelfPage',
+		meta: {
+			title: '个人主页',
+			needLogin:true
+		},
 	}
 ]
 export default my

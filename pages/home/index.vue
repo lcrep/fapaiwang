@@ -427,6 +427,7 @@
 					that.getRecommend();
 				}
 				that.getHouseList(that.optionType, that.provinceId, that.cityId, that.pageNum);
+				that.noticeHasunread();
 				that.isFresh = true;
 				setTimeout(() => {
 					uni.stopPullDownRefresh();

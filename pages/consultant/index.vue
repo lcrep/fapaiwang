@@ -46,17 +46,25 @@
 			return {
 				chatList: [],
 				isLogin: false,
+				isFresh:false
 			}
 		},
-		created() {
+		onShow() {
+			console.log("onShow");
 			var accessToken = uni.getStorageSync('userInfo').accessToken;
 			if (accessToken) {
 				this.getChatList();
 				this.isLogin = true;
 			} else {
-
+			
 			}
-
+		},
+		onTabItemTap(){
+			var accessToken = uni.getStorageSync('userInfo').accessToken;
+			if (accessToken) {
+				this.getChatList();
+				this.isLogin = true;
+			} 
 		},
 		methods: {
 			gotoChart(myId,toId) {
@@ -74,6 +82,12 @@
 				const that = this;
 				that.$api.mychatList({}).then(res => {
 					if (res.success) {
+						if (that.isFresh) {
+							setTimeout(() => {
+								uni.stopPullDownRefresh();
+							}, 1000)
+							that.isFresh = false;
+						}
 						let result = res.datas.rows;
 						for (var i in result) {
 							result[i].chatUserHeadImg = result[i].chatUserHeadImg ? result[i].chatUserHeadImg :
@@ -88,6 +102,14 @@
 					}
 				})
 			},
+			onPullDownRefresh: function() {
+				const that = this;
+				that.getChatList();
+				that.isFresh = true;
+				setTimeout(() => {
+					uni.stopPullDownRefresh();
+				}, 10000)
+			}
 		}
 	}
 </script>

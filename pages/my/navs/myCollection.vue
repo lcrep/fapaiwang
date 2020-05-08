@@ -3,7 +3,8 @@
 		<view class="searchBox">
 			<view class="searchInputBox">
 				<uni-icons color="#f44a33" class="searchIcon" size="18" type="search" />
-				<input class="uni-input"  placeholder="搜索标的物名称" confirm-type="search" placeholder-style="font-size:26rpx;color:#B8B8B8;" v-model="searchVal" @confirm="search" />
+				<input class="uni-input" placeholder="搜索标的物名称" confirm-type="search" placeholder-style="font-size:26rpx;color:#B8B8B8;"
+				 v-model="searchVal" @confirm="search" />
 			</view>
 			<picker mode="multiSelector" @columnchange="cityChange" @change="citySel" :value="cityIndex" :range="cities"
 			 range-key="name">
@@ -14,7 +15,7 @@
 		</view>
 		<view class="content">
 			<view class="goodsBox">
-<view class="goodsList" v-if="total!==0">
+				<view class="goodsList" v-if="total!==0">
 					<view class="goodsItem" v-for="(item,index) in houseList" :key="index" @click="itemTap(item.paimaiId,item.houseSource)">
 						<view class="goodsPic">
 							<text class="goodsTag">{{item.paimaiTimesText}}</text>
@@ -58,11 +59,11 @@
 				theCity: '',
 				loadStatus: 'more',
 				pageNum: 1,
-				total:'',
-				pageSize:10,
+				total: '',
+				pageSize: 10,
 				cityIndex: [0, 0],
 				cities: [],
-				houseList:[]
+				houseList: []
 			}
 		},
 		onLoad(options) {
@@ -109,7 +110,7 @@
 						break
 				}
 				this.$forceUpdate()
-			
+
 			},
 			citySel() {
 				const that = this;
@@ -127,7 +128,7 @@
 				that.clearList();
 				that.getHouseList(that.provinceId, that.cityId, 1);
 			},
-			search(){
+			search() {
 				const that = this;
 				that.clearList();
 				that.getHouseList(that.provinceId, that.cityId, 1);
@@ -136,19 +137,19 @@
 			getHouseList(provinceId, cityId, pageNo) {
 				const that = this;
 				let param = {
-					title:that.searchVal,
+					title: that.searchVal,
 					provinceId: provinceId,
 					cityId: cityId,
 					pageNo: pageNo
 				}
-				that.loadStatus="loading";
+				that.loadStatus = "loading";
 				that.$api.collectList(param).then(res => {
 					if (res.success) {
-						if(that.isFresh){
-							setTimeout(()=>{
+						if (that.isFresh) {
+							setTimeout(() => {
 								uni.stopPullDownRefresh();
-							},1000)
-							that.isFresh=false;	
+							}, 1000)
+							that.isFresh = false;
 						}
 						let result = res.datas.list;
 						for (var i in result) {
@@ -167,27 +168,26 @@
 							var endTime = new Date(result[i].endTime).getTime();
 							if (startTime > nowTime) {
 								result[i].paimaiStatus = 1; //未开始	
-								result[i].timeText = that.$utils.formatTime(startTime,'MM月DD日 hh:mm');
+								result[i].timeText = that.$utils.formatTime(startTime, 'MM月DD日 hh:mm');
 							} else if (nowTime >= startTime && nowTime <= endTime) {
 								result[i].paimaiStatus = 2; //拍卖中
 								result[i].timeText = that.$utils.timeCount(endTime);
 							} else {
 								result[i].paimaiStatus = 3; //已结束
-								result[i].timeText = that.$utils.formatTime(endTime,'YYYY年MM月DD日');
+								result[i].timeText = that.$utils.formatTime(endTime, 'YYYY年MM月DD日');
 							}
 							that.houseList.push(result[i])
 						}
 						let total = res.datas.totalCount;
-						that.total=total;
-						let totalPageNum =Math.ceil(total/that.pageSize);
-						if(parseInt(totalPageNum)>parseInt(that.pageNum)){
+						that.total = total;
+						let totalPageNum = Math.ceil(total / that.pageSize);
+						if (parseInt(totalPageNum) > parseInt(that.pageNum)) {
 							that.pageNum++;
-							that.loadStatus="more";
+							that.loadStatus = "more";
+						} else {
+							that.loadStatus = "noMore";
 						}
-						else{
-							that.loadStatus="noMore";
-						}
-						
+
 					} else {
 						uni.showToast({
 							title: res.message,
@@ -196,11 +196,11 @@
 					}
 				})
 			},
-			clearList(){
+			clearList() {
 				const that = this;
-				that.pageNum=1;
-				that.total="";
-				that.houseList=[];
+				that.pageNum = 1;
+				that.total = "";
+				that.houseList = [];
 			},
 			itemTap(paimaiId, houseSource) {
 				this.$Router.push({
@@ -211,29 +211,30 @@
 					}
 				})
 			},
-			 ...mapMutations(['updateAddress'])
+			...mapMutations(['updateAddress'])
 		}
 	}
 </script>
 
 <style>
 	/* #ifndef H5 */
-	.searchBox{
+	.searchBox {
 		padding: 0 30rpx;
 		display: flex;
 		align-items: center;
 		position: fixed;
 		width: 100%;
 		height: 80rpx;
-		top: 0;	
+		top: 0;
 		background-color: #FFFFFF;
 		z-index: 999;
 		box-sizing: border-box;
 		/* top:calc(44px + env(safe-area-inset-top)); */
 	}
+
 	/* #endif */
 	/* #ifdef H5 */
-	.searchBox{
+	.searchBox {
 		padding: 0 30rpx;
 		display: flex;
 		align-items: center;
@@ -243,17 +244,19 @@
 		z-index: 999;
 		background-color: #FFFFFF;
 		box-sizing: border-box;
-		top:calc(44px + env(safe-area-inset-top));
+		top: calc(44px + env(safe-area-inset-top));
 	}
+
 	/* #endif */
-	.searchInputBox{
+	.searchInputBox {
 		margin-left: 0;
 	}
-	.content{
+
+	.content {
 		padding-top: 80rpx;
 	}
-	.goodsBox{
+
+	.goodsBox {
 		padding: 30rpx 30rpx 0 30rpx;
 	}
-	
 </style>

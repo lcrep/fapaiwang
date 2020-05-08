@@ -102,32 +102,134 @@
 		data() {
 			return {
 				tagIndex:0,
-				status: 'loading',
+				pageSize: 10,
+				loadStatus: 'more',
+				flowStatus:'',
+				pageNum: 1,
+				total: "",
+				list:[],
 				tags: [{
-					name: "全部"
+					name: "全部",
+					flowStatus:""
 				}, {
-					name: "咨询"
+					name: "咨询",
+					flowStatus:10
 				}, {
-					name: "签约"
+					name: "签约",
+					flowStatus:20
 				}, {
-					name: "尽职调查"
+					name: "尽职调查",
+					flowStatus:30
 				}, {
-					name: "贷款"
+					name: "贷款",
+					flowStatus:40
 				}, {
-					name: "参拍中"
+					name: "参拍中",
+					flowStatus:50
 				}, {
-					name: "办理过户"
+					name: "办理过户",
+					flowStatus:60
 				}, {
-					name: "腾退"
+					name: "腾退",
+					flowStatus:70
 				}, {
-					name: "交房"
+					name: "交房",
+					flowStatus:80
 				}, ]
 			}
 		},
+		onLoad() {
+			this.getList(1);
+		},
+		onReachBottom() {
+			const that = this;
+			console.log("onReachBottom");
+			if (that.loadStatus == "noMore") {
+				return;
+			} else if (that.pageNum != 1) {
+				that.getList(that.pageNum);
+			}
+		},
 		methods: {
-			tagSel(index){
+			getList(startPage) {
+				const that = this;
+				let param = {
+					flowStatus: that.flowStatus,
+					startPage: startPage,
+					pageSize: that.pageSize
+				}
+				that.loadStatus = "loading";
+				that.$api.housevisitList(param).then(res => {
+					if (res.success) {
+						let result = res.datas.rows;
+						for(var i in result){
+							result[i].headImgUrl = result[i].headImgUrl?result[i].headImgUrl:'../../../static/images/defaultUserPic.png';
+							var flowStatusText;
+							if(result[i].flowStatus==10){
+								flowStatusText="咨询";
+							}
+							else if(result[i].flowStatus==20){
+								flowStatusText="签约";
+							}
+							else if(result[i].flowStatus==30){
+								flowStatusText="尽职调查";
+							}
+							else if(result[i].flowStatus==40){
+								flowStatusText="贷款";
+							}
+							else if(result[i].flowStatus==50){
+								flowStatusText="拍卖中";
+							}
+							else if(result[i].flowStatus==60){
+								flowStatusText="办理过户";
+							}
+							else if(result[i].flowStatus==70){
+								flowStatusText="腾退";
+							}
+							else if(result[i].flowStatus==80){
+								flowStatusText="交房";
+							}
+							result[i].flowStatusText = flowStatusText;
+							that.list.push(result[i]);
+						}
+						let total = res.datas.total;
+						that.total = total;
+			
+						let totalPageNum = Math.ceil(total / that.pageSize);
+						if (parseInt(totalPageNum) > parseInt(that.pageNum)) {
+							that.pageNum++;
+							that.loadStatus = "more";
+						} else {
+							that.loadStatus = "noMore";
+						}
+			
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			clearList() {
+				const that = this;
+				that.pageNum = 1;
+				that.total = "";
+				that.list = [];
+			},
+			gotoProcess(id){
+				const that =this;
+				that.$Router.push({
+					path:"/pages/my/manageNavs/process/index",
+					query:{
+						id:id
+					}
+				})
+			},
+			tagSel(index,flowStatus){
 				const that = this;
 				that.tagIndex=index;
+				that.flowStatus=flowStatus;
 			}
 		}
 	}

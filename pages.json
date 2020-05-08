@@ -30,7 +30,8 @@
 		{
 			"path": "pages/consultant/index",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
 			}
 		}, {
 			"path": "pages/my/index",
@@ -383,6 +384,12 @@
             "path" : "pages/my/manageNavs/notice/edit",
             "style" : {
 				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/my/otherSelfPage",
+            "style" : {
+				"navigationBarTitleText": "个人主页"
 			}
         }
     ],

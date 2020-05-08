@@ -8,9 +8,6 @@
 				<view class="userName nowrap">
 					{{userData.nickName}}
 				</view>
-				<view class="userInfoBtn" @click="edit">
-					<text class="editIcon"></text>编辑资料
-				</view>
 			</view>
 		</view>
 		<view :class="{'navBox':true,'navFix':scrollTop>scrolltag}">
@@ -85,6 +82,7 @@
 	export default {
 		data() {
 			return {
+				id:"",
 				current: 0,
 				swiperHeight: 0,
 				scrollTop: 0,
@@ -103,8 +101,9 @@
 				pageSize: 10,
 			}
 		},
-		onLoad() {
+		onLoad(options) {
 			const that = this;
+			that.id = options.id;
 			that.getUserInfo();
 			that.getCollectList(1);
 			that.getBrowsesList(1);
@@ -146,7 +145,10 @@
 		methods: {
 			getUserInfo() {
 				const that = this;
-				that.$api.userinfoQuery({}).then(res => {
+				let param={
+					id:that.id
+				}
+				that.$api.userinfoByid(param).then(res => {
 					if (res.success) {
 						let result = res.datas;
 						result.headImgUrl = result.headImgUrl ? result.headImgUrl : '../../static/images/defaultUserPic.png';
@@ -163,7 +165,8 @@
 			getCollectList(pageNo) {
 				const that = this;
 				let param = {
-					pageNo: pageNo
+					pageNo: pageNo,
+					appUserId:that.id
 				}
 				that.loadStatus1 = "loading";
 				that.$api.collectList(param).then(res => {
@@ -218,7 +221,8 @@
 				const that = this;
 				let param = {
 					pageNo: pageNo,
-					pageSize: that.pageSize
+					pageSize: that.pageSize,
+					appUserId:that.id
 				}
 				that.loadStatus2 = "loading";
 				that.$api.browsesList(param).then(res => {
