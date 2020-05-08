@@ -138,6 +138,7 @@
 								flowStatusText="交房";
 							}
 							result[i].flowStatusText = flowStatusText;
+							
 							that.list.push(result[i]);
 						}
 						let total = res.datas.total;
@@ -178,6 +179,8 @@
 				const that = this;
 				that.tagIndex=index;
 				that.flowStatus=flowStatus;
+				that.clearList();
+				that.getList(1);
 			}
 		}
 	}

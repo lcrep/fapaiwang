@@ -10,8 +10,8 @@
 						</view>
 						<view class="goodsInfo">
 							<view class="goodsName">{{item.title}}</view>
-							<view class="goodsAddress nowrap" v-if="item.paimaiStatus==1">次围观/{{item.title}}</view>
-							<view class="goodsAddress nowrap" v-else>{{item.bidCount}}次出价 / 江夏区</view>
+							<view class="goodsAddress nowrap" v-if="item.paimaiStatus==1">{{item.accessNum}}次围观/{{item.title}}</view>
+							<view class="goodsAddress nowrap" v-else>{{item.bidCount}}次出价 / {{item.countyName}}</view>
 							<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">{{item.currentPriceText}}万</text>
 							<text  v-if="item.discount!=10" class="discount">{{item.discount}}折</text></view>
 							<view class="goodsStatus goodsStatus1" v-if="item.paimaiStatus==1"><text class="statusName">未开始</text><text class="goodsTime">{{item.timeText}}开始</text></view>

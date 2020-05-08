@@ -107,9 +107,7 @@
 				chatUserId);
 			that.openSocket(myUserId);
 			that.getHistory(1);
-			// uni.setNavigationBarTitle({
-			// 	title: this.username.your
-			// });
+			
 		},
 		onReady(){
 			 this.videoContext = uni.createVideoContext('myVideo')
@@ -138,6 +136,9 @@
 								'../../static/images/defaultUserPic.png';
 							that.chatUserName = res.datas.oppoUserNickName;
 						}
+						uni.setNavigationBarTitle({
+							title: that.chatUserName
+						});
 						let result = res.datas.rows;
 						for (var i in result) {
 							if (result[i].fromUserId == that.myUserId) {

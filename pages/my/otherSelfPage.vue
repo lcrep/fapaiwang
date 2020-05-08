@@ -11,8 +11,8 @@
 			</view>
 		</view>
 		<view :class="{'navBox':true,'navFix':scrollTop>scrolltag}">
-			<view :class="{'navItem':true,'active':current==0}" @click="changeNav(0)">收藏（20）</view>
-			<view :class="{'navItem':true,'active':current==1}" @click="changeNav(1)">最近浏览（10）</view>
+			<view :class="{'navItem':true,'active':current==0}" @click="changeNav(0)">收藏（{{total1}}）</view>
+			<view :class="{'navItem':true,'active':current==1}" @click="changeNav(1)">最近浏览（{{houseList2.length}}）</view>
 		</view>
 		<view class="navBox" v-if="scrollTop>scrolltag">
 
@@ -28,8 +28,8 @@
 						</view>
 						<view class="goodsInfo">
 							<view class="goodsName">{{item.title}}</view>
-							<view class="goodsAddress nowrap" v-if="item.paimaiStatus==1">次围观/{{item.title}}</view>
-							<view class="goodsAddress nowrap" v-else>{{item.bidCount}}次出价 / 江夏区</view>
+							<view class="goodsAddress nowrap" v-if="item.paimaiStatus==1">{{item.accessNum}}次围观/{{item.title}}</view>
+							<view class="goodsAddress nowrap" v-else>{{item.bidCount}}次出价 / {{item.countyName}}</view>
 							<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">{{item.currentPriceText}}万</text>
 								<text v-if="item.discount!=10" class="discount">{{item.discount}}折</text></view>
 							<view class="goodsStatus goodsStatus1" v-if="item.paimaiStatus==1"><text class="statusName">未开始</text><text
@@ -49,7 +49,7 @@
 				
 			</swiper-item>
 			<swiper-item class="swiper-item">
-				<view class="itemList itemList2">
+				<view class="itemList itemList2" v-if="houseList2.length!==0">
 					<view class="goodsItem" v-for="(item,index) in houseList2" :key="index"  @click="itemTap(item.paimaiId,item.houseSource)">
 						<view class="goodsPic">
 							<text class="goodsTag">{{item.paimaiTimesText}}</text>
@@ -57,8 +57,8 @@
 						</view>
 						<view class="goodsInfo">
 							<view class="goodsName">{{item.title}}</view>
-							<view class="goodsAddress nowrap" v-if="item.paimaiStatus==1">次围观/{{item.title}}</view>
-							<view class="goodsAddress nowrap" v-else>{{item.bidCount}}次出价 / 江夏区</view>
+							<view class="goodsAddress nowrap" v-if="item.paimaiStatus==1">{{item.accessNum}}次围观/{{item.title}}</view>
+							<view class="goodsAddress nowrap" v-else>{{item.bidCount}}次出价 / {{item.countyName}}</view>
 							<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">{{item.currentPriceText}}万</text>
 							<text  v-if="item.discount!=10" class="discount">{{item.discount}}折</text></view>
 							<view class="goodsStatus goodsStatus1" v-if="item.paimaiStatus==1"><text class="statusName">未开始</text><text class="goodsTime">{{item.timeText}}开始</text></view>
@@ -68,10 +68,10 @@
 					</view>
 					<uni-load-more iconType="snow" :status="loadStatus2" />
 				</view>
-				<!-- <view class="noData" v-else>
+				<view class="noData" v-else>
 					<image src="../../static/images/noRecord.png" mode="" class="noDataImg"></image>
 					<text class="noDataText">暂无数据</text>
-				</view> -->
+				</view>
 			</swiper-item>
 		</swiper>
 	</view>
@@ -95,7 +95,7 @@
 				loadStatus1: 'more',
 				pageNum1: 1,
 				total1: '',
-				loadStatus2: 'more',
+				loadStatus2: 'noMore',
 				pageNum2: 1,
 				total2: '',
 				pageSize: 10,
@@ -220,11 +220,8 @@
 			getBrowsesList(pageNo) {
 				const that = this;
 				let param = {
-					pageNo: pageNo,
-					pageSize: that.pageSize,
 					appUserId:that.id
 				}
-				that.loadStatus2 = "loading";
 				that.$api.browsesList(param).then(res => {
 					if (res.success) {
 						let result = res.datas;
@@ -280,12 +277,6 @@
 						paimaiId:paimaiId,
 						houseSource:houseSource
 					}
-				})
-			},
-			edit() {
-				const that = this;
-				uni.navigateTo({
-					url: "./edit"
 				})
 			},
 			onPageScroll(e) {

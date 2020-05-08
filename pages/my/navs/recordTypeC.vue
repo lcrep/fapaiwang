@@ -1,99 +1,34 @@
 <template>
 	<view>
 		<view class="tags">
-			<view v-for="(item,index) in tags" :key="index" :class="{'tagItem':true,'active':tagIndex==index}" @click="tagSel(index)">{{item.name}}</view>
+			<view v-for="(item,index) in tags" :key="index" :class="{'tagItem':true,'active':tagIndex==index}" @click="tagSel(index,item.flowStatus)">{{item.name}}</view>
 		</view>
-		<view class="goodsList">
-			<view class="goodsItem">
+		<view class="goodsList" v-if="total!==0">
+			<view class="goodsItem" v-for="(item,index) in list" :key="index"  @click="itemTap(item.houseInfoResp.paimaiId,item.houseInfoResp.houseSource)">
 				<view class="goodsPic">
-					<text class="goodsTag">一拍</text>
-					<image class="goodsImage" src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg" mode="aspectFill"></image>
+					<text class="goodsTag">{{item.houseInfoResp.paimaiTimesText}}</text>
+					<image class="goodsImage" :src="item.houseInfoResp.productImage" mode="aspectFill"></image>
 					<view class="recordStatus">
-						咨询
+						{{item.flowStatusText}}
 					</view>
 				</view>
 				<view class="goodsInfo">
-					<view class="goodsName">武汉市江夏区经济开发区江夏大道东创业农庄丰分分为</view>
-					<view class="goodsAddress nowrap">1次出价/江夏区经济开发区某某街道</view>
-					<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">333.22万</text><text class="discount">8.7折</text></view>
-					<view class="goodsStatus"><text class="statusName">拍卖中</text><text class="goodsTime">剩余15天20小时30分钟</text></view>
+					<view class="goodsName">{{item.houseInfoResp.title}}</view>
+					<view class="goodsAddress nowrap" v-if="item.houseInfoResp.paimaiStatus==1">{{item.houseInfoResp.accessNum}}次围观/{{item.houseInfoResp.title}}</view>
+					<view class="goodsAddress nowrap" v-else>{{item.houseInfoResp.bidCount}}次出价 / {{item.houseInfoResp.countyName}}</view>
+				<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">{{item.houseInfoResp.currentPriceText}}万</text>
+				<text  v-if="item.houseInfoResp.discount!=10" class="discount">{{item.houseInfoRespdiscount}}折</text></view>
+				<view class="goodsStatus goodsStatus1" v-if="item.houseInfoResp.paimaiStatus==1"><text class="statusName">未开始</text><text class="goodsTime">{{item.houseInfoResp.timeText}}开始</text></view>
+				<view class="goodsStatus goodsStatus2" v-else-if="item.houseInfoResp.paimaiStatus==2"><text class="statusName">拍卖中</text><text class="goodsTime">{{item.houseInfoResp.timeText}}开始</text></view>
+				<view class="goodsStatus goodsStatus3" v-else><text class="statusName">已结束</text><text class="goodsTime">{{item.houseInfoResp.timeText}}结束</text></view>
 				</view>
 			</view>
-			<view class="goodsItem">
-				<view class="goodsPic">
-					<text class="goodsTag">一拍</text>
-					<image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg" mode="aspectFill"></image>
-					<view class="recordStatus">尽职调查</view>
-				</view>
-				<view class="goodsInfo">
-					<view class="goodsName">武汉市江夏区经济开发区江夏大道东创业农庄丰分分为</view>
-					<view class="goodsAddress nowrap">1次出价/江夏区经济开发区某某街道</view>
-					<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">333.22万</text><text class="discount">8.7折</text></view>
-					<view class="goodsStatus"><text class="statusName">拍卖中</text><text class="goodsTime">剩余15天20小时30分钟</text></view>
-				</view>
-			</view>
-			<view class="goodsItem">
-				<view class="goodsPic">
-					<text class="goodsTag">一拍</text>
-					<image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg" mode="aspectFill"></image>
-				</view>
-				<view class="goodsInfo">
-					<view class="goodsName">武汉市江夏区经济开发区江夏大道东创业农庄丰分分为</view>
-					<view class="goodsAddress nowrap">1次出价/江夏区经济开发区某某街道</view>
-					<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">333.22万</text><text class="discount">8.7折</text></view>
-					<view class="goodsStatus"><text class="statusName">拍卖中</text><text class="goodsTime">剩余15天20小时30分钟</text></view>
-				</view>
-			</view>
-			<view class="goodsItem">
-				<view class="goodsPic">
-					<text class="goodsTag">一拍</text>
-					<image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg" mode="aspectFill"></image>
-				</view>
-				<view class="goodsInfo">
-					<view class="goodsName">武汉市江夏区经济开发区江夏大道东创业农庄丰分分为</view>
-					<view class="goodsAddress nowrap">1次出价/江夏区经济开发区某某街道</view>
-					<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">333.22万</text><text class="discount">8.7折</text></view>
-					<view class="goodsStatus"><text class="statusName">拍卖中</text><text class="goodsTime">剩余15天20小时30分钟</text></view>
-				</view>
-			</view>
-			<view class="goodsItem">
-				<view class="goodsPic">
-					<text class="goodsTag">一拍</text>
-					<image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg" mode="aspectFill"></image>
-				</view>
-				<view class="goodsInfo">
-					<view class="goodsName">武汉市江夏区经济开发区江夏大道东创业农庄丰分分为</view>
-					<view class="goodsAddress nowrap">1次出价/江夏区经济开发区某某街道</view>
-					<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">333.22万</text><text class="discount">8.7折</text></view>
-					<view class="goodsStatus"><text class="statusName">拍卖中</text><text class="goodsTime">剩余15天20小时30分钟</text></view>
-				</view>
-			</view>
-			<view class="goodsItem">
-				<view class="goodsPic">
-					<text class="goodsTag">一拍</text>
-					<image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg" mode="aspectFill"></image>
-				</view>
-				<view class="goodsInfo">
-					<view class="goodsName">武汉市江夏区经济开发区江夏大道东创业农庄丰分分为</view>
-					<view class="goodsAddress nowrap">1次出价/江夏区经济开发区某某街道</view>
-					<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">333.22万</text><text class="discount">8.7折</text></view>
-					<view class="goodsStatus"><text class="statusName">拍卖中</text><text class="goodsTime">剩余15天20小时30分钟</text></view>
-				</view>
-			</view>
-			<view class="goodsItem">
-				<view class="goodsPic">
-					<text class="goodsTag">一拍</text>
-					<image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg" mode="aspectFill"></image>
-				</view>
-				<view class="goodsInfo">
-					<view class="goodsName">武汉市江夏区经济开发区江夏大道东创业农庄丰分分为</view>
-					<view class="goodsAddress nowrap">1次出价/江夏区经济开发区某某街道</view>
-					<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">333.22万</text><text class="discount">8.7折</text></view>
-					<view class="goodsStatus"><text class="statusName">拍卖中</text><text class="goodsTime">剩余15天20小时30分钟</text></view>
-				</view>
-			</view>
+			<uni-load-more iconType="snow" :status="loadStatus" />
 		</view>
-		<uni-load-more iconType="snow" :status="status" />
+		<view class="noData" v-else>
+			<image src="../../../static/images/noRecord.png" mode="" class="noDataImg"></image>
+			<text class="noDataText">暂无记录</text>
+		</view>
 	</view>
 </template>
 
@@ -190,6 +125,36 @@
 								flowStatusText="交房";
 							}
 							result[i].flowStatusText = flowStatusText;
+							
+							
+							
+							result[i].houseInfoResp.currentPriceText = (result[i].houseInfoResp.currentPrice * 0.0001).toFixed(2);
+							if (result[i].houseInfoResp.paimaiTimes == 1) {
+								result[i].houseInfoResp.paimaiTimesText = "一拍";
+							} else if (result[i].houseInfoResp.paimaiTimes == 2) {
+								result[i].houseInfoResp.paimaiTimesText = "二拍";
+							} else if (result[i].houseInfoResp.paimaiTimes == 4) {
+								result[i].paimaiTimesText = "变卖";
+							} else if (result[i].houseInfoResp.paimaiTimes == 5) {
+								result[i].houseInfoResp.paimaiTimesText = "重新拍卖";
+							}
+							var nowTime = new Date().getTime();
+							var startTime = new Date(result[i].houseInfoResp.startTime).getTime();
+							var endTime = new Date(result[i].houseInfoResp.endTime).getTime();
+							if (startTime > nowTime) {
+								result[i].houseInfoResp.paimaiStatus = 1; //未开始	
+								result[i].houseInfoResp.timeText = that.$utils.formatTime(startTime,'MM月DD日 hh:mm');
+							} else if (nowTime >= startTime && nowTime <= endTime) {
+								result[i].houseInfoResp.paimaiStatus = 2; //拍卖中
+								result[i].houseInfoResp.timeText = that.$utils.timeCount(endTime);
+							} else {
+								result[i].houseInfoResp.paimaiStatus = 3; //已结束
+								result[i].houseInfoResp.timeText = that.$utils.formatTime(endTime,'YYYY年MM月DD日');
+							}
+							
+							
+							
+						
 							that.list.push(result[i]);
 						}
 						let total = res.datas.total;
@@ -226,10 +191,21 @@
 					}
 				})
 			},
+			itemTap(paimaiId,houseSource) {
+				this.$Router.push({
+					path: "/pages/home/goodsDetail",
+					query:{
+						paimaiId:paimaiId,
+						houseSource:houseSource
+					}
+				})
+			},
 			tagSel(index,flowStatus){
 				const that = this;
 				that.tagIndex=index;
 				that.flowStatus=flowStatus;
+				that.clearList();
+				that.getList(1);
 			}
 		}
 	}

@@ -450,6 +450,20 @@ const my = [
 			title: '个人主页',
 			needLogin:true
 		},
+	},
+	{
+		path: '/pages/my/agreement/agreement1',
+		name: 'agreement1',
+		meta: {
+			title: '服务协议'
+		},
+	},
+	{
+		path: '/pages/my/agreement/agreement2',
+		name: 'agreement2',
+		meta: {
+			title: '隐私协议'
+		},
 	}
 ]
 export default my

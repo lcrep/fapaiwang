@@ -392,6 +392,18 @@
 				"navigationBarTitleText": "个人主页"
 			}
         }
+        ,{
+            "path" : "pages/my/agreement/agreement1",
+            "style" : {
+				"navigationBarTitleText": "服务协议"
+			}
+        }
+        ,{
+            "path" : "pages/my/agreement/agreement2",
+            "style" : {
+				"navigationBarTitleText": "隐私协议"
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

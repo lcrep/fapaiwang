@@ -11,7 +11,7 @@
 				<view class="uni-input-wrapper inputItem">
 					<view class="inputLabel">密码</view>
 					<input class="uni-input" placeholder="请输入密码" :password="showPassword" v-model="loginInfo.password" />
-					<text class="uni-icon" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
+					<uni-icons :color="(!showPassword ? '#FC6B5A' : '#999999')" class="uni-icon"  size="20" type="eye-filled"   @click="changePassword"  />
 				</view>
 				<button type="warn" :disabled="loginInfo.mobile.length>0&&loginInfo.password.length>0?false:true" class="loginBtn" @click="toLogin">登
 					录</button>
@@ -24,7 +24,7 @@
 				<text class="wxLoginText">微信登录</text>
 				<image class="image" src="../../static/images/weixinIcon.png"></image>
 			</view>
-			<view class="loginTips">点击按钮即表示您同意并愿意遵守法拍网<text @click="gotoAgreement1" class="loginTipsText">《服务协议》</text>和<text @click="gotoAgreement1" class="loginTipsText">《隐私协议》</text></view>
+			<view class="loginTips">点击按钮即表示您同意并愿意遵守法拍网<text @click="gotoAgreement1" class="loginTipsText">《服务协议》</text>和<text @click="gotoAgreement2" class="loginTipsText">《隐私协议》</text></view>
 
 		</view>
 		<image class="logo" src="../../static/images/logo.png"></image>
@@ -141,6 +141,18 @@
 					path:"/pages/my/forgetpwd"
 				})
 			},
+			gotoAgreement1(){
+				let that = this;
+				that.$Router.push({
+					path:"/pages/my/agreement/agreement1"
+				})
+			},	
+			gotoAgreement2(){
+				let that = this;
+				that.$Router.push({
+					path:"/pages/my/agreement/agreement2"
+				})
+			},	
 			register(){
 				let that = this;
 				that.$Router.push({

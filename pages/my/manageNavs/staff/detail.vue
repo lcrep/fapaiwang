@@ -137,7 +137,7 @@
 
 <style>
 	.czBtns{
-		width: 76rpx;
+		width: 76rpx !important;
 	}
 	.editerName{
 		color: #00BBC3;

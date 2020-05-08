@@ -6,15 +6,15 @@
 				<view class="uni-input-wrapper inputItem">
 					<view class="inputLabel">设置密码</view>
 					<input class="uni-input" placeholder="请输入密码" maxlength="14" :password="showPassword1" v-model="password1" />
-					<text class="uni-icon" :class="[!showPassword1 ? 'uni-eye-active' : '']" @click="changePassword1">&#xe568;</text>
+					<uni-icons :color="(!showPassword1 ? '#FC6B5A' : '#999999')" class="uni-icon"  size="20" type="eye-filled"   @click="changePassword1"  />
 				</view>
 				<view class="uni-input-wrapper inputItem">
 					<view class="inputLabel">重复密码</view>
 					<input class="uni-input" placeholder="请再次输入密码" maxlength="14" :password="showPassword2" v-model="password2" />
-					<text class="uni-icon" :class="[!showPassword2 ? 'uni-eye-active' : '']" @click="changePassword2">&#xe568;</text>
+					<uni-icons :color="(!showPassword2 ? '#FC6B5A' : '#999999')" class="uni-icon"  size="20" type="eye-filled"   @click="changePassword2"  />
 				</view>
 				<button type="warn" :disabled="password1.length>0&&password2.length>0?false:true" class="loginBtn" @click="register">注册</button>
-				<view class="loginTips">注册即表示您已同意<text class="loginTipsText" @click="gotoAgreement1">《服务协议》</text>和<text @click="gotoAgreement1"
+				<view class="loginTips">注册即表示您已同意<text class="loginTipsText" @click="gotoAgreement1">《服务协议》</text>和<text @click="gotoAgreement2"
 					 class="loginTipsText">《隐私协议》</text></view>
 			</view>
 
@@ -93,9 +93,19 @@
 
 				}
 			},
+			
 			gotoAgreement1(){
-				
-			}
+				let that = this;
+				that.$Router.push({
+					path:"/pages/my/agreement/agreement1"
+				})
+			},	
+			gotoAgreement2(){
+				let that = this;
+				that.$Router.push({
+					path:"/pages/my/agreement/agreement2"
+				})
+			},	
 		}
 	}
 </script>

@@ -22,7 +22,6 @@
 					<image src="../../static/images/noticeIcon.png" class="noticeIcon"></image>
 					<text class="noticeText">公告</text>
 					<view class="tipPoint" v-if="hasNewNotice">
-						
 					</view>
 				</view>
 
@@ -32,17 +31,25 @@
 		<view class="content uni-padding-wrap uni-common-mt">
 			<!-- #ifdef MP-WEIXIN -->
 			<view :class="{'weixinHead':true,'weixinHeadFixed':scrollTop>1}">
-				<view class="searchInputBox">
-					<uni-icons color="#f44a33" class="searchIcon" size="18" type="search" />
-					<input class="uni-input" placeholder="搜索标的物名称" confirm-type="search" placeholder-style="font-size:26rpx;color:#B8B8B8;"
-					 v-model="searchVal" @confirm="search" />
-				</view>
-				<picker mode="multiSelector" @columnchange="cityChange" @change="citySel" :value="cityIndex" :range="cities"
-				 range-key="name">
-					<view class="citySel"><text class="cityName">{{theCity}}</text>
-						<uni-icons type="arrowdown" size="20" />
+				<view class="headBg">
+					<picker mode="multiSelector" @columnchange="cityChange" @change="citySel" :value="cityIndex" :range="cities"
+					 range-key="name">
+						<view class="citySel"><text class="cityName">{{theCity}}</text>
+							<uni-icons type="arrowdown" size="20" />
+						</view>
+					</picker>
+					<view class="searchInputBox">
+						<uni-icons color="#f44a33" class="searchIcon" size="18" type="search" />
+						<input class="uni-input" placeholder="搜索标的物名称" confirm-type="search" placeholder-style="font-size:26rpx;color:#B8B8B8;"
+						 v-model="searchVal" @confirm="search" />
 					</view>
-				</picker>
+				</view>
+				<view class="noticeBox" @click="gotoNotice">
+					<image src="../../static/images/noticeIcon.png" class="noticeIcon"></image>
+					<text class="noticeText">公告</text>
+					<view class="tipPoint" v-if="hasNewNotice">
+					</view>
+				</view>
 			</view>
 			<view class="weixinHead" v-if="scrollTop>1">
 
@@ -78,8 +85,8 @@
 						</view>
 						<view class="goodsInfo">
 							<view class="goodsName">{{item.title}}</view>
-							<view class="goodsAddress nowrap" v-if="item.paimaiStatus==1">次围观/{{item.title}}</view>
-							<view class="goodsAddress nowrap" v-else>{{item.bidCount}}次出价 / 江夏区</view>
+							<view class="goodsAddress nowrap" v-if="item.paimaiStatus==1">{{item.accessNum}}次围观/{{item.title}}</view>
+							<view class="goodsAddress nowrap" v-else>{{item.bidCount}}次出价 / {{item.countyName}}</view>
 							<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">{{item.currentPriceText}}万</text>
 								<text v-if="item.discount!=10" class="discount">{{item.discount}}折</text></view>
 							<view class="goodsStatus goodsStatus1" v-if="item.paimaiStatus==1"><text class="statusName">未开始</text><text
@@ -106,8 +113,8 @@
 						</view>
 						<view class="goodsInfo">
 							<view class="goodsName">{{item.title}}</view>
-							<view class="goodsAddress nowrap" v-if="item.paimaiStatus==1">次围观/{{item.title}}</view>
-							<view class="goodsAddress nowrap" v-else>{{item.bidCount}}次出价 / 江夏区</view>
+							<view class="goodsAddress nowrap" v-if="item.paimaiStatus==1">{{item.accessNum}}次围观/{{item.title}}</view>
+							<view class="goodsAddress nowrap" v-else>{{item.bidCount}}次出价 / {{item.countyName}}</view>
 							<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">{{item.currentPriceText}}万</text>
 								<text v-if="item.discount!=10" class="discount">{{item.discount}}折</text></view>
 							<view class="goodsStatus goodsStatus1" v-if="item.paimaiStatus==1"><text class="statusName">未开始</text><text

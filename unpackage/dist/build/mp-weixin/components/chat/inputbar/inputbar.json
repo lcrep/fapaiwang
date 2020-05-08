@@ -1,7 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "chat-suit-main": "/components/chat/inputbar/suit/main/main",
-    "chat-suit-image": "/components/chat/inputbar/suit/image/image"
-  }
-}

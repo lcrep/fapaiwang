@@ -63,7 +63,10 @@
     "pages/home/areaPrice",
     "pages/my/manageNavs/process/allDaily",
     "pages/my/manageNavs/process/allReturn",
-    "pages/my/manageNavs/notice/edit"
+    "pages/my/manageNavs/notice/edit",
+    "pages/my/otherSelfPage",
+    "pages/my/agreement/agreement1",
+    "pages/my/agreement/agreement2"
   ],
   "subPackages": [],
   "window": {

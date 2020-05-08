@@ -6,7 +6,7 @@
 				<view class="uni-input-wrapper inputItem">
 					<view class="inputLabel">+86</view>
 					<input class="uni-input" maxlength="11" placeholder="请输入手机号码" type="number" v-model="mobile" />
-					<text class="uni-icon" v-if="mobile.length>0" @click="clearIcon">&#xe434;</text>
+					<uni-icons color="#999999" class="uni-icon"  size="18" type="clear"   v-if="mobile.length>0" @click="clearIcon" />
 				</view>
 				<view class="uni-input-wrapper inputItem">
 					<view class="inputLabel">验证码</view>

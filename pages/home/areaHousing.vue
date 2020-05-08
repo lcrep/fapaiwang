@@ -56,8 +56,8 @@
 						</view>
 						<view class="goodsInfo">
 							<view class="goodsName">{{item.title}}</view>
-							<view class="goodsAddress nowrap" v-if="item.paimaiStatus==1">次围观/{{item.title}}</view>
-							<view class="goodsAddress nowrap" v-else>{{item.bidCount}}次出价 / 江夏区</view>
+							<view class="goodsAddress nowrap" v-if="item.paimaiStatus==1">{{item.accessNum}}次围观/{{item.title}}</view>
+							<view class="goodsAddress nowrap" v-else>{{item.bidCount}}次出价 / {{item.countyName}}</view>
 							<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">{{item.currentPriceText}}万</text>
 							<text  v-if="item.discount!=10" class="discount">{{item.discount}}折</text></view>
 							<view class="goodsStatus goodsStatus1" v-if="item.paimaiStatus==1"><text class="statusName">未开始</text><text class="goodsTime">{{item.timeText}}开始</text></view>
@@ -118,12 +118,7 @@
 				index: 0,
 				tabCurrent: 0,
 				priceSort: 0,
-				selectedArea: {
-					index: 0,
-					name: '江夏区',
-					price: "12345.99",
-					orderNum: "332"
-				},
+				selectedArea: {},
 				loadStatus: 'more',
 				pageNum:1,
 				total:"",

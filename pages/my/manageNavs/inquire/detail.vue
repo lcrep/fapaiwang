@@ -7,7 +7,7 @@
 						<view class="detailHeadTitle">
 							客户姓名:
 						</view>
-						<view class="detailHeadLink">
+						<view class="detailHeadLink" @click="gotoSelfPage(result.customerId)">
 							<text class="detailHeadLinkLabel">查看个人主页</text>
 							<uni-icons type="arrowright" size="18" color="#B8B8B8"></uni-icons>
 						</view>
@@ -121,6 +121,15 @@
 					}
 				})
 			},
+			gotoSelfPage(id){
+				const that =this;
+				that.$Router.push({
+					path:"/pages/my/otherSelfPage",
+					query:{
+						id:id
+					}
+				})
+			}
 		}
 	}
 </script>

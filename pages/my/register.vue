@@ -6,7 +6,7 @@
 				<view class="uni-input-wrapper inputItem">
 					<view class="inputLabel">+86</view>
 					<input class="uni-input" maxlength="11" placeholder="请输入手机号码" type="number" v-model="mobile" />
-					<text class="uni-icon" v-if="mobile.length>0" @click="clearIcon">&#xe434;</text>
+					<uni-icons color="#999999" class="uni-icon"  size="18" type="clear"   v-if="mobile.length>0"  @click="clearIcon" />
 				</view>
 				<view class="uni-input-wrapper inputItem">
 					<view class="inputLabel">验证码</view>
@@ -20,7 +20,7 @@
 					<input class="uni-input" maxlength="6" placeholder="请输入推荐码(选填)" type="number" v-model="invitationCode" />
 				</view>
 				<button type="warn" :disabled="mobile.length==11&&code.length==4?false:true" class="loginBtn" @click="next">下一步</button>
-				<view class="loginTips">点击下一步即表示您已同意<text class="loginTipsText" @click="gotoAgreement1">《服务协议》</text>和<text @click="gotoAgreement1"  class="loginTipsText">《隐私协议》</text></view>
+				<view class="loginTips">点击下一步即表示您已同意<text class="loginTipsText" @click="gotoAgreement1">《服务协议》</text>和<text @click="gotoAgreement2"  class="loginTipsText">《隐私协议》</text></view>
 			</view>
 
 		</view>
@@ -94,6 +94,18 @@
 					that.codeSecond=60;
 				}, 60000)
 			},
+			gotoAgreement1(){
+				let that = this;
+				that.$Router.push({
+					path:"/pages/my/agreement/agreement1"
+				})
+			},	
+			gotoAgreement2(){
+				let that = this;
+				that.$Router.push({
+					path:"/pages/my/agreement/agreement2"
+				})
+			},	
 			next(){
 				const that = this;
 				that.$Router.push({

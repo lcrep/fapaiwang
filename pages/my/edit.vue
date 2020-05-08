@@ -175,8 +175,18 @@
 						"groupName": "userimg"
 					},
 					success: (res) => {
-						if (res.data.code == 200) {
-							console.log('文件上传成功')
+						if (res.statusCode == 200) {
+							let result = JSON.parse(res.data);
+							console.log(result);
+							if(result.success){
+								that.userData.headImgUrl=result.datas.picUrl;
+								that.noUserPic=false
+							}
+							else{
+								uni.showToast({
+									title:"上传失败"
+								})
+							}
 						}
 					},
 					fail: (error) => {
@@ -208,7 +218,9 @@
 				if (that.noUserPic) {
 					serverData.headImgUrl = "";
 				}
-				// serverData.headImgUrl="https://artapp-dev-bucket.oss-cn-beijing.aliyuncs.com/evaluate/2090bff6-ce95-4f16-9e73-27c2c9ed1be0.png";
+				else{
+					serverData.headImgUrl = that.userData.headImgUrl;
+				}
 				if (serverData.email != "" && !that.$utils.common.emailTest.test(serverData.email)) {
 					uni.showToast({
 						title: "请输入正确的邮箱地址",
