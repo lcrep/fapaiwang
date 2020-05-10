@@ -404,6 +404,18 @@
 				"navigationBarTitleText": "隐私协议"
 			}
         }
+        ,{
+            "path" : "pages/my/statisticsEmy",
+            "style" : {
+				"navigationBarTitleText": "员工成交排行"
+			}
+        }
+        ,{
+            "path" : "pages/my/statisticsCus",
+            "style" : {
+				"navigationBarTitleText": "推荐客户排行"
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

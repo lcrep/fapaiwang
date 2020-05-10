@@ -464,6 +464,20 @@ const my = [
 		meta: {
 			title: '隐私协议'
 		},
+	},
+	{
+		path: '/pages/my/statisticsEmy',
+		name: 'statisticsEmy',
+		meta: {
+			title: '员工成交排行'
+		},
+	},
+	{
+		path: '/pages/my/statisticsCus',
+		name: 'statisticsCus',
+		meta: {
+			title: '推荐客户排行'
+		},
 	}
 ]
 export default my

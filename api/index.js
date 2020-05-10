@@ -80,6 +80,25 @@ api.visitTransferDo = params => request.globalRequest(`${base.default}/api/m/hou
 api.visitreTreatDo = params => request.globalRequest(`${base.default}/api/v/returnvisit/retreat`, 'POST', params); //流程详情-腾退打钩
 api.visitOverDo = params => request.globalRequest(`${base.default}/api/v/returnvisit/over`, 'POST', params); //流程详情-交房打钩
 
+api.quotaexchange = params => request.globalRequest(`${base.default}/api/m/diamond/quotaexchange`, 'POST', params); //用钻换取名额
+api.noofoneneed = params => request.globalRequest(`${base.default}/manage/diamond/noofoneneed`, 'POST', params); //一个名额多少钻
+api.availableqty = params => request.globalRequest(`${base.default}/manage/diamond/availableqty`, 'POST', params); //钻余额
+api.exchangelogs = params => request.globalRequest(`${base.default}/api/m/diamond/exchangelogs`, 'POST', params); //查询钻兑换明细
+api.availableqtybyempid = params => request.globalRequest(`${base.default}/api/m/diamond/availableqtybyempid`, 'POST', params); //查询钻兑换明细
+api.givediamond = params => request.globalRequest(`${base.default}/manage/diamond/give`, 'POST', params); //分配钻
+api.givelogs = params => request.globalRequest(`${base.default}/api/m/diamond/givelogs`, 'POST', params); //分配钻明细
+
+api.checkpermission = params => request.globalRequest(`${base.default}/api/m/employee/checkpermission`, 'POST', params); //权限相关
+
+api.salereport = params => request.globalRequest(`${base.default}/api/m/emp/salereport`, 'POST', params); //员工成交排行
+api.bindreport = params => request.globalRequest(`${base.default}/api/m/appuser/bindreport`, 'POST', params); //推荐客户排行
+api.transactionstatistics = params => request.globalRequest(`${base.default}/api/transactionstatistics/query`, 'POST', params); //成交统计
+api.housestatisticscount = params => request.globalRequest(`${base.default}/api/housestatisticscount/query`, 'POST', params); //拍品数量统计
+api.housestatisticsamount = params => request.globalRequest(`${base.default}/api/housestatisticsamount/query`, 'POST', params); //拍品金额统计
+api.transratiostatistics = params => request.globalRequest(`${base.default}/api/transratiostatistics/query`, 'POST', params); //趋势-折价率统计
+api.corptransactionstatistics = params => request.globalRequest(`${base.default}/api/corptransactionstatistics/query`, 'POST', params); //公司成交数量统计
+
+
 //#########################房源相关###########################//
 api.provinceandcity = params => request.globalRequest(`${base.default}/api/provinceandcity/query`, 'POST', params); //省市
 api.getProvince = params => request.globalRequest(`${base.default}/api/province/query`, 'POST', params); //省

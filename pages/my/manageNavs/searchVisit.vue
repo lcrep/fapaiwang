@@ -146,7 +146,7 @@
 					prevPage.appUserId=appUserId;
 					// #endif
 					// #ifdef APP-PLUS || MP-WEIXIN
-					prevPage.$vm.goodsId = id;
+					prevPage.$vm.oriVisitId = id;
 					prevPage.$vm.customerName = customerName;
 					prevPage.$vm.customerMobile = customerMobile;
 					prevPage.$vm.houseName = houseName;

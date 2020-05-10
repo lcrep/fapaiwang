@@ -197,8 +197,8 @@
 			onConfirm(val){
 				const that= this;
 				that.dateText=val.result;
-				that.startDate=val.obj.fyear+'-'+val.obj.fmonth+'-'+val.obj.fday;
-				that.endDate=val.obj.tyear+'-'+val.obj.tmonth+'-'+val.obj.tday;
+				that.startDate=val.obj.fyear+'-'+val.obj.fmonth+'-'+val.obj.fday+' 00:00:00';
+				that.endDate=val.obj.tyear+'-'+val.obj.tmonth+'-'+val.obj.tday+' 23:59:59';
 				that.clearList();
 				that.getList(1);
 			},

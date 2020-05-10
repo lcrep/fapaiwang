@@ -251,6 +251,7 @@
 				houseInfo: "",
 				houseDetail:"",
 				dealPage:1,
+				pageNum:10,
 				total:"",
 				dealList:[],
 				loadStatus: 'more',
@@ -269,6 +270,7 @@
 				navCurrent: 0,
 				bannerList: [],
 				recordList:[],
+				houseList:[],
 				collected:false
 			}
 		},
@@ -406,7 +408,7 @@
 								result[i].paimaiStatus = 3; //已结束
 								result[i].timeText = that.$utils.formatTime(endTime,'YYYY年MM月DD日');
 							}
-							that.houseList.push(result[i])
+							that.dealList.push(result[i])
 						}
 						let total = res.datas.total;
 						that.total=total;

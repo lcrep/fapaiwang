@@ -3,7 +3,7 @@ const common = {
 	passwordTest: /^[0-9A-Za-z]{8,14}$/, //密码正则表达式
 	emailTest: /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, //邮箱正则表达式
 	idCardTest: /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/, //身份证正则表达式
-
+	ossVideoCoverSuffix:"?x-oss-process=video/snapshot,t_10000,m_fast"
 }
 
 function formatNumber(n) {

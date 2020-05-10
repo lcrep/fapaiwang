@@ -20,7 +20,11 @@
 								<view v-if="item.msgType==2 || item.msgType==3">
 									<image v-if="item.msgType==2" :src="item.chatMsg" style="width:250rpx;display: block;" mode="widthFix" @tap="previewImage"
 									 :data-url="item.chatMsg" />
-									<image class="videoPlay" mode="widthFix" v-if="item.msgType==3" src="../../static/images/videoPlay.png" @tap="playVideo(item.chatMsg)" />
+									<view class="videoBox" v-if="item.msgType==3" @tap="playVideo(item.chatMsg)">
+										<image class="videoCover" v-if="item.coverPath" mode="widthFix" :src="item.coverPath" />
+										<image src="../../static/images/videoPlay.png" class="videoPlayBtn" mode="" v-if="item.loading!=2&&item.loading!=3"></image>
+									</view>
+
 								</view>
 								<view v-else-if="item.msgType==1">
 									<view class="template">
@@ -87,13 +91,13 @@
 				scrollTop: 0,
 				pageNum: 1,
 				itemId: 1,
-				videoSrc:"",
+				videoSrc: "",
 				loadStatus: 'more',
 				old: {
 					scrollTop: 0
 				},
 				chatList: [],
-				videoContext:null
+				videoContext: null
 
 			}
 		},
@@ -107,10 +111,10 @@
 				chatUserId);
 			that.openSocket(myUserId);
 			that.getHistory(1);
-			
+
 		},
-		onReady(){
-			 this.videoContext = uni.createVideoContext('myVideo')
+		onReady() {
+			this.videoContext = uni.createVideoContext('myVideo')
 			setTimeout(() => {
 				this.goBottom();
 			}, 100)
@@ -146,6 +150,9 @@
 							} else {
 								result[i].style = "";
 							}
+							if (result[i].msgType == 3) {
+								result[i].coverPath = result[i].chatMsg + that.$utils.common.ossVideoCoverSuffix;
+							}
 							result[i].itemId = that.itemId;
 							that.itemId++;
 						}
@@ -180,51 +187,53 @@
 			},
 			openSocket(id) {
 				const that = this;
-				if (typeof(WebSocket) == "undefined") {
-					console.log("不支持WebSocket");
-				} else {
-					console.log("支持WebSocket");
-					var socketUrl = "wss://mobile.fpw365.cn/ws/imchannel/" + id;
-					if (socket != null) {
-						socket.close();
-						socket = null;
+				var socketUrl = "wss://mobile.fpw365.cn/ws/imchannel/" + id;
+				uni.connectSocket({
+					url: socketUrl,
+					complete: (e) => {
+						console.log(e)
+					},
+					fail(error) {
+						uni.showToast({
+							title: "ws连接失败",
+							icon: "none"
+						})
 					}
-					socket = new WebSocket(socketUrl);
-					//打开事件
-					socket.onopen = function() {
-						that.isOpened = 1;
-					};
-					//获得消息事件
-					socket.onmessage = function(msg) {
-						console.log(msg.data);
-						//发现消息进入    开始处理前端触发逻辑
-						var obj;
-						try {
-							obj = JSON.parse(msg.data);
-						} catch (e) {
-							console.log(e);
-						}
-						console.log(obj);
-						if (obj != undefined) {
-							if (obj.fromUserId && obj.fromUserId == -1) {
+				})
+				//打开事件
 
-							} else {
-								that.listenMsg(obj);
-							}
+				uni.onSocketOpen(function(res) {
+					that.isOpened = 1;
+				});
+				//获得消息事件
+				uni.onSocketMessage(function(res) {
+					console.log(msg.data);
+					//发现消息进入    开始处理前端触发逻辑
+					var obj;
+					try {
+						obj = JSON.parse(msg.data);
+					} catch (e) {
+						console.log(e);
+					}
+					console.log(obj);
+					if (obj != undefined) {
+						if (obj.fromUserId && obj.fromUserId == -1) {
+
 						} else {
-
+							that.listenMsg(obj);
 						}
+					} else {
 
-					};
-					//关闭事件
-					socket.onclose = function() {
-						console.log("websocket已关闭");
-					};
-					//发生了错误事件
-					socket.onerror = function() {
-						console.log("websocket发生了错误");
 					}
-				}
+				});
+				//关闭事件
+				uni.onSocketClose(function(res) {
+					console.log('WebSocket 已关闭！');
+				});
+				//发生了错误事件
+				uni.onSocketError(function(res) {
+					console.log('WebSocket连接打开失败，请检查！');
+				});
 			},
 			listenMsg(data) {
 				const that = this;
@@ -234,6 +243,9 @@
 					fromUserId: data.fromUserId,
 					msgType: data.contentType,
 					toUserId: data.toUserId
+				}
+				if (data.contentType == 3) {
+					addData.coverPath = data.chatContent + that.$utils.common.ossVideoCoverSuffix;
 				}
 				that.chatList.push(addData);
 				setTimeout(() => {
@@ -273,18 +285,17 @@
 						sourceType: ['camera', 'album'],
 						success: function(res) {
 							console.log(res);
-							if(res.size>1024 * 1024 * 200){
+							if (res.size > 1024 * 1024 * 200) {
 								uni.showToast({
 									title: "文件过大",
 									icon: "none"
 								})
-							}
-							else{
+							} else {
 								that.uploadVideo(res);
 							}
 						}
 					});
-					
+
 				}
 			},
 			uploadImg(fileRes) {
@@ -302,8 +313,7 @@
 				setTimeout(() => {
 					that.goBottom();
 				}, 100)
-				var theIndex = (that.chatList.length-1);
-				 console.log(theIndex);
+				var theIndex = (that.chatList.length - 1);
 				let files;
 				// #ifdef MP-WEIXIN
 				files = fileRes.tempFilePaths[0];
@@ -330,12 +340,12 @@
 							console.log(result);
 							if (result.success) {
 								that.addImgChat(result.datas);
-								that.chatList[theIndex].loading=0;
+								that.chatList[theIndex].loading = 0;
 							} else {
 								uni.showToast({
 									title: "上传失败"
 								})
-								that.chatList[theIndex].loading=2;
+								that.chatList[theIndex].loading = 2;
 							}
 
 						}
@@ -355,15 +365,23 @@
 				console.log(data)
 				if (that.isOpened == 0) {
 					console.log("open socket");
-					that.openSocket();
+					that.openSocket(that.myUserId);
 				}
 				let sendData = {
 					"contentType": 2,
 					"toUserId": that.chatUserId,
 					"chatContent": data.picUrl
 				}
-				socket.send(JSON.stringify(sendData));
-				
+				uni.sendSocketMessage({
+					data: JSON.stringify(sendData),
+					success: (res) => {
+						console.log(res);
+					},
+					fail: (error) => {
+						console.log(error);
+					},
+				});
+
 			},
 			uploadVideo(fileRes) {
 				const that = this;
@@ -380,8 +398,8 @@
 				setTimeout(() => {
 					that.goBottom();
 				}, 100)
-				var theIndex = (that.chatList.length-1);
-				 console.log(theIndex);
+				var theIndex = (that.chatList.length - 1);
+				console.log(theIndex);
 				let files;
 				// #ifdef MP-WEIXIN
 				files = fileRes.tempFilePath;
@@ -408,14 +426,15 @@
 							console.log(result);
 							if (result.success) {
 								that.addVideoChat(result.datas);
-								that.chatList[theIndex].loading=0;
+								that.chatList[theIndex].loading = 0;
+								that.chatList[theIndex].coverPath = result.datas.picUrl+that.$utils.common.ossVideoCoverSuffix;
 							} else {
 								uni.showToast({
 									title: "上传失败"
 								})
-								that.chatList[theIndex].loading=2;
+								that.chatList[theIndex].loading = 2;
 							}
-			
+
 						}
 					},
 					fail: (error) => {
@@ -426,11 +445,11 @@
 						})
 					}
 				});
-			
+
 			},
-			playVideo(url){
+			playVideo(url) {
 				const that = this;
-				that.videoSrc=url;
+				that.videoSrc = url;
 				that.$nextTick(() => {
 					that.$refs.showVideo.open()
 				})
@@ -448,28 +467,38 @@
 				console.log(data)
 				if (that.isOpened == 0) {
 					console.log("open socket");
-					that.openSocket();
+					that.openSocket(that.myUserId);
 				}
 				let sendData = {
 					"contentType": 3,
 					"toUserId": that.chatUserId,
 					"chatContent": data.picUrl
 				}
-				socket.send(JSON.stringify(sendData));
+				uni.sendSocketMessage({
+					data: JSON.stringify(sendData),
+					success: (res) => {
+						console.log(res);
+					},
+					fail: (error) => {
+						console.log(error);
+					},
+				})
 			},
 			sendMsg() {
 				const that = this;
 
 				if (that.isOpened == 0) {
 					console.log("open socket");
-					that.openSocket();
+					that.openSocket(that.myUserId);
 				}
 				let sendData = {
 					"contentType": 1,
 					"toUserId": that.chatUserId,
 					"chatContent": that.chatText
 				}
-				socket.send(JSON.stringify(sendData));
+				uni.sendSocketMessage({
+					data: JSON.stringify(sendData)
+				});
 
 				let addData = {
 					chatMsg: that.chatText,
@@ -707,10 +736,12 @@
 		font-size: 24rpx;
 		margin-top: 10rpx;
 	}
-	.errorIcon{
+
+	.errorIcon {
 		width: 40rpx;
 		height: 40rpx;
 	}
+
 	.self .msg:before {
 		right: inherit;
 		left: 100%;
@@ -725,10 +756,12 @@
 	.template {
 		display: inline;
 	}
-	.videoPlay{
+
+	.videoPlay {
 		width: 200rpx;
 		height: 200rpx;
 	}
+
 	.err {
 		width: 32rpx;
 		height: 32rpx;
@@ -791,11 +824,34 @@
 		width: 40rpx;
 		height: 40rpx;
 	}
-	.uni-image-close{
+
+	.uni-image-close {
 		margin-top: 30rpx;
 		text-align: center;
 	}
-	.video{
+
+	.video {
 		width: 750rpx;
+	}
+
+	.videoBox {
+		width: 400rpx;
+		min-height: 200rpx;
+		position: relative;
+		background-color: #000000;
+	}
+
+	.videoCover {
+		width: 100%;
+
+	}
+
+	.videoPlayBtn {
+		position: absolute;
+		width: 104rpx;
+		height: 104rpx;
+		left: 50%;
+		top: 50%;
+		transform: translateX(-50%) translateY(-50%);
 	}
 </style>

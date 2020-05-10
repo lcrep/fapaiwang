@@ -17,7 +17,7 @@
 					<view class="customerNickName">
 						{{item.nickname}}
 					</view>
-					<view class="customerName">
+					<view class="customerName" v-if="item.realName">
 						姓名：{{item.realName}}
 					</view>
 				</view>
