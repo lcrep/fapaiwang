@@ -94,4 +94,12 @@
 	height: 92rpx;
 	line-height: 92rpx;
 }
+.tips{
+	margin-top: 300rpx;
+}
+.tips_P{
+	line-height: 42rpx;
+	color: #888888;
+	text-align: left;
+}
 

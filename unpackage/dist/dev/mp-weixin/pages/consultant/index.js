@@ -205,7 +205,21 @@ var _vuex = __webpack_require__(/*! vuex */ 8); //
 //
 //
 //
-var _default = { computed: (0, _vuex.mapState)(['hasLogin', 'userInfo']), data: function data() {return { chatList: [], isLogin: false };}, created: function created() {var accessToken = uni.getStorageSync('userInfo').accessToken;if (accessToken) {this.getChatList();this.isLogin = true;} else {}}, methods: { gotoChart: function gotoChart(myId, toId) {console.log(myId + "   " + toId);var that = this;that.$Router.push({ path: "/pages/consultant/charRoom", query: { myUserId: myId, chatUserId: toId } });}, getChatList: function getChatList() {var that = this;that.$api.mychatList({}).then(function (res) {if (res.success) {
+var _default = { computed: (0, _vuex.mapState)(['hasLogin', 'userInfo']), data: function data() {return { chatList: [], isLogin: false, isFresh: false };}, onShow: function onShow() {console.log("onShow");var accessToken = uni.getStorageSync('userInfo').accessToken;if (accessToken) {this.getChatList();this.isLogin = true;} else {}}, onTabItemTap: function onTabItemTap() {var accessToken = uni.getStorageSync('userInfo').accessToken;if (accessToken) {this.getChatList();this.isLogin = true;}}, methods: { gotoChart: function gotoChart(myId, toId) {console.log(myId + "   " + toId);var that = this;that.$Router.push({ path: "/pages/consultant/charRoom", query: { myUserId: myId,
+          chatUserId: toId } });
+
+
+    },
+    getChatList: function getChatList() {
+      var that = this;
+      that.$api.mychatList({}).then(function (res) {
+        if (res.success) {
+          if (that.isFresh) {
+            setTimeout(function () {
+              uni.stopPullDownRefresh();
+            }, 1000);
+            that.isFresh = false;
+          }
           var result = res.datas.rows;
           for (var i in result) {
             result[i].chatUserHeadImg = result[i].chatUserHeadImg ? result[i].chatUserHeadImg :
@@ -219,6 +233,14 @@ var _default = { computed: (0, _vuex.mapState)(['hasLogin', 'userInfo']), data: 
 
         }
       });
+    },
+    onPullDownRefresh: function onPullDownRefresh() {
+      var that = this;
+      that.getChatList();
+      that.isFresh = true;
+      setTimeout(function () {
+        uni.stopPullDownRefresh();
+      }, 10000);
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

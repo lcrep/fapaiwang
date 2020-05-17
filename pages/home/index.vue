@@ -84,7 +84,7 @@
 							<image class="goodsImage" :src="item.productImage" mode="aspectFill"></image>
 						</view>
 						<view class="goodsInfo">
-							<view class="goodsName">{{item.title}}</view>
+							<view class="goodsName"><jyf-parser :html="item.title" ref="article" autoscroll></jyf-parser></view>
 							<view class="goodsAddress nowrap" v-if="item.paimaiStatus==1">{{item.accessNum}}次围观/{{item.title}}</view>
 							<view class="goodsAddress nowrap" v-else>{{item.bidCount}}次出价 / {{item.countyName}}</view>
 							<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">{{item.currentPriceText}}万</text>
@@ -112,7 +112,7 @@
 							<image class="goodsImage" :src="item.productImage" mode="aspectFill"></image>
 						</view>
 						<view class="goodsInfo">
-							<view class="goodsName">{{item.title}}</view>
+							<view class="goodsName"><jyf-parser :html="item.title" ref="article" autoscroll></jyf-parser></view>
 							<view class="goodsAddress nowrap" v-if="item.paimaiStatus==1">{{item.accessNum}}次围观/{{item.title}}</view>
 							<view class="goodsAddress nowrap" v-else>{{item.bidCount}}次出价 / {{item.countyName}}</view>
 							<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">{{item.currentPriceText}}万</text>

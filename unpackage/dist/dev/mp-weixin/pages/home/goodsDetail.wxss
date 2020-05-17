@@ -158,14 +158,14 @@
 .inPrice .priceCont {
 	color: #CD282F;
 }
-.endPrice .priceCont{
+.endPrice .priceCont {
 	color: #CD282F;
 }
 .assPrice .priceCont {
 	color: #222222;
 	font-size: 28rpx;
 }
-.noPrice{
+.noPrice {
 	line-height: 50rpx;
 }
 .navs {
@@ -340,8 +340,8 @@
 .isFirst {
 	background: #CD282F;
 }
-.hasDone{
-	background:#D8AF60;
+.hasDone {
+	background: #D8AF60;
 }
 .statusFixed {
 	position: fixed;
@@ -349,7 +349,7 @@
 	left: 0;
 	z-index: 999;
 }
-.consultantBtns{
+.consultantBtns {
 	position: fixed;
 	right: 30rpx;
 	bottom: 40rpx;
@@ -357,7 +357,7 @@
 	height: 272rpx;
 	z-index: 99;
 }
-.consultBtn{
+.consultBtn {
 	width: 116rpx;
 	height: 116rpx;
 	border-radius: 100%;
@@ -372,31 +372,31 @@
 	-webkit-align-items: center;
 	        align-items: center;
 	background-color: #FFFFFF;
-	-webkit-box-shadow: 0 0 20rpx 2rpx rgba(193,193,193,.2);
-	        box-shadow: 0 0 20rpx 2rpx rgba(193,193,193,.2);
+	-webkit-box-shadow: 0 0 20rpx 2rpx rgba(193, 193, 193, .2);
+	        box-shadow: 0 0 20rpx 2rpx rgba(193, 193, 193, .2);
 	margin-top: 20rpx;
 	-webkit-box-pack: center;
 	-webkit-justify-content: center;
 	        justify-content: center;
 }
-.consultBtn2{
+.consultBtn2 {
 	background-color: #CD282F;
 }
-.consultBtnImg{
+.consultBtnImg {
 	width: 44rpx;
-	height:44rpx;
+	height: 44rpx;
 }
-.consultBtn .consultBtnText{
+.consultBtn .consultBtnText {
 	line-height: 40rpx;
 	font-size: 24rpx;
 }
-.hasFollow .consultBtnText{
-	color:#CD282F;
+.hasFollow .consultBtnText {
+	color: #CD282F;
 }
-.consultBtn2 .consultBtnText{
+.consultBtn2 .consultBtnText {
 	color: #FFFFFF;
 }
-.noRecord{
+.noRecord {
 	height: 360rpx;
 	display: -webkit-box;
 	display: -webkit-flex;
@@ -412,10 +412,10 @@
 	-webkit-flex-direction: column;
 	        flex-direction: column;
 }
-.noRecord .noRecordImg{
+.noRecord .noRecordImg {
 	width: 200rpx;
 }
-.noRecord .noRecordText{
+.noRecord .noRecordText {
 	color: #B8B8B8;
 	font-size: 24rpx;
 	line-height: 34rpx;

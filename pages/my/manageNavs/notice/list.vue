@@ -3,7 +3,7 @@
 		<view class="recordFixHeader">
 			<view class="searchInputBox">
 				<uni-icons color="#f44a33" class="searchIcon" size="18" type="search" />
-				<input class="uni-input" placeholder="搜索客户名称或房源" confirm-type="search" placeholder-style="font-size:26rpx;color:#B8B8B8;"
+				<input class="uni-input" placeholder="搜索公告标题" confirm-type="search" placeholder-style="font-size:26rpx;color:#B8B8B8;"
 				 v-model="searchVal" @confirm="search" />
 			</view>
 		</view>

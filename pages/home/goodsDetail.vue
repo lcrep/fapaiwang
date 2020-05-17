@@ -16,11 +16,11 @@
 					<text class="statusLabel statusLabel1">即将开始</text>
 					<text class="statusTime">{{houseInfo.timeText}}开始</text>
 				</block>
-				<block  v-else-if="houseInfo.paimaiStatus==2">
+				<block v-else-if="houseInfo.paimaiStatus==2">
 					<text class="statusLabel statusLabel2">拍卖中</text>
 					<text class="statusTime">{{houseInfo.timeText}}结束</text>
 				</block>
-				<block  v-else>
+				<block v-else>
 					<text class="statusLabel statusLabel3">已结束</text>
 					<text class="statusTime">{{houseInfo.timeText}}结束</text>
 				</block>
@@ -38,19 +38,19 @@
 						<text class="amount">{{houseInfo.currentPriceText}}</text>
 					</view>
 				</view>
-				<view class="startingPrice inPrice"  v-else-if="houseInfo.paimaiStatus==2">
+				<view class="startingPrice inPrice" v-else-if="houseInfo.paimaiStatus==2">
 					<text class="priceLabel">当前价</text>
 					<view class="priceCont">
 						<text class="priceSymbol">￥</text>
 						<text class="amount">{{houseInfo.currentPriceText}}</text>
 					</view>
 				</view>
-				<view class="startingPrice endPrice"  v-else>
+				<view class="startingPrice endPrice" v-else>
 					<text class="priceLabel">成交价</text>
 					<view class="priceCont">
 						<block v-if="houseDetail.dealPriceText">
-						<text class="priceSymbol">￥</text>
-						<text class="amount">{{houseDetail.dealPriceText}}</text>
+							<text class="priceSymbol">￥</text>
+							<text class="amount">{{houseDetail.dealPriceText}}</text>
 						</block>
 						<block v-else>
 							<text class="noPrice">无</text>
@@ -92,7 +92,8 @@
 					竞买须知
 				</view>
 				<view :class="{'descBoxCont':true,'descIsOpen':descIsOpen1}">
-				   <rich-text :nodes="houseDetail.notice"></rich-text>
+					<!-- <rich-text :nodes="noticeHtml"></rich-text> -->
+					<jyf-parser :html="noticeHtml" ref="article" autoscroll></jyf-parser>
 					<view class="descLookAll" @click="openDesc(1)" v-if="!descIsOpen1">
 						<text class="descLookAllText">查看全部</text>
 						<uni-icons class="arrowIcons" color="#b8b8b8" size="18" type="arrowdown" />
@@ -108,7 +109,8 @@
 					竞买公告
 				</view>
 				<view :class="{'descBoxCont':true,'descIsOpen':descIsOpen2}">
-					<rich-text :nodes="houseDetail.announcement"></rich-text>
+					<!-- <rich-text :nodes="announcementHtml"></rich-text> -->
+					<jyf-parser :html="announcementHtml" ref="article" autoscroll></jyf-parser>
 					<view class="descLookAll" @click="openDesc(2)" v-if="!descIsOpen2">
 						<text class="descLookAllText">查看全部</text>
 						<uni-icons class="arrowIcons" color="#b8b8b8" size="18" type="arrowdown" />
@@ -124,8 +126,12 @@
 					标的物详情
 				</view>
 				<view :class="{'descBoxCont':true,'descIsOpen':descIsOpen3}">
-					<rich-text :nodes="houseDetail.productDescription"></rich-text>
-					<view class="descLookAll" @click="openDesc(3)" v-if="!descIsOpen2">
+					<scroll-view scroll-x="true" >
+						<rich-text :nodes="descriptionHtml"></rich-text>
+					</scroll-view>
+					
+					<!-- <jyf-parser :html="descriptionHtml" ref="article" autoscroll></jyf-parser> -->
+					<view class="descLookAll" @click="openDesc(3)" v-if="!descIsOpen3">
 						<text class="descLookAllText">查看全部</text>
 						<uni-icons class="arrowIcons" color="#b8b8b8" size="18" type="arrowdown" />
 					</view>
@@ -140,7 +146,7 @@
 			<view class="tabBoxHead">
 				出价记录（{{recordList.length}}）
 			</view>
-			<view :class="{'priceTable':true,'descIsOpen':offerIsOpen}"  v-if="recordList.length>0">
+			<view :class="{'priceTable':true,'descIsOpen':offerIsOpen}" v-if="recordList.length>0">
 				<view class="tableHead">
 					<view class="td td1">状态</view>
 					<view class="td td2">竞买号</view>
@@ -172,7 +178,7 @@
 							{{item.bidTime}}
 						</view>
 					</view>
-					
+
 				</view>
 				<view class="descLookAll" @click="openOffers" v-if="!offerIsOpen">
 					<text class="descLookAllText">查看全部</text>
@@ -192,8 +198,8 @@
 			<view class="tabBoxHead">
 				同区域历史成交
 			</view>
-			<view class="goodsList"  v-if="total!==0">
-				<view class="goodsItem" v-for="(item,index) in dealList" :key="index"  @click="itemTap(item.paimaiId,item.houseSource)">
+			<view class="goodsList" v-if="total!==0">
+				<view class="goodsItem" v-for="(item,index) in dealList" :key="index" @click="itemTap(item.paimaiId,item.houseSource)">
 					<view class="goodsPic">
 						<text class="goodsTag">{{item.paimaiTimesText}}</text>
 						<image class="goodsImage" :src="item.productImage" mode="aspectFill"></image>
@@ -203,9 +209,10 @@
 						<view class="goodsAddress nowrap" v-if="item.paimaiStatus==1">{{item.accessNum}}次围观/{{item.title}}</view>
 						<view class="goodsAddress nowrap" v-else>{{item.bidCount}}次出价 / {{item.countyName}}</view>
 						<view class="goodsPrice"><text class="priceLabel">当前价</text><text class="priceNum">{{item.currentPriceText}}万</text>
-						<text  v-if="item.discount!=10" class="discount">{{item.discount}}折</text></view>
+							<text v-if="item.discount!=10" class="discount">{{item.discount}}折</text></view>
 						<view class="goodsStatus goodsStatus1" v-if="item.paimaiStatus==1"><text class="statusName">未开始</text><text class="goodsTime">{{item.timeText}}开始</text></view>
-						<view class="goodsStatus goodsStatus2" v-else-if="item.paimaiStatus==2"><text class="statusName">拍卖中</text><text class="goodsTime">{{item.timeText}}开始</text></view>
+						<view class="goodsStatus goodsStatus2" v-else-if="item.paimaiStatus==2"><text class="statusName">拍卖中</text><text
+							 class="goodsTime">{{item.timeText}}开始</text></view>
 						<view class="goodsStatus goodsStatus3" v-else><text class="statusName">已结束</text><text class="goodsTime">{{item.timeText}}结束</text></view>
 					</view>
 				</view>
@@ -223,7 +230,7 @@
 					收藏
 				</view>
 			</view>
-			<view class="consultBtn hasFollow" v-else >
+			<view class="consultBtn hasFollow" v-else>
 				<image class="consultBtnImg" src="../../static/images/hasFollowed.png"></image>
 				<view class="consultBtnText">
 					已收藏
@@ -249,13 +256,16 @@
 				paimaiId: "611884335520",
 				houseSource: 2,
 				houseInfo: "",
-				houseDetail:"",
-				dealPage:1,
-				pageNum:10,
-				total:"",
-				dealList:[],
+				houseDetail: "",
+				noticeHtml: "",
+				announcementHtml: "",
+				descriptionHtml: "",
+				dealPage: 1,
+				pageNum: 10,
+				total: "",
+				dealList: [],
 				loadStatus: 'more',
-				hasLoad:false,
+				hasLoad: false,
 				descIsOpen1: false,
 				descIsOpen2: false,
 				descIsOpen3: false,
@@ -269,9 +279,9 @@
 				scrollTag4: 0,
 				navCurrent: 0,
 				bannerList: [],
-				recordList:[],
-				houseList:[],
-				collected:false
+				recordList: [],
+				houseList: [],
+				collected: false
 			}
 		},
 		onLoad(options) {
@@ -281,10 +291,14 @@
 			that.getHouseDetail(that.paimaiId, that.houseSource);
 			that.houseDetailRecord(that.paimaiId, that.houseSource);
 			that.collectState(that.paimaiId, that.houseSource);
+			that.querynotice();
+			that.queryannouncement();
+			that.queryproductdescription();
 		},
+
 		onReady() {
 			let that = this;
-			setTimeout(()=>{
+			setTimeout(() => {
 				that.$utils.getBoxheight(`.goodsStatusBox`, (rects) => {
 					that.goodsStatusBoxHeight = rects[0].height;
 				});
@@ -299,16 +313,29 @@
 				});
 				that.$utils.getBoxheight(`.tabBox2`, (rects) => {
 					that.scrollTag4 = rects[0].height + that.scrollTag3;
-				
+
 				});
-			},300)
-			
+			}, 300)
+
 		},
 		methods: {
+			//转义方法
+			escape2Html(str) {
+				var arrEntities = {
+					'lt': '<',
+					'gt': '>',
+					'nbsp': ' ',
+					'amp': '&',
+					'quot': '"'
+				};
+				return str.replace(/&(lt|gt|nbsp|amp|quot);/ig, function(all, t) {
+					return arrEntities[t];
+				}).replace('<section', '<div').replace('<img', '<img style="max-width:100%;height:auto" ');
+			},
 			getHouseDetail(paimaiId, houseSource) {
 				const that = this;
 				uni.showLoading({
-					title:"加载中..."
+					title: "加载中..."
 				})
 				let param = {
 					paimaiId: paimaiId,
@@ -342,29 +369,26 @@
 						} else if (houseInfo.paimaiTimes == 5) {
 							houseInfo.paimaiTimesText = "重新拍卖";
 						}
-						houseDetail.dealPriceText = that.$utils.formatCurrency(houseDetail.dealPrice);//成交价
-						houseInfo.assessmentPriceText = that.$utils.formatCurrency(houseInfo.assessmentPrice);//评估价
-						houseInfo.currentPriceText = that.$utils.formatCurrency(houseInfo.currentPrice);//当前价
-						if(houseInfo.houseType==1){
-							houseInfo.houseTypeText='住宅用房';
-						}
-						else if(houseInfo.houseType==2){
-							houseInfo.houseTypeText='商业用房';
-						}
-						else if(houseInfo.houseType==3){
-							houseInfo.houseTypeText='工业用房';
-						}
-						else if(houseInfo.houseType==4){
-							houseInfo.houseTypeText='其他';
+						houseDetail.dealPriceText = that.$utils.formatCurrency(houseDetail.dealPrice); //成交价
+						houseInfo.assessmentPriceText = that.$utils.formatCurrency(houseInfo.assessmentPrice); //评估价
+						houseInfo.currentPriceText = that.$utils.formatCurrency(houseInfo.currentPrice); //当前价
+						if (houseInfo.houseType == 1) {
+							houseInfo.houseTypeText = '住宅用房';
+						} else if (houseInfo.houseType == 2) {
+							houseInfo.houseTypeText = '商业用房';
+						} else if (houseInfo.houseType == 3) {
+							houseInfo.houseTypeText = '工业用房';
+						} else if (houseInfo.houseType == 4) {
+							houseInfo.houseTypeText = '其他';
 						}
 						// houseDetail.productDescription=houseDetail.productDescription.replace(/width:[^;]+;/gi, 'max-width:100%;');
 						// houseDetail.productDescription=houseDetail.productDescription.replace(/width=[^;]+;/gi, 'width="100%');
 						// houseDetail.productDescription=houseDetail.productDescription.replace(/\<img/gi, '<img style="max-width:100%;height:auto" ');
 						// houseDetail.notice=houseDetail.notice.replace(/\\&quot;/gi,'"')
-						that.houseDetail=houseDetail;
+						that.houseDetail = houseDetail;
 						that.houseInfo = houseInfo;
-						that.hasLoad=true;
-						that.dealdoneList(houseInfo.cityId,1);
+						that.hasLoad = true;
+						that.dealdoneList(houseInfo.cityId, 1);
 						that.browsesAdd();
 					} else {
 						uni.showToast({
@@ -374,13 +398,13 @@
 					}
 				})
 			},
-			dealdoneList(id,dealPage){
+			dealdoneList(id, dealPage) {
 				const that = this;
 				let param = {
-					cityId:id,
-					startPage:dealPage
+					cityId: id,
+					startPage: dealPage
 				}
-				that.loadStatus="loading";
+				that.loadStatus = "loading";
 				that.$api.dealdoneList(param).then(res => {
 					if (res.success) {
 						let result = res.datas.rows;
@@ -400,25 +424,24 @@
 							var endTime = new Date(result[i].endTime).getTime();
 							if (startTime > nowTime) {
 								result[i].paimaiStatus = 1; //未开始	
-								result[i].timeText = that.$utils.formatTime(startTime,'MM月DD日 hh:mm');
+								result[i].timeText = that.$utils.formatTime(startTime, 'MM月DD日 hh:mm');
 							} else if (nowTime >= startTime && nowTime <= endTime) {
 								result[i].paimaiStatus = 2; //拍卖中
 								result[i].timeText = that.$utils.timeCount(endTime);
 							} else {
 								result[i].paimaiStatus = 3; //已结束
-								result[i].timeText = that.$utils.formatTime(endTime,'YYYY年MM月DD日');
+								result[i].timeText = that.$utils.formatTime(endTime, 'YYYY年MM月DD日');
 							}
 							that.dealList.push(result[i])
 						}
 						let total = res.datas.total;
-						that.total=total;
-						let totalPageNum =Math.ceil(total/10);
-						if(parseInt(totalPageNum)>parseInt(that.pageNum)){
+						that.total = total;
+						let totalPageNum = Math.ceil(total / 10);
+						if (parseInt(totalPageNum) > parseInt(that.pageNum)) {
 							that.dealPage++;
-							that.loadStatus="more";
-						}
-						else{
-							that.loadStatus="noMore";
+							that.loadStatus = "more";
+						} else {
+							that.loadStatus = "noMore";
 						}
 					} else {
 						uni.showToast({
@@ -428,15 +451,75 @@
 					}
 				})
 			},
-			browsesAdd(){
+			querynotice() {
+				const that = this;
+				let param = {
+					paimaiId: that.paimaiId,
+					houseSource: that.houseSource
+				}
+				that.$api.querynotice(param).then(res => {
+					if (res.success) {
+						that.noticeHtml = that.escape2Html(res.datas);
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			queryannouncement() {
+				const that = this;
+				let param = {
+					paimaiId: that.paimaiId,
+					houseSource: that.houseSource
+				}
+				that.$api.queryannouncement(param).then(res => {
+					if (res.success) {
+						that.announcementHtml = res.datas;
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+			itemTap(paimaiId, houseSource) {
+				this.$Router.push({
+					path: "/pages/home/goodsDetail",
+					query: {
+						paimaiId: paimaiId,
+						houseSource: houseSource
+					}
+				})
+			},
+			queryproductdescription() {
+				const that = this;
+				let param = {
+					paimaiId: that.paimaiId,
+					houseSource: that.houseSource
+				}
+				that.$api.queryproductdescription(param).then(res => {
+					if (res.success) {
+						that.descriptionHtml = res.datas;
+					} else {
+						uni.showToast({
+							title: res.message,
+							icon: "none"
+						})
+					}
+				})
+			},
+
+			browsesAdd() {
 				const that = this;
 				let param = {
 					paimaiId: that.paimaiId,
 					houseSource: that.houseSource
 				}
 				that.$api.browsesAdd(param).then(res => {
-					if (res.success) {
-					} else {
+					if (res.success) {} else {
 						uni.showToast({
 							title: res.message,
 							icon: "none"
@@ -480,7 +563,7 @@
 					}
 				})
 			},
-			collectHouse(){
+			collectHouse() {
 				const that = this;
 				let param = {
 					paimaiId: that.paimaiId,
@@ -488,7 +571,7 @@
 				}
 				that.$api.houseCollect(param).then(res => {
 					if (res.success) {
-						that.collected=1;
+						that.collected = 1;
 					} else {
 						uni.showToast({
 							title: res.message,
@@ -497,7 +580,7 @@
 					}
 				})
 			},
-			gotoChat(){
+			gotoChat() {
 				const that = this;
 				let param = {}
 				that.$api.chatGetcsinfo(param).then(res => {
@@ -506,9 +589,9 @@
 						let myUserId = res.datas.curUserId;
 						that.$Router.push({
 							path: "/pages/consultant/charRoom",
-							query:{
-								myUserId:myUserId,
-								chatUserId:chatUserId
+							query: {
+								myUserId: myUserId,
+								chatUserId: chatUserId
 							}
 						})
 					} else {
@@ -743,19 +826,24 @@
 	.startingPrice .priceCont {
 		color: #00BBC3;
 	}
+
 	.inPrice .priceCont {
 		color: #CD282F;
 	}
-	.endPrice .priceCont{
+
+	.endPrice .priceCont {
 		color: #CD282F;
 	}
+
 	.assPrice .priceCont {
 		color: #222222;
 		font-size: 28rpx;
 	}
-	.noPrice{
+
+	.noPrice {
 		line-height: 50rpx;
 	}
+
 	.navs {
 		height: 90rpx;
 		width: 100%;
@@ -950,16 +1038,19 @@
 	.isFirst {
 		background: #CD282F;
 	}
-	.hasDone{
-		background:#D8AF60;
+
+	.hasDone {
+		background: #D8AF60;
 	}
+
 	.statusFixed {
 		position: fixed;
 		top: 0;
 		left: 0;
 		z-index: 999;
 	}
-	.consultantBtns{
+
+	.consultantBtns {
 		position: fixed;
 		right: 30rpx;
 		bottom: 40rpx;
@@ -967,7 +1058,8 @@
 		height: 272rpx;
 		z-index: 99;
 	}
-	.consultBtn{
+
+	.consultBtn {
 		width: 116rpx;
 		height: 116rpx;
 		border-radius: 100%;
@@ -975,38 +1067,46 @@
 		flex-direction: column;
 		align-items: center;
 		background-color: #FFFFFF;
-		box-shadow: 0 0 20rpx 2rpx rgba(193,193,193,.2);
+		box-shadow: 0 0 20rpx 2rpx rgba(193, 193, 193, .2);
 		margin-top: 20rpx;
 		justify-content: center;
 	}
-	.consultBtn2{
+
+	.consultBtn2 {
 		background-color: #CD282F;
 	}
-	.consultBtnImg{
+
+	.consultBtnImg {
 		width: 44rpx;
-		height:44rpx;
+		height: 44rpx;
 	}
-	.consultBtn .consultBtnText{
+
+	.consultBtn .consultBtnText {
 		line-height: 40rpx;
 		font-size: 24rpx;
 	}
-	.hasFollow .consultBtnText{
-		color:#CD282F;
+
+	.hasFollow .consultBtnText {
+		color: #CD282F;
 	}
-	.consultBtn2 .consultBtnText{
+
+	.consultBtn2 .consultBtnText {
 		color: #FFFFFF;
 	}
-	.noRecord{
+
+	.noRecord {
 		height: 360rpx;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
 	}
-	.noRecord .noRecordImg{
+
+	.noRecord .noRecordImg {
 		width: 200rpx;
 	}
-	.noRecord .noRecordText{
+
+	.noRecord .noRecordText {
 		color: #B8B8B8;
 		font-size: 24rpx;
 		line-height: 34rpx;

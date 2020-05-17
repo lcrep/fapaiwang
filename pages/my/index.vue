@@ -218,7 +218,7 @@
 						router: '/pages/my/navs/history'
 					},
 					{
-						name: "交易记录",
+						name: "进度查询",
 						src: '../../static/images/Btns/publicBtn3.png',
 						router: '/pages/my/navs/recordTypeC'
 
@@ -330,6 +330,12 @@
 			reload() {
 				if (this.hasLogin) {
 					this.getUserInfo();
+					this.transactionstatistics();
+					this.housestatisticscount("");
+					this.housestatisticsamount("");
+					this.transratiostatistics(1);
+					this.transratiostatistics(2);
+					this.corptransactionstatistics();
 				}
 			},
 			transactionstatistics() {
@@ -577,6 +583,12 @@
 						gridType: 'dash',
 						gridColor: '#CCCCCC',
 						dashLength: 8,
+						data: [{
+							position: 'left',
+							format: (val) => {
+								return val.toFixed(0)
+							},
+						}]
 					},
 					width: _self.cWidth * _self.pixelRatio,
 					height: _self.cHeight * _self.pixelRatio,

@@ -20,10 +20,10 @@
 					<view class="register" @click="register">新用户注册</view>
 				</view>
 			</view>
-			<view class="wxLogin">
+		<!-- 	<view class="wxLogin">
 				<text class="wxLoginText">微信登录</text>
 				<image class="image" src="../../static/images/weixinIcon.png"></image>
-			</view>
+			</view> -->
 			<view class="loginTips">点击按钮即表示您同意并愿意遵守法拍网<text @click="gotoAgreement1" class="loginTipsText">《服务协议》</text>和<text @click="gotoAgreement2" class="loginTipsText">《隐私协议》</text></view>
 
 		</view>

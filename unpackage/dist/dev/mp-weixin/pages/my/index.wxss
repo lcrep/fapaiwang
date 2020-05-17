@@ -167,4 +167,164 @@
 .logoutBtn:active {
 	background-color: #F7F7F7;
 }
+.echatsBox {
+	border-top: 2rpx solid #E5E5E5;
+	padding: 30rpx 0;
+}
+.echatsItem1 {
+	margin-top: 20rpx;
+	padding: 30rpx;
+}
+.echatsItem2 {
+	margin-top: 20rpx;
+	padding: 30rpx;
+}
+.chatHead {
+	height: 60rpx;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+	margin-bottom: 30rpx;
+}
+.chatHeadLeft {
+	font-size: 36rpx;
+	line-height: 50rpx;
+	color: #222222;
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	        flex: 1;
+}
+.threeNums {
+	margin-top: 40rpx;
+	width: 100%;
+	height: 150rpx;
+	display: block;
+}
+.threeNumBox {
+	width: 192rpx;
+	height: 128rpx;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: column;
+	        flex-direction: column;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	        justify-content: center;
+	-webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+	        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+	float: left;
+}
+.numsTitle {
+	font-size: 24rpx;
+	color: #B8B8B8;
+	line-height: 34rpx;
+}
+.numsCont {
+	color: #555555;
+	font-size: 35rpx;
+	line-height: 36rpx;
+	margin-top: 22rpx;
+}
+.middleBox {
+	margin-left: 56rpx;
+	margin-right: 56rpx;
+}
+.qiun-charts {
+	width: 690rpx;
+	height: 500rpx;
+	background-color: #FFFFFF;
+}
+.charts {
+	width: 690rpx;
+	height: 500rpx;
+	background-color: #FFFFFF;
+}
+.graphBox {
+	width: 100%;
+	height: 160rpx;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+}
+.graphItem {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	        flex: 1;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: column;
+	        flex-direction: column;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	        justify-content: center;
+}
+.graphImg {
+	width: 80rpx;
+	height: 48rpx;
+}
+.graphTitle {
+	height: 40rpx;
+	width: 100%;
+	margin-top: 18rpx;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	        justify-content: center;
+}
+.graphText {
+	color: #393C40;
+	font-size: 28rpx;
+}
+.goRightIcon {
+	width: 18rpx;
+	height: 26rpx;
+	display: block;
+	margin-left: 16rpx;
+}
+.seltab{
+	width: 324rpx;
+	height: 54rpx;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+}
+.seltabItem{
+	width: 88rpx;
+	height: 54rpx;
+	text-align: center;
+	line-height: 54rpx;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
+	border: 1rpx solid #DDDDDD;
+	color: #B8B8B8;
+	font-size: 24rpx;
+	margin-left: 20rpx;
+}
+.seltabItem.active{
+	color: #CD282F;
+	border: 1rpx solid #CD282F;
+}
 

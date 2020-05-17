@@ -63,7 +63,12 @@
     "pages/home/areaPrice",
     "pages/my/manageNavs/process/allDaily",
     "pages/my/manageNavs/process/allReturn",
-    "pages/my/manageNavs/notice/edit"
+    "pages/my/manageNavs/notice/edit",
+    "pages/my/otherSelfPage",
+    "pages/my/agreement/agreement1",
+    "pages/my/agreement/agreement2",
+    "pages/my/statisticsEmy",
+    "pages/my/statisticsCus"
   ],
   "subPackages": [],
   "window": {
@@ -105,5 +110,6 @@
   "uniStatistics": {
     "enable": false
   },
-  "usingComponents": {}
+  "usingComponents": {},
+  "sitemapLocation": "sitemap97.json"
 }

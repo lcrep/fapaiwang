@@ -117,6 +117,10 @@ api.houseCollect = params => request.globalRequest(`${base.default}/api/v/house/
 api.collectList = params => request.globalRequest(`${base.default}/api/v/house/collect/pagelist`, 'POST', params); //我的收藏
 api.browsesAdd = params => request.globalRequest(`${base.default}/api/v/house/browses/add`, 'POST', params); //新增浏览记录
 api.browsesList = params => request.globalRequest(`${base.default}/api/v/house/browses/search`, 'POST', params); //浏览记录
+api.querynotice = params => request.globalRequest(`${base.default}/api/house/detail/querynotice`, 'POST', params); //竞买须知
+api.queryannouncement = params => request.globalRequest(`${base.default}/api/house/detail/queryannouncement`, 'POST', params); //竞买公告
+api.queryproductdescription = params => request.globalRequest(`${base.default}/api/house/detail/queryproductdescription`, 'POST', params); //标的物详情
+
 
 
 //#########################咨询相关###########################//

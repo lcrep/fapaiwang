@@ -169,7 +169,7 @@ page {
 	font-size: 24rpx;
 	margin-top: 10rpx;
 }
-.errorIcon{
+.errorIcon {
 	width: 40rpx;
 	height: 40rpx;
 }
@@ -185,7 +185,7 @@ page {
 .template {
 	display: inline;
 }
-.videoPlay{
+.videoPlay {
 	width: 200rpx;
 	height: 200rpx;
 }
@@ -270,11 +270,47 @@ page {
 	width: 40rpx;
 	height: 40rpx;
 }
-.uni-image-close{
+.uni-image-close {
 	margin-top: 30rpx;
 	text-align: center;
 }
-.video{
+.video {
 	width: 750rpx;
+}
+.videoBox {
+	width: 300rpx;
+	min-height: 150rpx;
+	position: relative;
+	background-color: #000000;
+}
+.videoCover {
+	width: 100%;
+}
+.videoPlayBtn {
+	position: absolute;
+	width: 104rpx;
+	height: 104rpx;
+	left: 50%;
+	top: 50%;
+	-webkit-transform: translateX(-50%) translateY(-50%);
+	        transform: translateX(-50%) translateY(-50%);
+}
+.chattopLoadingBox {
+	width: 100%;
+	height: 60rpx;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	        justify-content: center;
+}
+.loadingIcon {
+	width: 30rpx;
+	height: 30rpx;
+	display: block;
 }
 

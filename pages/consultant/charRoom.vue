@@ -4,7 +4,9 @@
 			<scroll-view :scroll-top="scrollTop" style="height: 100%;" scroll-y="true" :scroll-into-view="viewId" class="scrollBox"
 			 @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll">
 				<view class="msgList">
-					<uni-load-more iconType="snow" :status="loadStatus" />
+					<view class="chattopLoadingBox" v-if="loadStatus=='loading'">
+						<image src="../../static/images/loading.gif" class="loadingIcon" mode=""></image>
+					</view>
 					<view class="message" v-for="(item,index) in chatList" :key="index" :id="'mid'+item.itemId">
 						<view class="time">
 							<text class="time-text">{{ item.chatTime }}</text>
@@ -64,7 +66,7 @@
 			</view>
 			<uni-popup ref="showVideo" class="videoPop" type="center" :mask-click="true">
 				<view class="showVideoBox">
-					<video class="video" id="myVideo" :src="videoSrc" controls></video>
+					<video class="video" id="myVideo" ref='myVideo' :src="videoSrc" controls></video>
 					<view class="uni-image-close" @click="cancel">
 						<uni-icons type="clear" color="#fff" size="30" />
 					</view>
@@ -76,11 +78,14 @@
 
 <script>
 	var socket;
+
 	export default {
 		data() {
 			return {
 				chatRel: '',
 				myUserId: "",
+				timer: null,
+				timeout:60000,
 				myPic: "",
 				chatUserId: "",
 				chatUserPic: "",
@@ -119,6 +124,11 @@
 				this.goBottom();
 			}, 100)
 		},
+		onShow() {
+			if (this.isOpened == 0) {
+				this.openSocket(this.myUserId);
+			}
+		},
 		methods: {
 			getHistory(pageNum) {
 				const that = this;
@@ -131,7 +141,8 @@
 					if (res.success) {
 						let oppoUserId = res.datas.oppoUserId;
 						if (oppoUserId == that.myUserId) {
-							that.myPic = res.datas.oppoUserHeadImg ? res.datas.oppoUserHeadImg : '../../static/images/defaultUserPic.png';
+							that.myPic = res.datas.oppoUserHeadImg ? res.datas.oppoUserHeadImg :
+								'../../static/images/defaultUserPic.png';
 							that.chatUserPic = res.datas.userHeadImg ? res.datas.userHeadImg : '../../static/images/defaultUserPic.png';
 							that.chatUserName = res.datas.userNickName;
 						} else {
@@ -185,29 +196,55 @@
 					}
 				})
 			},
+			heartCheckStart(){
+				this.timer = setInterval(() => {
+					if (this.isOpened == 1) {
+						console.log("连接状态，发送消息保持连接");
+						uni.sendSocketMessage({
+							data: "ping",
+							success: (res) => {
+								console.log(res);
+							},
+							fail: (error) => {
+								console.log(error);
+							},
+						});
+						// 如果获取到消息，说明连接正常，重置心跳检测
+						this.heartCheckReset();
+						this.heartCheckStart();
+					} else {
+					      console.log("断开连接，尝试重连");
+					      this.openSocket(this.myUserId);
+					  }
+				}, this.timeout)
+			},
+			heartCheckReset(){
+				 clearTimeout(this.timer);
+			},
 			openSocket(id) {
 				const that = this;
 				var socketUrl = "wss://mobile.fpw365.cn/ws/imchannel/" + id;
 				uni.connectSocket({
 					url: socketUrl,
 					complete: (e) => {
-						console.log(e)
+						console.log("openSocket complete" + JSON.stringify(e))
 					},
 					fail(error) {
-						uni.showToast({
-							title: "ws连接失败",
-							icon: "none"
-						})
+						console.log("openSocket error" +  JSON.stringify(error));
 					}
 				})
 				//打开事件
-
 				uni.onSocketOpen(function(res) {
+					console.log('WebSocket 已打开');
 					that.isOpened = 1;
+					that.heartCheckReset();
+					that.heartCheckStart();
 				});
 				//获得消息事件
 				uni.onSocketMessage(function(res) {
 					console.log(msg.data);
+					that.heartCheckReset();
+					that.heartCheckStart();
 					//发现消息进入    开始处理前端触发逻辑
 					var obj;
 					try {
@@ -221,6 +258,7 @@
 
 						} else {
 							that.listenMsg(obj);
+
 						}
 					} else {
 
@@ -229,10 +267,12 @@
 				//关闭事件
 				uni.onSocketClose(function(res) {
 					console.log('WebSocket 已关闭！');
+					that.isOpened = 0;
 				});
 				//发生了错误事件
 				uni.onSocketError(function(res) {
 					console.log('WebSocket连接打开失败，请检查！');
+					that.isOpened = 0;
 				});
 			},
 			listenMsg(data) {
@@ -427,7 +467,7 @@
 							if (result.success) {
 								that.addVideoChat(result.datas);
 								that.chatList[theIndex].loading = 0;
-								that.chatList[theIndex].coverPath = result.datas.picUrl+that.$utils.common.ossVideoCoverSuffix;
+								that.chatList[theIndex].coverPath = result.datas.picUrl + that.$utils.common.ossVideoCoverSuffix;
 							} else {
 								uni.showToast({
 									title: "上传失败"
@@ -450,10 +490,18 @@
 			playVideo(url) {
 				const that = this;
 				that.videoSrc = url;
+				that.videoContext = uni.createVideoContext('myVideo')
 				that.$nextTick(() => {
-					that.$refs.showVideo.open()
+					that.$refs.showVideo.open();
+					setTimeout(() => {
+						that.videoContext.requestFullScreen();
+						that.videoContext.play();
+					}, 300)
+
 				})
-				that.videoContext.play();
+
+
+
 			},
 			cancel() {
 				const that = this;
@@ -835,8 +883,8 @@
 	}
 
 	.videoBox {
-		width: 400rpx;
-		min-height: 200rpx;
+		width: 300rpx;
+		min-height: 150rpx;
 		position: relative;
 		background-color: #000000;
 	}
@@ -853,5 +901,19 @@
 		left: 50%;
 		top: 50%;
 		transform: translateX(-50%) translateY(-50%);
+	}
+
+	.chattopLoadingBox {
+		width: 100%;
+		height: 60rpx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.loadingIcon {
+		width: 30rpx;
+		height: 30rpx;
+		display: block;
 	}
 </style>
